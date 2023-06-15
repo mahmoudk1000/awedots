@@ -17,9 +17,6 @@ screen.connect_signal("request::desktop_decoration", function(s)
 
     -- Each screen has its own tag table.
     awful.tag({ "1", "2", "3", "4", "5", "6"}, s, awful.layout.layouts[1])
-
-    -- Create a promptbox for each screen
-    s.mypromptbox = awful.widget.prompt()
 end)
 
 -- Wallpaper
@@ -53,12 +50,11 @@ end)
 client.connect_signal("manage", function (c, startup)
     -- Enable double border
     c.border_width = beautiful.border_width
-    c.border_width_inner = beautiful.border_width
-    c.border_color = beautiful.border_normal
+    c.border_color = beautiful.border_focus
 
     -- Add focus event to change border color
     c:connect_signal("focus", function()
-        c.border_color = beautiful.border_active
+        c.border_color = beautiful.border_focus
     end)
 
     -- Add unfocus event to change border color
@@ -72,20 +68,20 @@ end)
 ruled.client.connect_signal("request::rules", function()
     -- All clients will match this rule.
     ruled.client.append_rule {
-        id         = "global",
-        rule       = { },
+        id = "global",
+        rule = { },
         properties = {
             focus       = awful.client.focus.filter,
             raise       = true,
             screen      = awful.screen.preferred,
             size_hints_honor = false,
-            placement   = awful.placement.no_overlap+awful.placement.no_offscreen
+            placement   = awful.placement.centered + awful.placement.no_overlap + awful.placement.no_offscreen
         }
     }
 
     ruled.client.append_rule {
-	id         = "multimedia",
-	rule_any   = {  
+	id = "multimedia",
+	rule_any = {  
 	    class = {
                 "vlc",
                 "mpv" 
@@ -93,10 +89,29 @@ ruled.client.connect_signal("request::rules", function()
 	},
 	properties = { 
 	    tag = "3",
+            switchtotag = true,
             raise = true,
             floating = true,
 	    draw_backdrop = false,
             placement = awful.placement.centered
+	}
+    }
+
+    ruled.client.append_rule {
+        id = "Events",
+        rule_any = {
+            class = {
+                "Nsxiv",
+            },
+            type = {
+                "dialog",
+	    }
+        },
+        properties = {
+            focus = true,
+            ontop = true,
+	    floating = true,
+	    placement = awful.placement.centered,
 	}
     }
 
@@ -137,7 +152,7 @@ ruled.client.connect_signal("request::rules", function()
     }
     ruled.client.append_rule {
          rule       = { class = "thunderbird" },
-         properties = { screen = 1, tag = "6", switchtotag = true }
+         properties = { screen = 1, tag = "6" }
     }
     ruled.client.append_rule {
          rule       = { class = "TelegramDesktop" },

@@ -24,9 +24,6 @@ awful.keyboard.append_global_keybindings({
     awful.key({ modkey,         }, "Return",
             function () awful.spawn(terminal) end,
         {description = "Open Terminal", group = "Launcher"}),
-    awful.key({ modkey,         }, "r",
-            function () awful.screen.focused().mypromptbox:run() end,
-        {description = "Run Prompt", group = "Launcher"}),
     awful.key({modkey,          }, "d",
            function() awful.spawn(rofi) end,
         {description = "Launch Rofi", group = "Launcher"}),
@@ -36,13 +33,19 @@ awful.keyboard.append_global_keybindings({
 awful.keyboard.append_global_keybindings({
     awful.key({ modkey,         }, "c",
             awful.tag.viewprev,
-        {description = "view previous", group = "tag"}),
+        {description = "Move Previous", group = "Tag"}),
     awful.key({ modkey,         }, "v",
             awful.tag.viewnext,
-        {description = "view next", group = "tag"}),
+        {description = "Move Next", group = "Tag"}),
     awful.key({ modkey,         }, "Escape",
             awful.tag.history.restore,
-        {description = "go back", group = "tag"}),
+        {description = "Go Back", group = "Tag"}),
+    awful.key({ modkey,           }, "space", 
+            function () awful.layout.inc(1) end,
+        {description = "select next", group = "Layout"}),
+    awful.key({ modkey, "Shift"   }, "space",
+            function () awful.layout.inc(-1) end,
+        {description = "select previous", group = "Layout"}),
 })
 
 awful.keyboard.append_global_keybindings({
@@ -57,67 +60,93 @@ awful.keyboard.append_global_keybindings({
         {description = "Launch Obsidian", group = "Launcher"}),
     awful.key({modkey,          }, "p",
             function() awful.spawn.easy_async_with_shell("poww") end,
-        {description = "Launch Power Menu", group = "Launcher"}),
+        {description = "Spawn Power Menu", group = "Launcher"}),
     awful.key({modkey,          }, "b",
             function() awful.spawn.easy_async_with_shell("blum") end,
-        {description = "Launch Bluetooth Menu", group = "Launcher"}),
+        {description = "Spawn Bluetooth Menu", group = "Launcher"}),
 })
 
 awful.keyboard.append_global_keybindings({
-    -- Volume control
+    -- Volume
     awful.key({}, "XF86AudioRaiseVolume",
-            function() awful.spawn("pamixer -i 5") end,
-        {description = "increase volume", group = "awesome"}),
-    awful.key({}, "XF86AudioLowerVolume",
-            function() awful.spawn("pamixer -d 5") end,
-        {description = "decrease volume", group = "awesome"}),
+            function()
+                awful.spawn("pamixer -i 5")
+                awesome.emit_signal("volume::update")
+            end,
+        {description = "Increase Volume", group = "System"}),
+    awful.key({}, "XF86AudioLowerVolume", 
+            function() 
+                awful.spawn("pamixer -d 5")
+                awesome.emit_signal("volume::update")
+            end,
+        {description = "Decrease Volume", group = "System"}),
     awful.key({}, "XF86AudioMute",
-            function() awful.spawn("pamixer --toggle-mute") end,
-        {description = "mute volume", group = "awesome"}), -- Media Control
+            function() 
+                awful.spawn("pamixer --toggle-mute")
+                awesome.emit_signal("volume::update")
+            end,
+        {description = "Toggle Mute", group = "System"}),
+    
+    -- Music
     awful.key({}, "XF86AudioPlay",
             function() awful.spawn("playerctl play-pause") end,
-        {description = "toggle playerctl", group = "awesome"}),
+        {description = "Toggle Playerctl", group = "Music"}),
     awful.key({}, "XF86AudioPrev",
             function() awful.spawn("playerctl previous") end,
-        {description = "playerctl previous", group = "awesome"}),
+        {description = "Playerctl Previous", group = "Music"}),
     awful.key({}, "XF86AudioNext",
             function() awful.spawn("playerctl next") end,
-        {description = "playerctl next", group = "awesome"}),
+        {description = "Playerctl Next", group = "Music"}),
+    awful.key({ctrl}, "XF86AudioNext",
+            function() awful.spawn("mpc next") end,
+        {description = "Playerctl Next", group = "Music"}),
+    awful.key({ctrl}, "XF86AudioPrev",
+            function() awful.spawn("mpc prev") end,
+        {description = "Playerctl Next", group = "Music"}),
+    awful.key({ctrl}, "XF86AudioPlay",
+            function() awful.spawn("mpc toggle") end,
+        {description = "Playerctl Next", group = "Music"}),
 
-    -- Screen Shots/Vids
+    -- Scrots
     awful.key({}, "Print",
             function() awful.spawn.easy_async_with_shell("flameshot") end,
-        {description = "take a full screenshot", group = "awesome"}),
-    awful.key({}, "Print",
+        {description = "Take a Full Screenshot", group = "Scrots"}),
+    awful.key({shift}, "Print",
             function() awful.spawn.easy_async_with_shell("flameshot gui") end,
-        {description = "take a partial screenshot", group = "awesome"}),
-    awful.key({}, "Print",
+        {description = "Take a Partial Screenshot", group = "Scrots"}),
+    awful.key({alt}, "Print",
             function() awful.spawn.easy_async_with_shell("flameshot full -d 5000") end,
-        {description = "take a full screenshot", group = "awesome"}),
+        {description = "Take a Delayed Screenshot", group = "Scrots"}),
     
     -- Brightness
     awful.key({}, "XF86MonBrightnessUp",
-            function() awful.spawn("light -A 10") end,
-        {description = "increase brightness", group = "awesome"}),
+            function() 
+                awful.spawn("light -A 10")
+                awesome.emit_signal("backlight::update")
+            end,
+        {description = "Increase Brightness", group = "System"}),
     awful.key({}, "XF86MonBrightnessDown",
-            function() awful.spawn("light -U 10") end,
-        {description = "decrease brightness", group = "awesome"}),
+            function()
+                awful.spawn("light -U 10")
+                awesome.emit_signal("backlight::update")
+            end,
+        {description = "Decrease Brightness", group = "System"}),
 })
 
 awful.keyboard.append_global_keybindings({
     awful.key(
             { modkey }, "Tab", function () awful.client.focus.byidx(1) end,
-        { description = "focus next by index", group = "client" }
+        { description = "Focus Next by Index", group = "Client" }
     ),
     awful.key(
             { modkey, shift }, "Tab", function () awful.client.focus.byidx(-1) end,
-        { description = "focus previous by index", group = "client" }
+        { description = "Focus Previous by Index", group = "Client" }
     ),
     awful.key {
         modifiers   = { modkey },
         keygroup    = "numrow",
-        description = "only view tag",
-        group       = "tag",
+        description = "Only View Tag",
+        group       = "Tag",
         on_press    = function (index)
             local screen = awful.screen.focused()
             local tag = screen.tags[index]
@@ -129,8 +158,8 @@ awful.keyboard.append_global_keybindings({
     awful.key {
         modifiers = { modkey, shift },
         keygroup    = "numrow",
-        description = "move focused client to tag",
-        group       = "tag",
+        description = "Move Focused Client to Tag",
+        group       = "Tag",
         on_press    = function (index)
             if client.focus then
                 local tag = client.focus.screen.tags[index]
@@ -140,7 +169,7 @@ awful.keyboard.append_global_keybindings({
                 end
             end
         end,
-    }
+    },
 })
 
 client.connect_signal("request::default_mousebindings", function()
@@ -162,49 +191,49 @@ end)
 
 client.connect_signal("request::default_keybindings", function()
     awful.keyboard.append_client_keybindings({
-        awful.key({ modkey,           }, "f",
+        awful.key({ modkey, shift}, "f",
                 function (c)
                     c.fullscreen = not c.fullscreen
                     c:raise()
                 end,
-            {description = "toggle fullscreen", group = "Client"}),
+            {description = "Toggle Fullscreen", group = "Client"}),
         awful.key({ modkey,   }, "q",
                 function (c)    c:kill()   end,
             {description = "close", group = "Client"}),
         awful.key({ modkey, shift }, "t",
                 awful.client.floating.toggle,
-            {description = "toggle floating", group = "Client"}),
+            {description = "Toggle Floating", group = "Client"}),
         awful.key({ modkey, ctrl }, "Return",
                 function (c) c:swap(awful.client.getmaster()) end,
-            {description = "move to master", group = "Client"}),
+            {description = "Move to Master", group = "Client"}),
         awful.key({ modkey,           }, "o",
                 function (c)    c:move_to_screen()     end,
-            {description = "move to screen", group = "Client"}),
+            {description = "Move to Screen", group = "Client"}),
         awful.key({ modkey,           }, "t",
                 function (c) c.ontop = not c.ontop            end,
-            {description = "toggle keep on top", group = "Client"}),
+            {description = "Toggle Keep on Top", group = "Client"}),
         awful.key({ modkey,           }, "n",
                 function (c)
                     c.minimized = true
                 end ,
-            {description = "minimize", group = "Client"}),
+            {description = "Minimize", group = "Client"}),
         awful.key({ modkey,           }, "m",
                 function (c)
                     c.maximized = not c.maximized
                     c:raise()
                 end ,
-            {description = "(un)maximize", group = "Client"}),
+            {description = "(Un)Maximize", group = "Client"}),
         awful.key({ modkey,      ctrl }, "m",
                 function (c)
                     c.maximized_vertical = not c.maximized_vertical
                     c:raise()
                 end ,
-           {description = "(un)maximize vertically", group = "Client"}),
+           {description = "(Un)Maximize Vertically", group = "Client"}),
         awful.key({ modkey,     shift }, "m",
                 function (c)
                     c.maximized_horizontal = not c.maximized_horizontal
                     c:raise()
                 end ,
-            {description = "(un)maximize horizontally", group = "Client"}),
+            {description = "(Un)Maximize Horizontally", group = "Client"}),
     })
 end)

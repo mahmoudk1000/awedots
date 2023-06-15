@@ -1,54 +1,94 @@
-local awful = require("awful")
-local gears = require "gears"
-local wibox = require("wibox")
-local beautiful = require("beautiful")
-local dpi = beautiful.xresources.apply_dpi
+local awful             = require("awful")
+local gears             = require "gears"
+local wibox             = require("wibox")
+local beautiful         = require("beautiful")
+local dpi               = beautiful.xresources.apply_dpi
+local battery_stuff     = require("signal.battery")
+local volume_stuff      = require("signal.volume")
+local backlight_stuff   = require("signal.backlight")
+local bluetooth_stuff   = require("signal.bluetooth")
 
 
--- Define icons for taglist status
-local icon_focused = ""
-local icon_occupy = ""
-local icon_empty = ""
+-- Taglist Widget
+local taglist_buttons = awful.util.table.join(
+    awful.button({ }, 1, function(t) t:view_only() end),
+    awful.button({ modkey }, 1, function(t)
+        if client.focus then
+            client.focus:move_to_tag(t)
+        end
+    end),
+    awful.button({ }, 3, awful.tag.viewtoggle),
+    awful.button({ modkey }, 3, function(t)
+        if client.focus then
+            client.focus:toggle_tag(t)
+        end
+    end),
+    awful.button({ }, 4, function(t) awful.tag.viewnext(t.screen) end),
+    awful.button({ }, 5, function(t) awful.tag.viewprev(t.screen) end)
+)
 
--- Create taglist widget
-local taglist = wibox.widget {
-    widget = wibox.layout.fixed.horizontal,
-    spacing = dpi(2)
-}
-
--- Add tags to taglist widget
-for i, tag in ipairs(awful.screen.focused().tags) do
-    local tag_icon = wibox.widget {
-        font = beautiful.font,
-        align = "center",
-        valign = "center",
-        forced_width = 20,
-        forced_height = 10,
-        widget = wibox.widget.textbox,
+local taglist = function(s)
+    return awful.widget.taglist {
+        screen = s,
+        filter = awful.widget.taglist.filter.all,
+        style = {
+            font = beautiful.font,
+            fg_focus = beautiful.xcolor5,
+            bg_focus = beautiful.xbackground,
+            fg_urgent = beautiful.xcolor1,
+            fg_occupied = beautiful.xcolor8,
+            fg_empty = beautiful.xcolor0,
+        },
+        layout = wibox.layout.fixed.horizontal,
+        widget_template = {
+            {
+                {
+                    {
+                        {
+                            id = 'text_role',
+                            widget = wibox.widget.textbox,
+                        },
+                        margins = {top = dpi(4), bottom = dpi(4)},
+                        widget = wibox.container.margin,
+                    },
+                    id = 'background_role',
+                    widget = wibox.container.background,
+                },
+                margins = {left = dpi(8), right = dpi(8), top = dpi(4), bottom = dpi(4)},
+                widget = wibox.container.margin,
+            },
+            id = 'wrapper_role',
+            widget = wibox.container.background,
+            spacing = dpi(3),
+        },
+        buttons = taglist_buttons,
     }
-    -- Set icon based on tag status
-    if tag.selected then
-        tag_icon.text = icon_focused
-        tag_icon.markup = "<span color='" .. beautiful.xcolor6 .. "'>" .. icon_focused .. "</span>"
-    elseif #tag:clients() > 0 then
-        tag_icon.text = icon_occupy
-        tag_icon.markup = "<span color='" .. beautiful.xcolor3 .. "'>" .. icon_focused .. "</span>"
-    else
-        tag_icon.text = icon_empty
-        tag_icon.markup = "<span color='" .. beautiful.xcolor0 .. "'>" .. icon_focused .. "</span>"
-    end
-
-    -- Add tag icon to taglist widget
-    taglist:add(tag_icon)
-
-    -- Add click event to tag icon
-    tag_icon:connect_signal("button::press", function()
-        tag:view_only()
-    end)
 end
 
 
+-- LayoutBox Widget
+local mylayoutbox = awful.widget.layoutbox {
+    screen = s,
+    -- Add buttons, allowing you to change the layout
+    buttons = {
+        awful.button({ }, 1, function () awful.layout.inc( 1) end),
+        awful.button({ }, 3, function () awful.layout.inc(-1) end),
+        awful.button({ }, 4, function () awful.layout.inc( 1) end),
+        awful.button({ }, 5, function () awful.layout.inc(-1) end),
+    }
+}
+layoutbox = wibox.container.margin(mylayoutbox, dpi(0), dpi(0), dpi(8), dpi(8))
+
+
+-- Clock Widget
 local clock = wibox.widget {
+    {
+        markup = "<span foreground='" .. beautiful.xcolor2 .. "'>󱑂  </span>",
+        font = beautiful.iconfont,
+        valign = "center",
+        align = "center",
+        widget = wibox.widget.textbox,
+    },
     {
         format = "%b %d,",
         font = beautiful.font,
@@ -67,118 +107,218 @@ local clock = wibox.widget {
     spacing = dpi(3),
 }
 
-function get_volume()
-    local fd = io.popen("amixer sget Master")
-    local status = fd:read("*all")
-    fd:close()
 
-    local volume = string.match(status, "(%d?%d?%d)%%")
-    volume = tonumber(string.format("% 3d", volume))
-    
-    return volume
-end
-
+-- Volume Widget
 local volume = wibox.widget {
     {
-        markup = "<span foreground='" .. beautiful.xcolor4 .. "'>󱄠 </span>",
+        id = "icon",
+        markup = "<span foreground='" .. beautiful.xcolor3 .. "'>" .. volume_stuff.volume_icon() .. "</span>",
         font = beautiful.iconfont,
         align = "center",
         valign = "center",
         widget = wibox.widget.textbox,
     },
     {
+        margins = {left = dpi(5), right = dpi(5)},
         widget = wibox.container.margin,
-        left = 5,
-        right = 5,
         {
+            id = "text",
+            text = volume_stuff.get_volume() .. "%" or '100%',
+            font = font,
+            align = "center",
+            valign = "center",
             widget = wibox.widget.textbox,
+        },
+    },
+    layout = wibox.layout.fixed.horizontal,
+}
+
+function update_volume()
+    local icon = "<span foreground='" .. beautiful.xcolor3 .. "'>" .. volume_stuff.volume_icon() .. "</span>"
+    local value = volume_stuff.get_volume() .. "%"
+
+    volume:get_children_by_id("icon")[1]:set_markup(icon)
+    volume:get_children_by_id("text")[1]:set_text(value)
+end
+
+awesome.connect_signal("volume::update", function()
+    update_volume()
+    volume:emit_signal("widget::redraw_needed")
+end)
+
+
+-- Backlight Widget
+local backlight = wibox.widget {
+    {
+        markup = "<span foreground='" .. beautiful.xcolor2 .. "'>󰌵 </span>",
+        font = beautiful.iconfont,
+        align = "center",
+        valign = "center",
+        widget = wibox.widget.textbox,
+    },
+    {
+        margins = {left = dpi(5), right = dpi(5)},
+        widget = wibox.container.margin,
+        {
+            id = "text",
+            text = backlight_stuff.get_backlight() .. "%",
             align = "center",
             valign = "center",
             font = font,
-            text = get_volume(),
+            widget = wibox.widget.textbox,
         },
     },
     layout = wibox.layout.fixed.horizontal,
 }
 
-awful.widget.watch(get_volume, 1, function(widget, stdout)
-    widget:get_children_by_id("text")[1].text = stdout
-end, volume_widget)
+function update_backlight()
+    local value = backlight_stuff.get_backlight() .. "%"
 
+    backlight:get_children_by_id("text")[1]:set_text(value)
+end
 
-local bluetooth_widget = wibox.widget {
-    {
-        image = bluetooth_icon,
-        widget = wibox.widget.imagebox,
-    },
-    {
-        widget = wibox.widget.textbox,
-        text = "Connected",
-        fg = bluetooth_color,
-    },
-    layout = wibox.layout.fixed.horizontal,
-}
-
-local backlight_widget = wibox.widget {
-    {
-        image = backlight_icon,
-        widget = wibox.widget.imagebox,
-    },
-    {
-        widget = wibox.widget.textbox,
-        text = "100%",
-        fg = backlight_color,
-    },
-    layout = wibox.layout.fixed.horizontal,
-}
-
-local battery_widget = wibox.widget {
-    {
-        image = battery_icon,
-        widget = wibox.widget.imagebox,
-    },
-    {
-        widget = wibox.widget.textbox,
-        text = "100%",
-        fg = battery_color,
-    },
-    layout = wibox.layout.fixed.horizontal,
-}
-
-awful.screen.connect_for_each_screen(function(s)
-    s.taglist = taglist
+awesome.connect_signal("backlight::update", function()
+    update_backlight()
+    backlight:emit_signal("widget::redraw_needed")
 end)
 
-local bar = wibox({
-    type = "dock",
-    position = "bottom",
-    screen = s,
-    height = dpi(30),
-    width = dpi(1920),
-    visible = true,
-    ontop = false,
+
+-- Bluetooth Widget
+local bluetooth = wibox.widget {
+    {
+        id = "icon",
+        markup = "<span foreground='" .. beautiful.xcolor4 .. "'>" .. bluetooth_stuff.bluetooth_icon() .. "</span>",
+        font = beautiful.iconfont,
+        align = "center",
+        valign = "center",
+        widget = wibox.widget.textbox,
+    },
+    {
+        margins = {left = dpi(5), right = dpi(5)},
+        widget = wibox.container.margin,
+        {
+            id = "text",
+            text = bluetooth_stuff.get_status(),
+            align = "center",
+            valign = "center",
+            font = font,
+            widget = wibox.widget.textbox,
+        },
+    },
+    layout = wibox.layout.fixed.horizontal,
+}
+
+function update_bluetooth()
+    local icon = "<span foreground='" .. beautiful.xcolor6 .. "'>" .. bluetooth_stuff.bluetooth_icon() .. "</span>"
+    local value = bluetooth_stuff.get_status()
+
+    bluetooth:get_children_by_id("icon")[1]:set_markup(icon)
+    bluetooth:get_children_by_id("text")[1]:set_text(value)
+end
+
+gears.timer({
+    timeout = 5,
+    autostart = true,
+    call_now = true,
+    callback = update_bluetooth,
 })
 
-bar:struts { bottom = dpi(0), top = dpi(30), left = dpi(0), right = dpi(0) }
-bar:setup {
-    layout = wibox.layout.align.horizontal,
-    { 
-        -- Left widgets
-        layout = wibox.layout.fixed.horizontal,
+
+-- Battery Widget
+local battery_color, battery_icon = battery_stuff.battery_icon()
+local battery = wibox.widget {
+    {
+        id = "icon",
+        markup = "<span foreground='" .. battery_color .. "'>" .. battery_icon .. "</span>",
+        font = beautiful.iconfont,
+        align = "center",
+        valign = "center",
+        widget = wibox.widget.textbox,
+    },
+    {
+        margins = {left = dpi(5), right = dpi(5)},
+        widget = wibox.container.margin,
         {
-            clock,
-            margins = {left = dpi(10), right = dpi(15)},
-            widget = wibox.container.margin
+            id = "text",
+            text = battery_stuff.get_battery_percent() .. "%",
+            align = "center",
+            valign = "center",
+            font = font,
+            widget = wibox.widget.textbox,
         },
-        taglist,
     },
-    nil, -- Middle widget
-    { 
-        -- Right widgets
-        layout = wibox.layout.fixed.horizontal,
-        volume,
-        bluetooth_widget,
-        backlight_widget,
-        battery_widget,
-    },
+    layout = wibox.layout.fixed.horizontal,
 }
+
+function update_battery()
+    local battery_color, battery_icon = battery_stuff.battery_icon()
+    local icon = "<span foreground='" .. battery_color .. "'>" .. battery_icon .. "</span>"
+    local value = battery_stuff.get_battery_percent() .. "%"
+
+    battery:get_children_by_id("icon")[1]:set_markup(icon)
+    battery:get_children_by_id("text")[1]:set_text(value)
+end
+
+gears.timer({
+    timeout = 30,
+    autostart = true,
+    call_now = true,
+    callback = update_battery,
+})
+
+
+-- Bar
+local function make_bar(s)
+    local bar = wibox({
+        visible = true,
+        ontop = false,
+        position = "bottom",
+        type = 'dock',
+        screen = s,
+        width = s.geometry.width,
+        height = dpi(30),
+    })
+    bar:struts { bottom = dpi(0), top = dpi(30), left = dpi(0), right = dpi(0) }
+    bar:setup {
+        layout = wibox.layout.align.horizontal,
+        { 
+            -- Left Widgets
+            layout = wibox.layout.fixed.horizontal,
+            {
+                layoutbox,
+                margins = {left = dpi(10), right = dpi(10)},
+                widget = wibox.container.margin,
+            },
+            taglist(s),
+        },
+        {
+            -- Middle Widget
+            layout = wibox.container.place,
+            clock,
+        },
+        { 
+            -- Right Widgets
+            layout = wibox.layout.fixed.horizontal,
+            {
+                volume,
+                margins = {left = dpi(10), right = dpi(10)},
+                widget = wibox.container.margin,
+            },
+            {
+                backlight,
+                margins = {right = dpi(10)},
+                widget = wibox.container.margin,
+            },
+            bluetooth,
+            {
+                battery,
+                margins = {left = dpi(10), right = dpi(10)},
+                widget = wibox.container.margin,
+            },
+        },
+    }
+end
+
+awful.screen.connect_for_each_screen(function(s)
+    make_bar(s)
+end)

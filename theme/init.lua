@@ -30,9 +30,9 @@ theme.xcolor14        = xrdb.color14
 theme.xcolor15        = xrdb.color15
 
 -- General
-theme.font          = "Iosevka 10"
-theme.font_bold     = "Iosevka Heavy 10"
-theme.font_boit     = "Iosevka Heavy Italic 10"
+theme.font          = "Iosevka 9"
+theme.font_bold     = "Iosevka Heavy 9"
+theme.font_boit     = "Iosevka Heavy Italic 9"
 theme.iconfont      = "IosevkaTerm Nerd Font 11"
 
 theme.bg_normal     = theme.xbackground
@@ -53,7 +53,7 @@ theme.useless_gap = dpi(4)
 theme.border_radius = dpi(0)
 
 -- Borders
-theme.border_width         = dpi(4)
+theme.border_width         = dpi(6)
 theme.border_normal        = theme.xcolor0
 theme.border_focus         = theme.xcolor8
 theme.border_marked        = theme.xcolor5
