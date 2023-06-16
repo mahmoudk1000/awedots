@@ -31,14 +31,6 @@ local taglist = function(s)
     return awful.widget.taglist {
         screen = s,
         filter = awful.widget.taglist.filter.all,
-        style = {
-            font = beautiful.font,
-            fg_focus = beautiful.xcolor5,
-            bg_focus = beautiful.xbackground,
-            fg_urgent = beautiful.xcolor1,
-            fg_occupied = beautiful.xcolor8,
-            fg_empty = beautiful.xcolor0,
-        },
         layout = wibox.layout.fixed.horizontal,
         widget_template = {
             {
@@ -67,7 +59,7 @@ end
 
 
 -- LayoutBox Widget
-local mylayoutbox = awful.widget.layoutbox {
+local layoutbox = awful.widget.layoutbox {
     screen = s,
     -- Add buttons, allowing you to change the layout
     buttons = {
@@ -77,7 +69,6 @@ local mylayoutbox = awful.widget.layoutbox {
         awful.button({ }, 5, function () awful.layout.inc(-1) end),
     }
 }
-layoutbox = wibox.container.margin(mylayoutbox, dpi(0), dpi(0), dpi(8), dpi(8))
 
 
 -- Clock Widget
@@ -123,7 +114,7 @@ local volume = wibox.widget {
         widget = wibox.container.margin,
         {
             id = "text",
-            text = volume_stuff.get_volume() .. "%" or '100%',
+            text = volume_stuff.get_volume() .. "%",
             font = font,
             align = "center",
             valign = "center",
@@ -286,7 +277,7 @@ local function make_bar(s)
             layout = wibox.layout.fixed.horizontal,
             {
                 layoutbox,
-                margins = {left = dpi(10), right = dpi(10)},
+                margins = {left = dpi(10), right = dpi(10), top = dpi(8), bottom = dpi(8)},
                 widget = wibox.container.margin,
             },
             taglist(s),

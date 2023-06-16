@@ -5,19 +5,39 @@ local ruled = require("ruled")
 local wibox = require("wibox")
 local menubar = require("menubar")
 
+
+-- Tags and Layouts
 screen.connect_signal("request::desktop_decoration", function(s)
-    -- Layout List
     tag.connect_signal("request::default_layouts", function()
     	awful.layout.append_default_layouts({
     	    awful.layout.suit.tile,
 	    awful.layout.suit.floating,
 	    -- awful.layout.suit.max,
     	})
-	end)
+    end)
 
-    -- Each screen has its own tag table.
     awful.tag({ "1", "2", "3", "4", "5", "6"}, s, awful.layout.layouts[1])
 end)
+
+
+-- Window Bordering
+client.connect_signal("manage", function (c, startup)
+    c.border_width = beautiful.border_width
+    c.border_color = beautiful.border_focus
+
+    c:connect_signal("focus", function()
+        c.border_color = beautiful.border_focus
+    end)
+
+    c:connect_signal("unfocus", function()
+        c.border_color = beautiful.border_normal
+    end)
+
+    c:connect_signal("marked", function()
+        c.border_color = beautiful.border_marked
+    end)
+end)
+
 
 -- Wallpaper
 screen.connect_signal("request::wallpaper", function(s)
@@ -47,24 +67,8 @@ screen.connect_signal("request::wallpaper", function(s)
     }
 end)
 
-client.connect_signal("manage", function (c, startup)
-    -- Enable double border
-    c.border_width = beautiful.border_width
-    c.border_color = beautiful.border_focus
-
-    -- Add focus event to change border color
-    c:connect_signal("focus", function()
-        c.border_color = beautiful.border_focus
-    end)
-
-    -- Add unfocus event to change border color
-    c:connect_signal("unfocus", function()
-        c.border_color = beautiful.border_normal
-    end)
-end)
 
 --  Rules
--- Rules to apply to new clients.
 ruled.client.connect_signal("request::rules", function()
     -- All clients will match this rule.
     ruled.client.append_rule {

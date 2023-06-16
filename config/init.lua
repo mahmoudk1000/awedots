@@ -20,8 +20,6 @@ editor      = os.getenv("EDITOR") or "nvim"
 editor_cmd  = terminal .. " -e " .. editor
 rofi        = "rofi -show drun"
 filemanager = "thunar"
-spotify     = "spotify"
-launcher    = "rofi -show drun"
 obsidian    = "obsidian"
 
 -- Set Keys and window

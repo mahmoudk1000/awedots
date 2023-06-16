@@ -31,11 +31,4 @@ function battery_stuff.get_battery_percent()
     return tonumber(percent)
 end
 
-gears.timer({
-    timeout = 10,
-    autostart = true,
-    call_now = true,
-    call_back = update,
-})
-
 return battery_stuff

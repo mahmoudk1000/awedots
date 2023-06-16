@@ -26,7 +26,7 @@ awful.keyboard.append_global_keybindings({
         {description = "Open Terminal", group = "Launcher"}),
     awful.key({modkey,          }, "d",
            function() awful.spawn(rofi) end,
-        {description = "Launch Rofi", group = "Launcher"}),
+        {description = "Spawn Rofi", group = "Launcher"}),
 })
 
 -- Tags related keybindings
