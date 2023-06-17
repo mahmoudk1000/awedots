@@ -1,3 +1,9 @@
-[submodule "bling"]
-	path = bling
+[submodule "mods/bling"]
+	path = mods/bling
 	url = git@github.com:BlingCorp/bling.git
+[submodule "mods/nice"]
+	path = mods/nice
+	url = git@github.com:mut-ex/awesome-wm-nice.git
+[submodule "mods/rubato"]
+	path = mods/rubato
+	url = git@github.com:andOrlando/rubato.git
