@@ -70,19 +70,19 @@ awful.keyboard.append_global_keybindings({
     -- Volume
     awful.key({}, "XF86AudioRaiseVolume",
             function()
-                awful.spawn("pamixer -i 5")
+                awful.spawn.easy_async_with_shell("pamixer -i 5")
                 awesome.emit_signal("volume::update")
             end,
         {description = "Increase Volume", group = "System"}),
     awful.key({}, "XF86AudioLowerVolume", 
             function() 
-                awful.spawn("pamixer -d 5")
+                awful.spawn.easy_async_with_shell("pamixer -d 5")
                 awesome.emit_signal("volume::update")
             end,
         {description = "Decrease Volume", group = "System"}),
     awful.key({}, "XF86AudioMute",
             function() 
-                awful.spawn("pamixer --toggle-mute")
+                awful.spawn.easy_async_with_shell("pamixer --toggle-mute")
                 awesome.emit_signal("volume::update")
             end,
         {description = "Toggle Mute", group = "System"}),
@@ -121,25 +121,29 @@ awful.keyboard.append_global_keybindings({
     -- Brightness
     awful.key({}, "XF86MonBrightnessUp",
             function() 
-                awful.spawn("light -A 10")
+                awful.spawn.easy_async_with_shell("light -A 10")
                 awesome.emit_signal("backlight::update")
             end,
         {description = "Increase Brightness", group = "System"}),
     awful.key({}, "XF86MonBrightnessDown",
             function()
-                awful.spawn("light -U 10")
+                awful.spawn.easy_async_with_shell("light -U 10")
                 awesome.emit_signal("backlight::update")
             end,
         {description = "Decrease Brightness", group = "System"}),
 })
 
 awful.keyboard.append_global_keybindings({
-    awful.key(
-            { modkey }, "Tab", function () awful.client.focus.byidx(1) end,
+    awful.key({ modkey }, "Tab", 
+            function ()
+                awful.client.focus.byidx(1) 
+            end,
         { description = "Focus Next by Index", group = "Client" }
     ),
-    awful.key(
-            { modkey, shift }, "Tab", function () awful.client.focus.byidx(-1) end,
+    awful.key({ modkey, shift }, "Tab",
+            function ()
+                awful.client.focus.byidx(-1)
+            end,
         { description = "Focus Previous by Index", group = "Client" }
     ),
     awful.key {

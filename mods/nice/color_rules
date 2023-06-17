@@ -1,8 +1,0 @@
-return {
--- Table: {1}
-{
-   ["urxvt"]="#11171d",
-   ["lite-xl"]="#000000",
-   ["Navigator"]="#11171dff",
-},
-}

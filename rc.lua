@@ -17,6 +17,5 @@ end)
 
 -- Import Configuration
 require("theme")
-require("awful.autofocus")
 require("config")
 require("ui")

@@ -1,0 +1,3 @@
+[submodule "bling"]
+	path = bling
+	url = git@github.com:BlingCorp/bling.git
