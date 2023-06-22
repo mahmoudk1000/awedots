@@ -7,3 +7,6 @@
 [submodule "mods/rubato"]
 	path = mods/rubato
 	url = git@github.com:andOrlando/rubato.git
+[submodule "mods/layout-machi"]
+	path = mods/layout-machi
+	url = git@github.com:xinhaoyuan/layout-machi.git
