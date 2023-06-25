@@ -1,17 +1,17 @@
 local volume_stuff = {}
 
 function volume_stuff.get_volume()
-    local fd = io.popen("pamixer --get-volume")
-    local status = fd:read("*all")
-    fd:close()
+    local command = io.popen("pamixer --get-volume")
+    local status = command:read("*all")
+    command:close()
 
     return tonumber(status)
 end
 
 function volume_stuff.is_muted()
-    local fd = io.popen("pamixer --get-mute")
-    local status = fd:read("*all")
-    fd:close()
+    local command = io.popen("pamixer --get-mute")
+    local status = command:read("*all")
+    command:close()
 
     if string.match(status, "true") then
 	return true

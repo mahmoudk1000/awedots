@@ -1,3 +1,6 @@
+local beautiful         = require("beautiful")
+
+
 local bluetooth_stuff = {}
 
 function bluetooth_stuff.get_status()
@@ -28,12 +31,23 @@ function bluetooth_stuff.bluetooth_icon()
     local status = bluetooth_stuff.get_status()
     local is_connected = bluetooth_stuff.is_connected()
 
+    awesome.emit_signal("volume::update")
     if status == "On" and not is_connected then
         return "󰂯 "
     elseif status == "On" and is_connected then
         return "󰂱 "
     else
         return "󰂲 "
+    end
+end
+
+function bluetooth_stuff.blue_color()
+    local status = bluetooth_stuff.get_status()
+
+    if status:match("On") then
+        return beautiful.xcolor4
+    else
+        return beautiful.xcolor0
     end
 end
 

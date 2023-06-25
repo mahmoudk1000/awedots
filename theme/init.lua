@@ -33,36 +33,36 @@ theme.xcolor15        = xrdb.color15
 
 
 -- General
-theme.font          = "Iosevka 9"
-theme.font_bold     = "Iosevka Heavy 9"
-theme.font_boit     = "Iosevka Heavy Italic 9"
-theme.iconfont      = "IosevkaTerm Nerd Font 11"
+theme.font              = "Iosevka 9"
+theme.font_bold         = "Iosevka Heavy 9"
+theme.font_boit         = "Iosevka Heavy Italic 9"
+theme.iconfont          = "IosevkaTerm Nerd Font 11"
 
-theme.fg_focus      = theme.xforeground
-theme.fg_normal     = theme.xforeground
-theme.fg_urgent     = theme.color1
+theme.fg_focus          = theme.xforeground
+theme.fg_normal         = theme.xforeground
+theme.fg_urgent         = theme.color1
 
-theme.bg_focus      = theme.xcolor0
-theme.bg_normal     = theme.xbackground
-theme.bg_urgent     = theme.xcolor1
+theme.bg_focus          = theme.xcolor0
+theme.bg_normal         = theme.xbackground
+theme.bg_urgent         = theme.xcolor1
 
-theme.useless_gap   = dpi(4)
-theme.border_radius = dpi(0)
+theme.useless_gap       = dpi(4)
+theme.border_radius     = dpi(2)
 
-theme.wallpaper     =  gears.filesystem.get_configuration_dir() .. "theme/wall.jpg"
+theme.wallpaper         =  gears.filesystem.get_configuration_dir() .. "theme/wall.jpg"
 
 
 -- Borders
-theme.border_width  = dpi(5)
+theme.border_width  = dpi(4)
 theme.border_focus  = theme.xcolor8
 theme.border_normal = theme.xcolor0
 theme.border_marked = theme.xcolor5
 
 
 -- Taglist
-theme.taglist_font          = theme.font
+theme.taglist_font          = theme.font_bold
 theme.taglist_bg            = theme.bg_normal
-theme.taglist_fg_focus      = theme.xcolor5
+theme.taglist_fg_focus      = theme.xcolor4
 theme.taglist_bg_focus      = theme.bg_normal
 theme.taglist_fg_occupied   = theme.xcolor8
 theme.taglist_bg_occupied   = theme.background
@@ -76,22 +76,6 @@ theme.taglist_bg_volatile   = theme.xforeground
 theme.taglist_squares_sel   = nil
 theme.taglist_squares_unsel = nil
 theme.taglist_disable_icon  = true
-
-
--- Tasklist
-theme.tasklist_font                 = theme.font
-theme.tasklist_plain_task_name      = true
-theme.tasklist_fg_focus             = theme.xcolor6
-theme.tasklist_bg_focus             = theme.xcolor0
-theme.tasklist_fg_minimize          = theme.xforeground .. 55
-theme.tasklist_bg_minimize          = theme.xcolor0 .. 55
-theme.tasklist_fg_normal            = theme.xforeground
-theme.tasklist_bg_normal            = theme.darker_bg
-theme.tasklist_disable_icon         = true
-theme.tasklist_disable_task_name    = false
-theme.tasklist_fg_urgent            = theme.xcolor1
-theme.tasklist_bg_urgent            = theme.xcolor0
-theme.tasklist_align                = "center"
 
 
 -- Notifications:

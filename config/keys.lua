@@ -59,10 +59,10 @@ awful.keyboard.append_global_keybindings({
             function() awful.spawn(obsidian) end,
         {description = "Launch Obsidian", group = "Launcher"}),
     awful.key({modkey,          }, "p",
-            function() awful.spawn.easy_async_with_shell("poww") end,
+            function() awful.spawn("poww") end,
         {description = "Spawn Power Menu", group = "Launcher"}),
     awful.key({modkey,          }, "b",
-            function() awful.spawn.easy_async_with_shell("blum") end,
+            function() awful.spawn("blum") end,
         {description = "Spawn Bluetooth Menu", group = "Launcher"}),
 })
 
@@ -70,19 +70,19 @@ awful.keyboard.append_global_keybindings({
     -- Volume
     awful.key({}, "XF86AudioRaiseVolume",
             function()
-                awful.spawn.easy_async_with_shell("pamixer -i 5")
+                awful.spawn("pamixer -i 5")
                 awesome.emit_signal("volume::update")
             end,
         {description = "Increase Volume", group = "System"}),
     awful.key({}, "XF86AudioLowerVolume", 
             function() 
-                awful.spawn.easy_async_with_shell("pamixer -d 5")
+                awful.spawn("pamixer -d 5")
                 awesome.emit_signal("volume::update")
             end,
         {description = "Decrease Volume", group = "System"}),
     awful.key({}, "XF86AudioMute",
             function() 
-                awful.spawn.easy_async_with_shell("pamixer --toggle-mute")
+                awful.spawn("pamixer --toggle-mute")
                 awesome.emit_signal("volume::update")
             end,
         {description = "Toggle Mute", group = "System"}),
@@ -109,25 +109,25 @@ awful.keyboard.append_global_keybindings({
 
     -- Scrots
     awful.key({}, "Print",
-            function() awful.spawn.easy_async_with_shell("flameshot") end,
+            function() awful.spawn("flameshot full") end,
         {description = "Take a Full Screenshot", group = "Scrots"}),
     awful.key({shift}, "Print",
-            function() awful.spawn.easy_async_with_shell("flameshot gui") end,
+            function() awful.spawn("flameshot gui") end,
         {description = "Take a Partial Screenshot", group = "Scrots"}),
     awful.key({alt}, "Print",
-            function() awful.spawn.easy_async_with_shell("flameshot full -d 5000") end,
+            function() awful.spawn("flameshot full -d 5000") end,
         {description = "Take a Delayed Screenshot", group = "Scrots"}),
     
     -- Brightness
     awful.key({}, "XF86MonBrightnessUp",
             function() 
-                awful.spawn.easy_async_with_shell("light -A 10")
+                awful.spawn("light -A 10")
                 awesome.emit_signal("backlight::update")
             end,
         {description = "Increase Brightness", group = "System"}),
     awful.key({}, "XF86MonBrightnessDown",
             function()
-                awful.spawn.easy_async_with_shell("light -U 10")
+                awful.spawn("light -U 10")
                 awesome.emit_signal("backlight::update")
             end,
         {description = "Decrease Brightness", group = "System"}),

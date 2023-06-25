@@ -2,17 +2,46 @@ local awful = require("awful")
 local gears = require("gears")
 local beautiful = require("beautiful")
 local ruled = require("ruled")
-local wibox = require("wibox")
-local menubar = require("menubar")
 
 
--- Tags and Layouts
-screen.connect_signal("request::desktop_decoration", function(s)
+-- Wallpaper
+local function set_wallpaper(s)
+    -- Wallpaper
+    if beautiful.wallpaper then
+        local wallpaper = beautiful.wallpaper
+        -- If wallpaper is a function, call it with the screen
+        if type(wallpaper) == "function" then
+            wallpaper = wallpaper(s)
+        end
+        gears.wallpaper.maximized(wallpaper, s)
+    end
+end
+
+-- Re-set wallpaper when a screen's geometry changes (e.g. different resolution)
+screen.connect_signal("property::geometry", set_wallpaper)
+
+
+-- Tags, Layouts and Wallpaper
+awful.screen.connect_for_each_screen(function(s)
+    set_wallpaper(s)
     tag.connect_signal("request::default_layouts", function()
     	awful.layout.append_default_layouts({
     	    awful.layout.suit.tile,
-	    awful.layout.suit.floating,
-	    -- awful.layout.suit.max,
+            awful.layout.suit.floating,
+            -- awful.layout.suit.tile.left,
+            -- awful.layout.suit.tile.bottom,
+            -- awful.layout.suit.tile.top,
+            -- awful.layout.suit.fair,
+            -- awful.layout.suit.fair.horizontal,
+            -- awful.layout.suit.spiral,
+            -- awful.layout.suit.spiral.dwindle,
+            -- awful.layout.suit.max,
+            -- awful.layout.suit.max.fullscreen,
+            -- awful.layout.suit.magnifier,
+            -- awful.layout.suit.corner.nw,
+            -- awful.layout.suit.corner.ne,
+            -- awful.layout.suit.corner.sw,
+            -- awful.layout.suit.corner.se,
     	})
     end)
 
@@ -36,35 +65,6 @@ client.connect_signal("manage", function (c, startup)
     c:connect_signal("marked", function()
         c.border_color = beautiful.border_marked
     end)
-end)
-
-
--- Wallpaper
-screen.connect_signal("request::wallpaper", function(s)
-    awful.wallpaper {
-        screen = s,
-        bg = {
-            type  = "linear" ,
-            from  = { 0, 0 },
-            to    = { 0, 1240 },
-            stops = {
-                { 0, beautiful.xcolor4 },
-                { 1, beautiful.xcolor12 }
-            }
-        },
-        widget = {
-            {
-                -- image     = beautiful.wallpaper,
-                upscale = true,
-                downscale = true,
-                widget    = wibox.widget.imagebox,
-            },
-            valign = "center",
-            halign = "center",
-            tiled  = false,
-            widget = wibox.container.tile,
-        }
-    }
 end)
 
 
@@ -119,21 +119,6 @@ ruled.client.connect_signal("request::rules", function()
 	}
     }
 
-    -- Floating clients.
-    ruled.client.append_rule {
-        id = "floating",
-        rule_any = {
-            instance = { "copyq", "pinentry" },
-            class    = {
-                "Arandr", "Gpick", "SimpleScreenRecorder"
-            },
-            name    = {
-                "Event Tester",  -- xev
-            },
-        },
-        properties = { floating = true }
-    }
-
     -- Add titlebars to normal clients and dialogs
     ruled.client.append_rule {
         id         = "titlebars",
@@ -167,6 +152,7 @@ ruled.client.connect_signal("request::rules", function()
          properties = { screen = 1, tag = "5" }
     }
 end)
+
 
 -- Enable sloppy focus, so that focus follows mouse.
 client.connect_signal("mouse::enter", function(c)

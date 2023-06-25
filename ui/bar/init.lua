@@ -23,8 +23,8 @@ local taglist_buttons = awful.util.table.join(
             client.focus:toggle_tag(t)
         end
     end),
-    awful.button({ }, 4, function(t) awful.tag.viewnext(t.screen) end),
-    awful.button({ }, 5, function(t) awful.tag.viewprev(t.screen) end)
+    awful.button({ }, 4, function(t) awful.tag.viewprev(t.screen) end),
+    awful.button({ }, 5, function(t) awful.tag.viewnext(t.screen) end)
 )
 
 local taglist = function(s)
@@ -98,6 +98,15 @@ local clock = wibox.widget {
     spacing = dpi(3),
 }
 
+-- Calendar Widget Signal
+clock:buttons(
+    gears.table.join(
+        awful.button({},  awful.button.names.LEFT , nil, function()
+            awesome.emit_signal("clock::clicked")
+        end)
+    )
+)
+
 
 -- Volume Widget
 local volume = wibox.widget {
@@ -114,8 +123,8 @@ local volume = wibox.widget {
         widget = wibox.container.margin,
         {
             id = "text",
-            text = volume_stuff.get_volume() .. "%",
-            font = font,
+            text = "100%",
+            font = beautiful.font,
             align = "center",
             valign = "center",
             widget = wibox.widget.textbox,

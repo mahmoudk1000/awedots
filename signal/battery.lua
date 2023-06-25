@@ -19,7 +19,7 @@ function battery_stuff.battery_icon()
     elseif string.match(status, "Full") then
         return beautiful.xcolor2, "󱟢 "
     else
-        return beautiful.xcolor4, "󱟦 "
+        return beautiful.xcolor5, "󱟦 "
     end
 end
 
