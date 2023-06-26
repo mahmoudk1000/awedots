@@ -3,6 +3,7 @@ local gears             = require "gears"
 local wibox             = require("wibox")
 local beautiful         = require("beautiful")
 local dpi               = beautiful.xresources.apply_dpi
+
 local battery_stuff     = require("signal.battery")
 local volume_stuff      = require("signal.volume")
 local backlight_stuff   = require("signal.backlight")
@@ -10,50 +11,87 @@ local bluetooth_stuff   = require("signal.bluetooth")
 
 
 -- Taglist Widget
-local taglist_buttons = awful.util.table.join(
-    awful.button({ }, 1, function(t) t:view_only() end),
-    awful.button({ modkey }, 1, function(t)
-        if client.focus then
-            client.focus:move_to_tag(t)
-        end
-    end),
-    awful.button({ }, 3, awful.tag.viewtoggle),
-    awful.button({ modkey }, 3, function(t)
-        if client.focus then
-            client.focus:toggle_tag(t)
-        end
-    end),
-    awful.button({ }, 4, function(t) awful.tag.viewprev(t.screen) end),
-    awful.button({ }, 5, function(t) awful.tag.viewnext(t.screen) end)
-)
-
 local taglist = function(s)
+    local taglist_buttons = awful.util.table.join(
+        awful.button({ }, awful.button.names.LEFT, function(t) t:view_only() end),
+        awful.button({ modkey }, awful.button.names.LEFT, function(t)
+            if client.focus then
+                client.focus:move_to_tag(t)
+            end
+        end),
+        awful.button({ }, awful.button.names.RIGHT, awful.tag.viewtoggle),
+        awful.button({ modkey }, awful.button.names.RIGHT, function(t)
+            if client.focus then
+                client.focus:toggle_tag(t)
+            end
+        end),
+        awful.button({ }, awful.button.names.SCROLL_UP, function(t) awful.tag.viewprev(t.screen) end),
+        awful.button({ }, awful.button.names.SCROLL_DOWN, function(t) awful.tag.viewnext(t.screen) end)
+    )
+
     return awful.widget.taglist {
         screen = s,
         filter = awful.widget.taglist.filter.all,
-        layout = wibox.layout.fixed.horizontal,
+        layout = {
+            spacing = dpi(8),
+            layout = wibox.layout.fixed.horizontal
+        },
         widget_template = {
             {
                 {
                     {
-                        {
-                            id = 'text_role',
-                            widget = wibox.widget.textbox,
-                        },
-                        margins = {top = dpi(4), bottom = dpi(4)},
-                        widget = wibox.container.margin,
+                        id     = "index_role",
+                        widget = wibox.widget.textbox,
                     },
-                    id = 'background_role',
-                    widget = wibox.container.background,
+                    margins = dpi(8),
+                    widget  = wibox.container.margin,
                 },
-                margins = {left = dpi(8), right = dpi(8), top = dpi(4), bottom = dpi(4)},
-                widget = wibox.container.margin,
+                id      = "index_icon",
+                shape   = function(cr, w, h)
+                    gears.shape.circle(cr, dpi(8), dpi(8))
+                end,
+                widget  = wibox.container.background
             },
-            id = 'wrapper_role',
-            widget = wibox.container.background,
-            spacing = dpi(3),
+            id = "background_role",
+            layout = wibox.container.background,
+            create_callback = function(self, c3, _)
+                if c3.selected then
+                    self:get_children_by_id("index_icon")[1].bg = beautiful.xcolor4
+                    self:get_children_by_id("index_icon")[1].shape = function(cr, w, h)
+                        gears.shape.rounded_bar(cr, dpi(12), dpi(8))
+                    end
+                elseif #c3:clients() == 0 then
+                    self:get_children_by_id("index_icon")[1].bg = beautiful.xcolor0
+                    self:get_children_by_id("index_icon")[1].shape = function(cr, w, h)
+                        gears.shape.circle(cr, dpi(8), dpi(8))
+                    end
+                else
+                    self:get_children_by_id("index_icon")[1].bg = beautiful.xcolor8
+                    self:get_children_by_id("index_icon")[1].shape = function(cr, w, h)
+                        gears.shape.circle(cr, dpi(8), dpi(8))
+                    end
+                end
+            end,
+            update_callback = function(self, c3, _)
+                if c3.selected then
+                    self:get_children_by_id("index_icon")[1].bg = beautiful.xcolor4
+                    self:get_children_by_id("index_icon")[1].shape = function(cr, w, h)
+                        gears.shape.rounded_bar(cr, dpi(12), dpi(8))
+                    end
+                elseif #c3:clients() == 0 then
+                    self:get_children_by_id("index_icon")[1].bg = beautiful.xcolor0
+                    self:get_children_by_id("index_icon")[1].shape = function(cr, w, h)
+                        gears.shape.circle(cr, dpi(8), dpi(8))
+                    end
+                else
+                    self:get_children_by_id("index_icon")[1].bg = beautiful.xcolor8
+                    self:get_children_by_id("index_icon")[1].shape = function(cr, w, h)
+                        gears.shape.circle(cr, dpi(8), dpi(8))
+                    end
+                end
+            end
         },
-        buttons = taglist_buttons,
+        buttons = taglist_buttons
     }
 end
 
@@ -286,10 +324,14 @@ local function make_bar(s)
             layout = wibox.layout.fixed.horizontal,
             {
                 layoutbox,
-                margins = {left = dpi(10), right = dpi(10), top = dpi(8), bottom = dpi(8)},
+                margins = { left = dpi(10), right = dpi(10), top = dpi(8), bottom = dpi(8) },
                 widget = wibox.container.margin,
             },
-            taglist(s),
+            {
+                taglist(s),
+                margins = { left = dpi(8), right = dpi(8), top = dpi(12), bottom = dpi(9) },
+                layout = wibox.container.margin
+            },
         },
         {
             -- Middle Widget
@@ -301,18 +343,18 @@ local function make_bar(s)
             layout = wibox.layout.fixed.horizontal,
             {
                 volume,
-                margins = {left = dpi(10), right = dpi(10)},
+                margins = { left = dpi(10), right = dpi(10) },
                 widget = wibox.container.margin,
             },
             {
                 backlight,
-                margins = {right = dpi(10)},
+                margins = { right = dpi(10) },
                 widget = wibox.container.margin,
             },
             bluetooth,
             {
                 battery,
-                margins = {left = dpi(10), right = dpi(10)},
+                margins = { left = dpi(10), right = dpi(10) },
                 widget = wibox.container.margin,
             },
         },
