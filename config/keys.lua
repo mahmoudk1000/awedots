@@ -70,64 +70,73 @@ awful.keyboard.append_global_keybindings({
     -- Volume
     awful.key({}, "XF86AudioRaiseVolume",
             function()
-                awful.spawn("pamixer -i 5")
+                awful.spawn.with_shell("pamixer -i 5")
                 awesome.emit_signal("volume::update")
             end,
         {description = "Increase Volume", group = "System"}),
     awful.key({}, "XF86AudioLowerVolume", 
             function() 
-                awful.spawn("pamixer -d 5")
+                awful.spawn.with_shell("pamixer -d 5")
                 awesome.emit_signal("volume::update")
             end,
         {description = "Decrease Volume", group = "System"}),
     awful.key({}, "XF86AudioMute",
             function() 
-                awful.spawn("pamixer --toggle-mute")
+                awful.spawn.with_shell("pamixer --toggle-mute")
                 awesome.emit_signal("volume::update")
             end,
         {description = "Toggle Mute", group = "System"}),
     
     -- Music
     awful.key({}, "XF86AudioPlay",
-            function() awful.spawn("playerctl play-pause") end,
+            function() awful.spawn.with_shell("playerctl play-pause") end,
         {description = "Toggle Playerctl", group = "Music"}),
     awful.key({}, "XF86AudioPrev",
-            function() awful.spawn("playerctl previous") end,
+            function() awful.spawn.with_shell("playerctl previous") end,
         {description = "Playerctl Previous", group = "Music"}),
     awful.key({}, "XF86AudioNext",
-            function() awful.spawn("playerctl next") end,
+            function() awful.spawn.with_shell("playerctl next") end,
         {description = "Playerctl Next", group = "Music"}),
     awful.key({ctrl}, "XF86AudioNext",
-            function() awful.spawn("mpc next") end,
+            function() 
+                awful.spawn.with_shell("mpc next") 
+                awesome.emit_signal("mpd::updated")
+            end,
         {description = "Playerctl Next", group = "Music"}),
     awful.key({ctrl}, "XF86AudioPrev",
-            function() awful.spawn("mpc prev") end,
+            function() 
+                awful.spawn.with_shell("mpc prev")
+                awesome.emit_signal("mpd::updated")
+            end,
         {description = "Playerctl Next", group = "Music"}),
     awful.key({ctrl}, "XF86AudioPlay",
-            function() awful.spawn("mpc toggle") end,
+            function()
+                awful.spawn.with_shell("mpc toggle")
+                awesome.emit_signal("mpd::updated")
+            end,
         {description = "Playerctl Next", group = "Music"}),
 
     -- Scrots
     awful.key({}, "Print",
-            function() awful.spawn("flameshot full") end,
+            function() awful.spawn.with_shell("flameshot full") end,
         {description = "Take a Full Screenshot", group = "Scrots"}),
     awful.key({shift}, "Print",
-            function() awful.spawn("flameshot gui") end,
+            function() awful.spawn.with_shell("flameshot gui") end,
         {description = "Take a Partial Screenshot", group = "Scrots"}),
     awful.key({alt}, "Print",
-            function() awful.spawn("flameshot full -d 5000") end,
+            function() awful.spawn.with_shell("flameshot full -d 5000") end,
         {description = "Take a Delayed Screenshot", group = "Scrots"}),
     
     -- Brightness
     awful.key({}, "XF86MonBrightnessUp",
             function() 
-                awful.spawn("light -A 10")
+                awful.spawn.with_shell("light -A 10")
                 awesome.emit_signal("backlight::update")
             end,
         {description = "Increase Brightness", group = "System"}),
     awful.key({}, "XF86MonBrightnessDown",
             function()
-                awful.spawn("light -U 10")
+                awful.spawn.with_shell("light -U 10")
                 awesome.emit_signal("backlight::update")
             end,
         {description = "Decrease Brightness", group = "System"}),

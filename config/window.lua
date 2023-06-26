@@ -137,11 +137,7 @@ ruled.client.connect_signal("request::rules", function()
     }
     ruled.client.append_rule {
          rule       = { class = "obsidian" },
-         properties = { screen = 1, tag = "6" }
-    }
-    ruled.client.append_rule {
-         rule       = { class = "thunderbird" },
-         properties = { screen = 1, tag = "6" }
+         properties = { screen = 1, tag = "5" }
     }
     ruled.client.append_rule {
          rule       = { class = "TelegramDesktop" },
@@ -150,6 +146,10 @@ ruled.client.connect_signal("request::rules", function()
     ruled.client.append_rule {
          rule       = { class = "Spotify" },
          properties = { screen = 1, tag = "5" }
+    }
+    ruled.client.append_rule {
+        rule       = { class = "thunderbird" },
+        properties = { screen = 1, tag = "6" }
     }
 end)
 
