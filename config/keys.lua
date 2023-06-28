@@ -27,6 +27,9 @@ awful.keyboard.append_global_keybindings({
     awful.key({modkey,          }, "d",
            function() awful.spawn(rofi) end,
         {description = "Spawn Rofi", group = "Launcher"}),
+    awful.key({modkey}, "z",
+            function() awful.spawn.with_shell("betterlockscreen -l") end,
+        {description = "Lock Screen", group = "Awesome"}),
 })
 
 -- Tags related keybindings
@@ -187,15 +190,15 @@ awful.keyboard.append_global_keybindings({
 
 client.connect_signal("request::default_mousebindings", function()
     awful.mouse.append_client_mousebindings({
-        awful.button({ }, 1,
+        awful.button({ }, awful.button.names.LEFT,
             function (c)
             c:activate { context = "mouse_click" }
         end),
-        awful.button({ modkey }, 1,
+        awful.button({ modkey }, awful.button.names.LEFT,
             function (c)
             c:activate { context = "mouse_click", action = "mouse_move"  }
         end),
-        awful.button({ modkey }, 3,
+        awful.button({ modkey }, awful.button.names.RIGHT,
             function (c)
             c:activate { context = "mouse_click", action = "mouse_resize"}
         end),

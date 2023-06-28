@@ -3,6 +3,7 @@ local wibox             = require("wibox")
 local gears             = require "gears"
 local beautiful         = require("beautiful")
 local dpi               = beautiful.xresources.apply_dpi
+local res_path          = gears.filesystem.get_configuration_dir()
 
 local volume_stuff      = require("signal.volume")
 local backlight_stuff   = require("signal.backlight")
@@ -16,11 +17,13 @@ local wifi_button = wibox.widget {
     {
         {
             {
-                text        = "󰖩 ",
-                font        = beautiful.icofont,
-                valign      = "center",
-                align       = "center",
-                widget      = wibox.widget.textbox,
+                image           = res_path .. "theme/res/wifi.png",
+                valign          = "center",
+                halign          = "center",
+                downscale       = true,
+                forced_height   = dpi(30),
+                forced_width    = dpi(30),
+                widget          = wibox.widget.imagebox
             },
             {
                 text    = "WiFi",
@@ -28,7 +31,7 @@ local wifi_button = wibox.widget {
                 font    = beautiful.font,
                 widget  = wibox.widget.textbox,
             },
-            spacing = dpi(10),
+            spacing = dpi(5),
             layout = wibox.layout.flex.vertical,
         },
         valign = "center",
@@ -42,12 +45,12 @@ local wifi_button = wibox.widget {
     end,
     buttons = {
         awful.button({}, awful.button.names.LEFT, function ()
-            toggle_wifi_button()
+            toggle_wifi()
         end)
     }
 }
 
-function toggle_wifi_button()
+function toggle_wifi()
     local status = wifi_stuff.get_status()
 
     if string.match(status, "On") then
@@ -65,19 +68,20 @@ local bluetooth_button = wibox.widget {
     {
         {
             {
-                text        = "",
-                font        = beautiful.icofont,
-                valign      = "center",
-                align       = "center",
-                widget      = wibox.widget.textbox,
+                image           = res_path .. "theme/res/bluetooth.png",
+                valign          = "center",
+                halign          = "center",
+                forced_height   = dpi(30),
+                forced_width    = dpi(30),
+                widget          = wibox.widget.imagebox
             },
             {
                 text    = "Bluetooth",
                 font    = beautiful.font,
                 align   = "center",
-                widget  = wibox.widget.textbox,
+                widget  = wibox.widget.textbox
             },
-            spacing = dpi(10),
+            spacing = dpi(5),
             layout = wibox.layout.flex.vertical,
         },
         valign = "center",
@@ -91,12 +95,12 @@ local bluetooth_button = wibox.widget {
     end,
     buttons = {
         awful.button({}, awful.button.names.LEFT, function ()
-            toggle_bluetooth_button()
+            toggle_bluetooth()
         end)
     }
 }
 
-function toggle_bluetooth_button()
+function toggle_bluetooth()
     local status = bluetooth_stuff.get_status()
 
     if string.match(status, "On") then
@@ -114,11 +118,12 @@ local redshift_button = wibox.widget {
     {
         {
             {
-                text        = "󱉖",
-                font        = beautiful.icofont,
-                valign      = "center",
-                align       = "center",
-                widget      = wibox.widget.textbox,
+                image           = res_path .. "theme/res/lamp.png",
+                valign          = "center",
+                halign          = "center",
+                forced_height   = dpi(30),
+                forced_width    = dpi(30),
+                widget          = wibox.widget.imagebox
             },
             {
                 text    = "Redshift",
@@ -126,7 +131,7 @@ local redshift_button = wibox.widget {
                 align   = "center",
                 widget  = wibox.widget.textbox,
             },
-            spacing = dpi(10),
+            spacing = dpi(5),
             layout = wibox.layout.flex.vertical,
         },
         valign = "center",
@@ -162,18 +167,20 @@ local mic_button = wibox.widget {
     {
         {
             {
-                text        = "",
-                font        = beautiful.icofont,
-                valign      = "center",
-                align       = "center",
-                widget      = wibox.widget.textbox,
+                image           = res_path .. "theme/res/mic.png",
+                valign          = "center",
+                halign          = "center",
+                forced_height   = dpi(30),
+                forced_width    = dpi(30),
+                widget          = wibox.widget.imagebox
             },
             {
-                text    = "On",
+                text    = "Mic",
+                align   = "center",
                 font    = beautiful.icofont,
                 widget  = wibox.widget.textbox,
             },
-            spacing = dpi(10),
+            spacing = dpi(5),
             layout = wibox.layout.flex.vertical,
         },
         valign = "center",
@@ -187,21 +194,34 @@ local mic_button = wibox.widget {
     end,
     buttons = {
         awful.button({}, 1, function()
-            -- Toggle wifi on/off here
-            wifi_on = not wifi_on
-            mic_button.bg = wifi_on and "#0000FF" or "#000000"
+            toggle_mic()
         end)
     }
 }
+
+function toggle_mic()
+    local status = volume_stuff.is_mic_on()
+
+    if status:match("On") then
+        awful.spawn.with_shell("amixer set Capture nocap")
+        mic_button.bg = beautiful.xcolor0
+    else
+        awful.spawn.with_shell("amixer set Capture cap")
+        mic_button.bg = beautiful.xcolor4
+    end
+end
 
 
 -- Volume Progress
 local volume_progress = wibox.widget {
     {
         {
-            text    = "󰓃",
-            font    = beautiful.icofont,
-            widget  = wibox.widget.textbox
+            image           = res_path .. "theme/res/sound.png",
+            valign          = "center",
+            halign          = "center",
+            forced_height   = dpi(20),
+            forced_width    = dpi(20),
+            widget          = wibox.widget.imagebox
         },
         margins = { right = dpi(15), left = dpi(10) },
         layout = wibox.container.margin
@@ -238,9 +258,12 @@ end)
 local backlight_progress = wibox.widget {
     {
         {
-            text    = "󰛨",
-            font    = icofont,
-            widget  = wibox.widget.textbox
+            image           = res_path .. "theme/res/light.png",
+            valign          = "center",
+            halign          = "center",
+            forced_height   = dpi(20),
+            forced_width    = dpi(20),
+            widget          = wibox.widget.imagebox
         },
         margins = { right = dpi(15), left = dpi(10) },
         layout = wibox.container.margin
@@ -313,6 +336,7 @@ return wibox.widget {
             },
             layout = wibox.layout.fixed.vertical
         },
+        forced_width = dpi(250),
         layout = wibox.layout.ratio.vertical
     },
     margins = dpi(20),

@@ -9,7 +9,7 @@ local dpi               = beautiful.xresources.apply_dpi
 local styles = {}
 
 styles.month   = { 
-    padding      = dpi(15),
+    padding      = dpi(13),
     border_width = beautiful.border_width,
     bg_color     = beautiful.xbackground,
     shape = function(cr, w, h)

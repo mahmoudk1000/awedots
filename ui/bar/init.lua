@@ -101,10 +101,10 @@ local layoutbox = awful.widget.layoutbox {
     screen = s,
     -- Add buttons, allowing you to change the layout
     buttons = {
-        awful.button({ }, 1, function () awful.layout.inc( 1) end),
-        awful.button({ }, 3, function () awful.layout.inc(-1) end),
-        awful.button({ }, 4, function () awful.layout.inc( 1) end),
-        awful.button({ }, 5, function () awful.layout.inc(-1) end),
+        awful.button({ }, awful.button.names.LEFT, function () awful.layout.inc( 1) end),
+        awful.button({ }, awful.button.names.RIGHT, function () awful.layout.inc(-1) end),
+        awful.button({ }, awful.button.names.SCROLL_UP, function () awful.layout.inc( 1) end),
+        awful.button({ }, awful.button.names.SCROLL_DOWN, function () awful.layout.inc(-1) end),
     }
 }
 
@@ -308,13 +308,13 @@ gears.timer({
 -- Bar
 local function make_bar(s)
     local bar = wibox({
-        visible = true,
-        ontop = false,
-        position = "bottom",
-        type = 'dock',
-        screen = s,
-        width = s.geometry.width,
-        height = dpi(30),
+        screen      = s,
+        position    = "top",
+        type        = "dock",
+        visible     = true,
+        ontop       = false,
+        height      = dpi(30),
+        width       = s.geometry.width,
     })
     bar:struts { bottom = dpi(0), top = dpi(30), left = dpi(0), right = dpi(0) }
     bar:setup {
