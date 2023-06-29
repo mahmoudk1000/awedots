@@ -13,7 +13,7 @@ function volume_stuff:is_muted()
     local status = command:read("*all")
     command:close()
 
-    if string.match(status, "true") then
+    if status:match("true") then
 	return true
     else
 	return false

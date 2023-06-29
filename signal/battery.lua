@@ -13,9 +13,9 @@ end
 function battery_stuff:battery_icon()
     status = self:get_battery_status()
 
-    if string.match(status, "Discharging") then
+    if status:match("Discharging") then
         return beautiful.xcolor1, "󰁹 "
-    elseif string.match(status, "Full") then
+    elseif status:match("Full") then
         return beautiful.xcolor2, "󱟢 "
     else
         return beautiful.xcolor5, "󱟦 "

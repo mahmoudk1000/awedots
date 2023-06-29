@@ -53,7 +53,7 @@ local wifi_button = wibox.widget {
 function toggle_wifi()
     local status = wifi_stuff:get_status()
 
-    if string.match(status, "On") then
+    if status:match("On") then
         awful.spawn.with_shell("rfkill block wlan")
         wifi_button.bg = beautiful.xcolor0
     else
@@ -103,7 +103,7 @@ local bluetooth_button = wibox.widget {
 function toggle_bluetooth()
     local status = bluetooth_stuff:get_status()
 
-    if string.match(status, "On") then
+    if status:match("On") then
         awful.spawn.with_shell("bluetoothctl power off")
         bluetooth_button.bg = beautiful.xcolor0
     else
@@ -153,7 +153,7 @@ local redshift_button = wibox.widget {
 function toggle_redshift()
     local status = redshift_stuff:is_running()
 
-    if string.match(status, "On") then
+    if status:match("On") then
         awful.spawn.with_shell("systemctl stop --user redshift.service")
         redshift_button.bg = beautiful.xcolor0
     else

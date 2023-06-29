@@ -5,7 +5,7 @@ function wifi_stuff:get_status()
     local status = command:read("*all")
     command:close()
 
-    if string.match(status, "on") then
+    if status:match("on") then
         return "On"
     else
         return "Off"

@@ -8,7 +8,7 @@ function bluetooth_stuff:get_status()
     local status = command:read("*all")
     command:close()
 
-    if string.match(status, "yes") then
+    if status:match("yes") then
         return "On"
     else
         return "Off"
@@ -20,7 +20,7 @@ function bluetooth_stuff:is_connected()
     local is_connected = command:read("*all")
     command:close()
 
-    if string.match(is_connected, "yes") then
+    if is_connected:match("yes") then
         return true
     else
         return false

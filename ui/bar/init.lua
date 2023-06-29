@@ -258,7 +258,7 @@ gears.timer({
     timeout = 5,
     autostart = true,
     call_now = true,
-    callback = update_bluetooth()
+    callback = update_bluetooth
 })
 
 
@@ -301,7 +301,7 @@ gears.timer({
     timeout = 30,
     autostart = true,
     call_now = true,
-    callback = update_battery()
+    callback = update_battery
 })
 
 
