@@ -50,28 +50,18 @@ local prev_botton = wibox.widget {
     end)
 }
 
-
 local toggle_button = wibox.widget {
     image           = recolor(res_path .. "theme/res/play.png", beautiful.xcolor4),
     valign          = "center",
     halign          = "center",
     forced_height   = dpi(10),
     forced_width    = dpi(10),
-    widget          = wibox.widget.imagebox
+    widget          = wibox.widget.imagebox,
+    buttons = awful.button({}, awful.button.names.LEFT, function ()
+        awful.spawn.with_shell("mpc toggle") 
+        awesome.emit_signal("mpd::updated")
+    end)
 }
-
-toggle_button:buttons(awful.button({}, awful.button.names.LEFT, function ()
-    awful.spawn.with_shell("mpc toggle")
-    awesome.emit_signal("mpd::updated")
-
-    local state = mpd_stuff:is_playing()
-    if state:match("playing") then
-        toggle_button.image = recolor(res_path .. "theme/res/pause.png", beautiful.xcolor4)
-    else
-        toggle_button.image = recolor(res_path .. "theme/res/play.png", beautiful.xcolor4)
-    end
-end))
-
 
 local next_button = wibox.widget {
     image           = recolor(res_path .. "theme/res/next.png", beautiful.xforeground),
@@ -85,14 +75,6 @@ local next_button = wibox.widget {
         awesome.emit_signal("mpd::updated")
     end)
 }
-
-awesome.connect_signal("mpd::updated", function()
-    local name = "<b>" .. mpd_stuff:get_song_name() .. "</b>"
-    local artist = "<span foreground='" .. beautiful.xcolor3 .. "'>" .. mpd_stuff:get_song_artist() .. "</span>"
-
-    song_name:set_markup(name)
-    song_artist:set_markup(artist)
-end)
 
 local player = wibox.widget {
     {
@@ -118,6 +100,25 @@ local player = wibox.widget {
     layout = wibox.layout.ratio.vertical,
 }
 player:adjust_ratio(2, 0.6, 0.2, 0.2)
+
+
+awesome.connect_signal("mpd::updated", function()
+    local name = "<b>" .. mpd_stuff:get_song_name() .. "</b>"
+    local artist = "<span foreground='" .. beautiful.xcolor3 .. "'>" .. mpd_stuff:get_song_artist() .. "</span>"
+    local state = mpd_stuff:is_playing()
+
+    song_name:set_markup(name)
+    song_artist:set_markup(artist)
+    
+    if state:match("playing") then
+        toggle_button.image = recolor(res_path .. "theme/res/pause.png", beautiful.xcolor4)
+    else
+        toggle_button.image = recolor(res_path .. "theme/res/play.png", beautiful.xcolor4)
+    end
+    
+    player:emit_signal("widget::redraw_needed")
+end)
+
 
 return wibox.widget {
     {
