@@ -16,7 +16,9 @@ gears.timer {
     timeout   = 1800,
     call_now  = true,
     autostart = true,
-    callback = weather_stuff:update_data()
+    callback = function()
+        weather_stuff:update_data()
+    end
 }
 
 function weather_stuff:get_temp()
