@@ -150,7 +150,7 @@ clock:buttons(
 local volume = wibox.widget {
     {
         id = "icon",
-        markup = "<span foreground='" .. beautiful.xcolor3 .. "'>" .. volume_stuff.volume_icon() .. "</span>",
+        markup = "<span foreground='" .. beautiful.xcolor3 .. "'>" .. volume_stuff:volume_icon() .. "</span>",
         font = beautiful.iconfont,
         align = "center",
         valign = "center",
@@ -172,8 +172,8 @@ local volume = wibox.widget {
 }
 
 function update_volume()
-    local icon = "<span foreground='" .. beautiful.xcolor3 .. "'>" .. volume_stuff.volume_icon() .. "</span>"
-    local value = volume_stuff.get_volume() .. "%"
+    local icon = "<span foreground='" .. beautiful.xcolor3 .. "'>" .. volume_stuff:volume_icon() .. "</span>"
+    local value = volume_stuff:get_volume() .. "%"
 
     volume:get_children_by_id("icon")[1]:set_markup(icon)
     volume:get_children_by_id("text")[1]:set_text(value)
@@ -199,7 +199,7 @@ local backlight = wibox.widget {
         widget = wibox.container.margin,
         {
             id = "text",
-            text = backlight_stuff.get_backlight() .. "%",
+            text = backlight_stuff:get_backlight() .. "%",
             align = "center",
             valign = "center",
             font = font,
@@ -210,7 +210,7 @@ local backlight = wibox.widget {
 }
 
 function update_backlight()
-    local value = backlight_stuff.get_backlight() .. "%"
+    local value = backlight_stuff:get_backlight() .. "%"
 
     backlight:get_children_by_id("text")[1]:set_text(value)
 end
@@ -225,7 +225,7 @@ end)
 local bluetooth = wibox.widget {
     {
         id = "icon",
-        markup = "<span foreground='" .. beautiful.xcolor4 .. "'>" .. bluetooth_stuff.bluetooth_icon() .. "</span>",
+        markup = "<span foreground='" .. beautiful.xcolor4 .. "'>" .. bluetooth_stuff:bluetooth_icon() .. "</span>",
         font = beautiful.iconfont,
         align = "center",
         valign = "center",
@@ -236,7 +236,7 @@ local bluetooth = wibox.widget {
         widget = wibox.container.margin,
         {
             id = "text",
-            text = bluetooth_stuff.get_status(),
+            text = bluetooth_stuff:get_status(),
             align = "center",
             valign = "center",
             font = font,
@@ -247,8 +247,8 @@ local bluetooth = wibox.widget {
 }
 
 function update_bluetooth()
-    local icon = "<span foreground='" .. beautiful.xcolor6 .. "'>" .. bluetooth_stuff.bluetooth_icon() .. "</span>"
-    local value = bluetooth_stuff.get_status()
+    local icon = "<span foreground='" .. beautiful.xcolor6 .. "'>" .. bluetooth_stuff:bluetooth_icon() .. "</span>"
+    local value = bluetooth_stuff:get_status()
 
     bluetooth:get_children_by_id("icon")[1]:set_markup(icon)
     bluetooth:get_children_by_id("text")[1]:set_text(value)
@@ -258,12 +258,12 @@ gears.timer({
     timeout = 5,
     autostart = true,
     call_now = true,
-    callback = update_bluetooth,
+    callback = update_bluetooth()
 })
 
 
 -- Battery Widget
-local battery_color, battery_icon = battery_stuff.battery_icon()
+local battery_color, battery_icon = battery_stuff:battery_icon()
 local battery = wibox.widget {
     {
         id = "icon",
@@ -278,7 +278,7 @@ local battery = wibox.widget {
         widget = wibox.container.margin,
         {
             id = "text",
-            text = battery_stuff.get_battery_percent() .. "%",
+            text = battery_stuff:get_battery_percent() .. "%",
             align = "center",
             valign = "center",
             font = font,
@@ -289,9 +289,9 @@ local battery = wibox.widget {
 }
 
 function update_battery()
-    local battery_color, battery_icon = battery_stuff.battery_icon()
+    local battery_color, battery_icon = battery_stuff:battery_icon()
     local icon = "<span foreground='" .. battery_color .. "'>" .. battery_icon .. "</span>"
-    local value = battery_stuff.get_battery_percent() .. "%"
+    local value = battery_stuff:get_battery_percent() .. "%"
 
     battery:get_children_by_id("icon")[1]:set_markup(icon)
     battery:get_children_by_id("text")[1]:set_text(value)
@@ -301,7 +301,7 @@ gears.timer({
     timeout = 30,
     autostart = true,
     call_now = true,
-    callback = update_battery,
+    callback = update_battery()
 })
 
 

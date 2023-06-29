@@ -24,7 +24,7 @@ local time = wibox.widget {
 local weather = wibox.widget {
     {
         id      = "desc",
-        markup  = weather_stuff.get_desc(),
+        markup  = weather_stuff:get_desc(),
         font    = beautiful.font,
         widget  = wibox.widget.textbox
     },
@@ -35,7 +35,7 @@ local weather = wibox.widget {
     },
     {
         id      = "temp",
-        markup  = weather_stuff.get_temp() .. "<span>&#176;</span>",
+        markup  = weather_stuff:get_temp() .. "<span>&#176;</span>",
         font    = beautiful.font,
         widget  = wibox.widget.textbox,
     },
@@ -43,8 +43,8 @@ local weather = wibox.widget {
 }
 
 awesome.connect_signal("weather::update", function()
-    local temp = weather_stuff.get_temp() .. "<span>&#176;</span>"
-    local desc = weather_stuff.get_desc()
+    local temp = weather_stuff:get_temp() .. "<span>&#176;</span>"
+    local desc = weather_stuff:get_desc()
 
     weather_stuff:get_children_by_id("desc"):set_markup(desc)
     weather_stuff:get_children_by_id("temp"):set_markup(temp)

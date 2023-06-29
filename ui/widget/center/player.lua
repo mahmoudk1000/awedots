@@ -22,7 +22,7 @@ local album_cover = wibox.widget {
 }
 
 local song_name = wibox.widget {
-    markup  = "<b>" .. mpd_stuff.get_song_name() .. "</b>",
+    markup  = "<b>" .. mpd_stuff:get_song_name() .. "</b>",
     font    = beautiful.font,
     align   = "center",
     valign  = "center",
@@ -30,7 +30,7 @@ local song_name = wibox.widget {
 }
 
 local song_artist = wibox.widget {
-    markup  = "<span foreground='" .. beautiful.xcolor3 .. "'>" .. mpd_stuff.get_song_artist() .. "</span>",
+    markup  = "<span foreground='" .. beautiful.xcolor3 .. "'>" .. mpd_stuff:get_song_artist() .. "</span>",
     font    = beautiful.font,
     align   = "center",
     valign  = "center",
@@ -64,7 +64,7 @@ toggle_button:buttons(awful.button({}, awful.button.names.LEFT, function ()
     awful.spawn.with_shell("mpc toggle")
     awesome.emit_signal("mpd::updated")
 
-    local state = mpd_stuff.is_playing()
+    local state = mpd_stuff:is_playing()
     if state:match("playing") then
         toggle_button.image = recolor(res_path .. "theme/res/pause.png", beautiful.xcolor4)
     else
@@ -87,8 +87,8 @@ local next_button = wibox.widget {
 }
 
 awesome.connect_signal("mpd::updated", function()
-    local name = "<b>" .. mpd_stuff.get_song_name() .. "</b>"
-    local artist = "<span foreground='" .. beautiful.xcolor3 .. "'>" .. mpd_stuff.get_song_artist() .. "</span>"
+    local name = "<b>" .. mpd_stuff:get_song_name() .. "</b>"
+    local artist = "<span foreground='" .. beautiful.xcolor3 .. "'>" .. mpd_stuff:get_song_artist() .. "</span>"
 
     song_name:set_markup(name)
     song_artist:set_markup(artist)

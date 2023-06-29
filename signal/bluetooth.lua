@@ -3,7 +3,7 @@ local beautiful         = require("beautiful")
 
 local bluetooth_stuff = {}
 
-function bluetooth_stuff.get_status()
+function bluetooth_stuff:get_status()
     local command = io.popen("bluetoothctl show | awk '/Powered: yes/{print \"yes\"}'")
     local status = command:read("*all")
     command:close()
@@ -15,7 +15,7 @@ function bluetooth_stuff.get_status()
     end
 end
 
-function bluetooth_stuff.is_connected()
+function bluetooth_stuff:is_connected()
     local command = io.popen("bluetoothctl info | awk '/Connected: yes/{print \"yes\"}'")
     local is_connected = command:read("*all")
     command:close()
@@ -27,9 +27,9 @@ function bluetooth_stuff.is_connected()
     end
 end
 
-function bluetooth_stuff.bluetooth_icon()
-    local status = bluetooth_stuff.get_status()
-    local is_connected = bluetooth_stuff.is_connected()
+function bluetooth_stuff:bluetooth_icon()
+    local status = self:get_status()
+    local is_connected = self:is_connected()
 
     awesome.emit_signal("volume::update")
     if status == "On" and not is_connected then
@@ -41,8 +41,8 @@ function bluetooth_stuff.bluetooth_icon()
     end
 end
 
-function bluetooth_stuff.blue_color()
-    local status = bluetooth_stuff.get_status()
+function bluetooth_stuff:blue_color()
+    local status = self:get_status()
 
     if status:match("On") then
         return beautiful.xcolor4

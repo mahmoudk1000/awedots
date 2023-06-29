@@ -51,7 +51,7 @@ local wifi_button = wibox.widget {
 }
 
 function toggle_wifi()
-    local status = wifi_stuff.get_status()
+    local status = wifi_stuff:get_status()
 
     if string.match(status, "On") then
         awful.spawn.with_shell("rfkill block wlan")
@@ -88,7 +88,7 @@ local bluetooth_button = wibox.widget {
         halign = "center",
         widget = wibox.container.place
     },
-    bg      = bluetooth_stuff.blue_color(),
+    bg      = bluetooth_stuff:blue_color(),
     widget  = wibox.container.background,
     shape   = function(cr, width, height)
         gears.shape.rounded_rect(cr, width, height, beautiful.border_radius)
@@ -101,7 +101,7 @@ local bluetooth_button = wibox.widget {
 }
 
 function toggle_bluetooth()
-    local status = bluetooth_stuff.get_status()
+    local status = bluetooth_stuff:get_status()
 
     if string.match(status, "On") then
         awful.spawn.with_shell("bluetoothctl power off")
@@ -151,7 +151,7 @@ local redshift_button = wibox.widget {
 }
 
 function toggle_redshift()
-    local status = redshift_stuff.is_running()
+    local status = redshift_stuff:is_running()
 
     if string.match(status, "On") then
         awful.spawn.with_shell("systemctl stop --user redshift.service")
@@ -200,7 +200,7 @@ local mic_button = wibox.widget {
 }
 
 function toggle_mic()
-    local status = volume_stuff.is_mic_on()
+    local status = volume_stuff:is_mic_on()
 
     if status:match("On") then
         awful.spawn.with_shell("amixer set Capture nocap")
@@ -228,7 +228,7 @@ local volume_progress = wibox.widget {
     },
     {
         id                  = "text",
-        value               = volume_stuff.get_volume(),
+        value               = volume_stuff:get_volume(),
         max_value           = 100,
         forced_height       = dpi(30),
         forced_width        = dpi(200),
@@ -243,7 +243,7 @@ local volume_progress = wibox.widget {
 }
 
 function update_volume_progress()
-    local value = volume_stuff.get_volume()
+    local value = volume_stuff:get_volume()
 
     volume_progress:get_children_by_id("text")[1]:set_value(value)
 end
@@ -270,7 +270,7 @@ local backlight_progress = wibox.widget {
     },
     {
         id                  = "text",
-        value               = backlight_stuff.get_backlight(),
+        value               = backlight_stuff:get_backlight(),
         max_value           = 100,
         forced_height       = dpi(30),
         forced_width        = dpi(200),
@@ -285,7 +285,7 @@ local backlight_progress = wibox.widget {
 }
 
 function update_backlight_progress()
-    local value = backlight_stuff.get_backlight()
+    local value = backlight_stuff:get_backlight()
 
     backlight_progress:get_children_by_id("text")[1]:set_value(value)
 end

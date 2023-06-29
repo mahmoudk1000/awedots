@@ -1,10 +1,8 @@
 local beautiful = require("beautiful")
-local gears = require("gears")
-
 
 local battery_stuff = {}
 
-function battery_stuff.get_battery_status()
+function battery_stuff:get_battery_status()
     local command = io.popen("cat /sys/class/power_supply/BAT0/status")
     local status = command:read("*all")
     command:close()
@@ -12,8 +10,9 @@ function battery_stuff.get_battery_status()
     return tostring(status)
 end
 
-function battery_stuff.battery_icon()
-    status = battery_stuff.get_battery_status()
+function battery_stuff:battery_icon()
+    status = self:get_battery_status()
+
     if string.match(status, "Discharging") then
         return beautiful.xcolor1, "󰁹 "
     elseif string.match(status, "Full") then
@@ -23,7 +22,7 @@ function battery_stuff.battery_icon()
     end
 end
 
-function battery_stuff.get_battery_percent()
+function battery_stuff:get_battery_percent()
     local command = io.popen("cat /sys/class/power_supply/BAT0/capacity")
     local percent = command:read("*all")
     command:close()

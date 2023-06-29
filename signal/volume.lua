@@ -1,6 +1,6 @@
 local volume_stuff = {}
 
-function volume_stuff.get_volume()
+function volume_stuff:get_volume()
     local command = io.popen("pamixer --get-volume")
     local status = command:read("*all")
     command:close()
@@ -8,7 +8,7 @@ function volume_stuff.get_volume()
     return tonumber(status)
 end
 
-function volume_stuff.is_muted()
+function volume_stuff:is_muted()
     local command = io.popen("pamixer --get-mute")
     local status = command:read("*all")
     command:close()
@@ -20,8 +20,8 @@ function volume_stuff.is_muted()
     end
 end
 
-function volume_stuff.volume_icon()
-    local muted = volume_stuff.is_muted()
+function volume_stuff:volume_icon()
+    local muted = self:is_muted()
     if muted then
 	return "󱄡 "
     else
@@ -29,7 +29,7 @@ function volume_stuff.volume_icon()
     end
 end
 
-function volume_stuff.is_mic_on()
+function volume_stuff:is_mic_on()
     local command  = io.popen("amixer get Capture | tail -n2 | awk '/\\[on\\]/{print \"yes\"}'")
     local status = command:read("*all")
     command:close()

@@ -1,6 +1,6 @@
 local mpd_stuff = {}
 
-function mpd_stuff.get_song_name()
+function mpd_stuff:get_song_name()
     local command = io.popen("mpc current  -f %title%")
     local name = command:read("*all")
     command:close()
@@ -12,7 +12,7 @@ function mpd_stuff.get_song_name()
     end
 end
 
-function mpd_stuff.get_song_artist()
+function mpd_stuff:get_song_artist()
     local command = io.popen("mpc current -f %artist%")
     local artist = command:read("*all")
     command:close()
@@ -24,7 +24,7 @@ function mpd_stuff.get_song_artist()
     end
 end
 
-function mpd_stuff.is_playing()
+function mpd_stuff:is_playing()
     local command = io.popen("mpc status | awk '/playing/{print \"yes\"}'")
     local state = command:read("*all")
     command:close()
