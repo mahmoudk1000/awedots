@@ -42,12 +42,12 @@ local weather = wibox.widget {
     layout = wibox.layout.fixed.horizontal
 }
 
-awesome.connect_signal("weather::update", function()
+awesome.connect_signal("weather::updated", function()
     local temp = weather_stuff:get_temp() .. "<span>&#176;</span>"
     local desc = weather_stuff:get_desc()
 
-    weather_stuff:get_children_by_id("desc"):set_markup(desc)
-    weather_stuff:get_children_by_id("temp"):set_markup(temp)
+    weather:get_children_by_id("desc")[1]:set_markup(desc)
+    weather:get_children_by_id("temp")[1]:set_markup(temp)
 end)
 
 -- Create Center Widget

@@ -6,6 +6,7 @@ local dpi               = beautiful.xresources.apply_dpi
 local res_path          = gears.filesystem.get_configuration_dir()
 local recolor           = gears.color.recolor_image
 
+local helpers           = require("helpers")
 local mpd_stuff         = require("signal.mpd")
 
 
@@ -23,14 +24,14 @@ local album_cover = wibox.widget {
 
 local song_name = wibox.widget {
     markup  = "<b>" .. mpd_stuff:get_song_name() .. "</b>",
-    font    = beautiful.font,
+    font    = beautiful.font_bold,
     align   = "center",
     valign  = "center",
     widget  = wibox.widget.textbox
 }
 
 local song_artist = wibox.widget {
-    markup  = "<span foreground='" .. beautiful.xcolor3 .. "'>" .. mpd_stuff:get_song_artist() .. "</span>",
+    markup  = helpers:color_markup(mpd_stuff:get_song_artist(), beautiful.xcolor3),
     font    = beautiful.font,
     align   = "center",
     valign  = "center",
@@ -94,7 +95,7 @@ local player = wibox.widget {
             { widget = next_button },
             layout = wibox.layout.flex.horizontal
         },
-        margins = dpi(15),
+        margins = dpi(18),
         layout = wibox.container.margin
     },
     layout = wibox.layout.ratio.vertical,
@@ -103,8 +104,8 @@ player:adjust_ratio(2, 0.6, 0.2, 0.2)
 
 
 awesome.connect_signal("mpd::updated", function()
-    local name = "<b>" .. mpd_stuff:get_song_name() .. "</b>"
-    local artist = "<span foreground='" .. beautiful.xcolor3 .. "'>" .. mpd_stuff:get_song_artist() .. "</span>"
+    local name = mpd_stuff:get_song_name()
+    local artist = helpers:color_markup(mpd_stuff:get_song_artist(), beautiful.xcolor3)
     local state = mpd_stuff:is_playing()
 
     song_name:set_markup(name)

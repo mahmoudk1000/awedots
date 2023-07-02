@@ -5,7 +5,7 @@ function mpd_stuff:get_song_name()
     local name = command:read("*all")
     command:close()
 
-    if name then
+    if name and name ~= "" then
         return  tostring(name)
     else
         return "Unknown"
@@ -17,7 +17,7 @@ function mpd_stuff:get_song_artist()
     local artist = command:read("*all")
     command:close()
 
-    if artist then
+    if artist and artist ~= "" then
         return tostring(artist)
     else
         return "Unknown"

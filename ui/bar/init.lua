@@ -4,6 +4,7 @@ local wibox             = require("wibox")
 local beautiful         = require("beautiful")
 local dpi               = beautiful.xresources.apply_dpi
 
+local helpers           = require("helpers")
 local battery_stuff     = require("signal.battery")
 local volume_stuff      = require("signal.volume")
 local backlight_stuff   = require("signal.backlight")
@@ -112,7 +113,7 @@ local layoutbox = awful.widget.layoutbox {
 -- Clock Widget
 local clock = wibox.widget {
     {
-        markup = "<span foreground='" .. beautiful.xcolor2 .. "'>󱑂  </span>",
+        markup = helpers:color_markup("󱑂  ", beautiful.xcolor2),
         font = beautiful.iconfont,
         valign = "center",
         align = "center",
@@ -150,7 +151,7 @@ clock:buttons(
 local volume = wibox.widget {
     {
         id = "icon",
-        markup = "<span foreground='" .. beautiful.xcolor3 .. "'>" .. volume_stuff:volume_icon() .. "</span>",
+        markup = helpers:color_markup(volume_stuff:volume_icon(), beautiful.xcolor3),
         font = beautiful.iconfont,
         align = "center",
         valign = "center",
@@ -172,7 +173,7 @@ local volume = wibox.widget {
 }
 
 function update_volume()
-    local icon = "<span foreground='" .. beautiful.xcolor3 .. "'>" .. volume_stuff:volume_icon() .. "</span>"
+    local icon = helpers:color_markup(volume_stuff:volume_icon(), beautiful.xcolor3)
     local value = volume_stuff:get_volume() .. "%"
 
     volume:get_children_by_id("icon")[1]:set_markup(icon)
@@ -188,7 +189,7 @@ end)
 -- Backlight Widget
 local backlight = wibox.widget {
     {
-        markup = "<span foreground='" .. beautiful.xcolor2 .. "'>󰌵 </span>",
+        markup = helpers:color_markup("󰌵 ", beautiful.xcolor2),
         font = beautiful.iconfont,
         align = "center",
         valign = "center",
@@ -225,7 +226,7 @@ end)
 local bluetooth = wibox.widget {
     {
         id = "icon",
-        markup = "<span foreground='" .. beautiful.xcolor4 .. "'>" .. bluetooth_stuff:bluetooth_icon() .. "</span>",
+        markup = helpers:color_markup(bluetooth_stuff:bluetooth_icon(), beautiful.xcolor6),
         font = beautiful.iconfont,
         align = "center",
         valign = "center",
@@ -247,7 +248,7 @@ local bluetooth = wibox.widget {
 }
 
 function update_bluetooth()
-    local icon = "<span foreground='" .. beautiful.xcolor6 .. "'>" .. bluetooth_stuff:bluetooth_icon() .. "</span>"
+    local icon = helpers:color_markup(bluetooth_stuff:bluetooth_icon(), beautiful.xcolor6)
     local value = bluetooth_stuff:get_status()
 
     bluetooth:get_children_by_id("icon")[1]:set_markup(icon)
@@ -267,7 +268,7 @@ local battery_color, battery_icon = battery_stuff:battery_icon()
 local battery = wibox.widget {
     {
         id = "icon",
-        markup = "<span foreground='" .. battery_color .. "'>" .. battery_icon .. "</span>",
+        markup = helpers:color_markup(battery_icon, battery_color),
         font = beautiful.iconfont,
         align = "center",
         valign = "center",
@@ -290,7 +291,7 @@ local battery = wibox.widget {
 
 function update_battery()
     local battery_color, battery_icon = battery_stuff:battery_icon()
-    local icon = "<span foreground='" .. battery_color .. "'>" .. battery_icon .. "</span>"
+    local icon = helpers:color_markup(battery_icon, battery_color)
     local value = battery_stuff:get_battery_percent() .. "%"
 
     battery:get_children_by_id("icon")[1]:set_markup(icon)

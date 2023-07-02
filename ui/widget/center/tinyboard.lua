@@ -21,8 +21,8 @@ local wifi_button = wibox.widget {
                 valign          = "center",
                 halign          = "center",
                 downscale       = true,
-                forced_height   = dpi(30),
-                forced_width    = dpi(30),
+                forced_height   = dpi(25),
+                forced_width    = dpi(25),
                 widget          = wibox.widget.imagebox
             },
             {
@@ -71,8 +71,8 @@ local bluetooth_button = wibox.widget {
                 image           = res_path .. "theme/res/bluetooth.png",
                 valign          = "center",
                 halign          = "center",
-                forced_height   = dpi(30),
-                forced_width    = dpi(30),
+                forced_height   = dpi(25),
+                forced_width    = dpi(25),
                 widget          = wibox.widget.imagebox
             },
             {
@@ -121,8 +121,8 @@ local redshift_button = wibox.widget {
                 image           = res_path .. "theme/res/lamp.png",
                 valign          = "center",
                 halign          = "center",
-                forced_height   = dpi(30),
-                forced_width    = dpi(30),
+                forced_height   = dpi(25),
+                forced_width    = dpi(25),
                 widget          = wibox.widget.imagebox
             },
             {
@@ -138,7 +138,7 @@ local redshift_button = wibox.widget {
         halign = "center",
         widget = wibox.container.place
     },
-    bg      = beautiful.xcolor4,
+    bg      = redshift_stuff:get_status(),
     widget  = wibox.container.background,
     shape = function(cr, width, height)
         gears.shape.rounded_rect(cr, width, height, beautiful.border_radius)
@@ -170,8 +170,8 @@ local mic_button = wibox.widget {
                 image           = res_path .. "theme/res/mic.png",
                 valign          = "center",
                 halign          = "center",
-                forced_height   = dpi(30),
-                forced_width    = dpi(30),
+                forced_height   = dpi(25),
+                forced_width    = dpi(25),
                 widget          = wibox.widget.imagebox
             },
             {
