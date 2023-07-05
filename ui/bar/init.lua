@@ -133,18 +133,12 @@ local clock = wibox.widget {
         valign = "center",
         widget = wibox.widget.textclock,
     },
-    layout = wibox.layout.fixed.horizontal,
     spacing = dpi(3),
+    layout = wibox.layout.fixed.horizontal,
+    buttons = gears.table.join(awful.button({}, awful.button.names.LEFT, nil, function() 
+        awesome.emit_signal("clock::clicked")
+    end))
 }
-
--- Calendar Widget Signal
-clock:buttons(
-    gears.table.join(
-        awful.button({},  awful.button.names.LEFT , nil, function()
-            awesome.emit_signal("clock::clicked")
-        end)
-    )
-)
 
 
 -- Volume Widget
@@ -158,8 +152,6 @@ local volume = wibox.widget {
         widget = wibox.widget.textbox,
     },
     {
-        margins = {left = dpi(5), right = dpi(5)},
-        widget = wibox.container.margin,
         {
             id = "text",
             text = "100%",
@@ -168,20 +160,19 @@ local volume = wibox.widget {
             valign = "center",
             widget = wibox.widget.textbox,
         },
+        margins = {left = dpi(5), right = dpi(5)},
+        widget = wibox.container.margin,
     },
     layout = wibox.layout.fixed.horizontal,
 }
 
-function update_volume()
+awesome.connect_signal("volume::update", function()
     local icon = helpers:color_markup(volume_stuff:volume_icon(), beautiful.xcolor3)
     local value = volume_stuff:get_volume() .. "%"
 
     volume:get_children_by_id("icon")[1]:set_markup(icon)
     volume:get_children_by_id("text")[1]:set_text(value)
-end
 
-awesome.connect_signal("volume::update", function()
-    update_volume()
     volume:emit_signal("widget::redraw_needed")
 end)
 
@@ -196,8 +187,6 @@ local backlight = wibox.widget {
         widget = wibox.widget.textbox,
     },
     {
-        margins = {left = dpi(5), right = dpi(5)},
-        widget = wibox.container.margin,
         {
             id = "text",
             text = backlight_stuff:get_backlight() .. "%",
@@ -206,18 +195,17 @@ local backlight = wibox.widget {
             font = font,
             widget = wibox.widget.textbox,
         },
+        margins = {left = dpi(5), right = dpi(5)},
+        widget = wibox.container.margin,
     },
     layout = wibox.layout.fixed.horizontal,
 }
 
-function update_backlight()
-    local value = backlight_stuff:get_backlight() .. "%"
-
-    backlight:get_children_by_id("text")[1]:set_text(value)
-end
-
 awesome.connect_signal("backlight::update", function()
-    update_backlight()
+    local value = backlight_stuff:get_backlight() .. "%"
+    
+    backlight:get_children_by_id("text")[1]:set_text(value)
+    
     backlight:emit_signal("widget::redraw_needed")
 end)
 
@@ -307,7 +295,7 @@ gears.timer({
 
 
 -- Bar
-local function make_bar(s)
+local function init_bar(s)
     local bar = wibox({
         screen      = s,
         position    = "top",
@@ -363,5 +351,5 @@ local function make_bar(s)
 end
 
 awful.screen.connect_for_each_screen(function(s)
-    make_bar(s)
+    init_bar(s)
 end)

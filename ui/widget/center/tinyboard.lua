@@ -230,7 +230,7 @@ local volume_progress = wibox.widget {
         id                  = "text",
         value               = volume_stuff:get_volume(),
         max_value           = 100,
-        forced_height       = dpi(30),
+        forced_height       = dpi(35),
         forced_width        = dpi(200),
         color               = beautiful.xcolor4,
         background_color    = beautiful.xcolor0,
@@ -272,7 +272,7 @@ local backlight_progress = wibox.widget {
         id                  = "text",
         value               = backlight_stuff:get_backlight(),
         max_value           = 100,
-        forced_height       = dpi(30),
+        forced_height       = dpi(35),
         forced_width        = dpi(200),
         color               = beautiful.xcolor4,
         background_color    = beautiful.xcolor0,
@@ -300,12 +300,12 @@ return wibox.widget {
         {
             {
                 { widget = wifi_button },
-                margins = { right = dpi(10), bottom = dpi(10) },
+                margins = { right = dpi(5.5) },
                 layout = wibox.container.margin
             },
             {
                 { widget = bluetooth_button },
-                margins = { left = dpi(10), bottom = dpi(10) },
+                margins = { left = dpi(5.5) },
                 layout = wibox.container.margin
             },
             layout = wibox.layout.ratio.horizontal 
@@ -313,12 +313,12 @@ return wibox.widget {
         {
             {
                 { widget = redshift_button },
-                margins = { right = dpi(10), top = dpi(10) },
+                margins = { right = dpi(5.5) },
                 layout = wibox.container.margin
             },
             {
                 { widget = mic_button },
-                margins = { left = dpi(10), top = dpi(10) },
+                margins = { left = dpi(5.5) },
                 layout = wibox.container.margin
             },
             layout = wibox.layout.ratio.horizontal 
@@ -326,16 +326,13 @@ return wibox.widget {
         {
             {
                 { widget = volume_progress },
-                margins = { top = dpi(20), bottom = dpi(5) },
+                margins = { bottom = dpi(10) },
                 layout = wibox.container.margin
             },
-            {
-                { widget = backlight_progress },
-                margins = { top = dpi(5) },
-                layout = wibox.container.margin
-            },
+            { widget = backlight_progress },
             layout = wibox.layout.fixed.vertical
         },
+        spacing = dpi(11),
         forced_width = dpi(250),
         layout = wibox.layout.ratio.vertical
     },
