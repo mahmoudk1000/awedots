@@ -80,10 +80,10 @@ local center_popup = awful.popup {
     border_color    = beautiful.border_normal,
     border_width    = beautiful.border_width,
     placement = function(c)
-        awful.placement.top(c, { margins = { top = dpi(35) }, parent = awful.screen.focused() })
+        awful.placement.bottom(c, { margins = { bottom = dpi(35) }, parent = awful.screen.focused() })
     end,
     shape = function(cr, w, h)
-        gears.shape.infobubble(cr, w, h, beautiful.border_radius, dpi(5))
+        gears.shape.rounded_rect(cr, w, h, beautiful.border_radius)
     end,
 }
 

@@ -1,4 +1,15 @@
+local beautiful     = require("beautiful")
+local gears         = require "gears"
+local res_path      = gears.filesystem.get_configuration_dir()
+local recolor       = gears.color.recolor_image
+
+
 local volume_stuff = {}
+
+local icon = {
+    res_path .. "theme/res/volume.png",
+    res_path .. "theme/res/mute.png"
+}
 
 function volume_stuff:get_volume()
     local command = io.popen("pamixer --get-volume")
@@ -23,9 +34,9 @@ end
 function volume_stuff:volume_icon()
     local muted = self:is_muted()
     if muted then
-	return "󱄡 "
+	return recolor(icon[2], beautiful.xcolor3)
     else
-	return "󱄠 "
+	return recolor(icon[1], beautiful.xcolor3)
     end
 end
 

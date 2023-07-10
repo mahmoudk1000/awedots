@@ -11,7 +11,7 @@ local mpd_stuff         = require("signal.mpd")
 
 
 local album_cover = wibox.widget {
-    image           = res_path .. "theme/res/cover.png",
+    image           = recolor(res_path .. "theme/res/cover.png", beautiful.xcolor0),
     valign          = "center",
     halign          = "center",
     forced_height   = dpi(100),
@@ -95,7 +95,7 @@ local player = wibox.widget {
             { widget = next_button },
             layout = wibox.layout.flex.horizontal
         },
-        margins = dpi(18),
+        margins = dpi(15),
         layout = wibox.container.margin
     },
     layout = wibox.layout.ratio.vertical,

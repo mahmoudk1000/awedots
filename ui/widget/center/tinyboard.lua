@@ -4,6 +4,7 @@ local gears             = require "gears"
 local beautiful         = require("beautiful")
 local dpi               = beautiful.xresources.apply_dpi
 local res_path          = gears.filesystem.get_configuration_dir()
+local recolor           = gears.color.recolor_image
 
 local volume_stuff      = require("signal.volume")
 local backlight_stuff   = require("signal.backlight")
@@ -17,7 +18,8 @@ local wifi_button = wibox.widget {
     {
         {
             {
-                image           = res_path .. "theme/res/wifi.png",
+                id              = "icon",
+                image           =  recolor(res_path .. "theme/res/wifi.png", beautiful.xcolor0),
                 valign          = "center",
                 halign          = "center",
                 downscale       = true,
@@ -56,9 +58,11 @@ function toggle_wifi()
     if status:match("On") then
         awful.spawn.with_shell("rfkill block wlan")
         wifi_button.bg = beautiful.xcolor0
+        wifi_button:get_children_by_id("icon")[1]:set_image(recolor(res_path.. "theme/res/wifi.png", beautiful.xcolor4))
     else
         awful.spawn.with_shell("rfkill unblock wlan")
         wifi_button.bg = beautiful.xcolor4
+        wifi_button:get_children_by_id("icon")[1]:set_image(recolor(res_path.. "theme/res/wifi.png", beautiful.xcolor0))
     end
 end
 
@@ -68,7 +72,8 @@ local bluetooth_button = wibox.widget {
     {
         {
             {
-                image           = res_path .. "theme/res/bluetooth.png",
+                id              = "icon",
+                image           = recolor(res_path.. "theme/res/blue-off.png", beautiful.xcolor0),
                 valign          = "center",
                 halign          = "center",
                 forced_height   = dpi(25),
@@ -106,9 +111,11 @@ function toggle_bluetooth()
     if status:match("On") then
         awful.spawn.with_shell("bluetoothctl power off")
         bluetooth_button.bg = beautiful.xcolor0
+        bluetooth_button:get_children_by_id("icon")[1]:set_image(recolor(res_path.. "theme/res/blue-off.png", beautiful.xcolor4))
     else
         awful.spawn.with_shell("bluetoothctl power on")
         bluetooth_button.bg = beautiful.xcolor4
+        bluetooth_button:get_children_by_id("icon")[1]:set_image(recolor(res_path.. "theme/res/blue-on.png", beautiful.xcolor0))
     end
 end
 
@@ -118,7 +125,8 @@ local redshift_button = wibox.widget {
     {
         {
             {
-                image           = res_path .. "theme/res/lamp.png",
+                id              = "icon",
+                image           =  recolor(res_path .. "theme/res/redshift.png", beautiful.xcolor0),
                 valign          = "center",
                 halign          = "center",
                 forced_height   = dpi(25),
@@ -156,9 +164,11 @@ function toggle_redshift()
     if status:match("On") then
         awful.spawn.with_shell("systemctl stop --user redshift.service")
         redshift_button.bg = beautiful.xcolor0
+        redshift_button:get_children_by_id("icon")[1]:set_image(recolor(res_path .. "theme/res/redshift.png", beautiful.xcolor4))
     else
         awful.spawn.with_shell("systemctl start --user redshift.service")
         redshift_button.bg = beautiful.xcolor4
+        redshift_button:get_children_by_id("icon")[1]:set_image(recolor(res_path .. "theme/res/redshift.png", beautiful.xcolor0))
     end
 end
 
@@ -167,7 +177,8 @@ local mic_button = wibox.widget {
     {
         {
             {
-                image           = res_path .. "theme/res/mic.png",
+                id              = "icon",
+                image           = recolor(res_path .. "theme/res/mic.png", beautiful.xcolor0),
                 valign          = "center",
                 halign          = "center",
                 forced_height   = dpi(25),
@@ -205,9 +216,11 @@ function toggle_mic()
     if status:match("On") then
         awful.spawn.with_shell("amixer set Capture nocap")
         mic_button.bg = beautiful.xcolor0
+        mic_button:get_children_by_id("icon")[1]:set_image(recolor(res_path .. "theme/res/mic.png", beautiful.xcolor4))
     else
         awful.spawn.with_shell("amixer set Capture cap")
         mic_button.bg = beautiful.xcolor4
+        mic_button:get_children_by_id("icon")[1]:set_image(recolor(res_path .. "theme/res/mic.png", beautiful.xcolor0))
     end
 end
 
@@ -215,22 +228,10 @@ end
 -- Volume Progress
 local volume_progress = wibox.widget {
     {
-        {
-            image           = res_path .. "theme/res/sound.png",
-            valign          = "center",
-            halign          = "center",
-            forced_height   = dpi(20),
-            forced_width    = dpi(20),
-            widget          = wibox.widget.imagebox
-        },
-        margins = { right = dpi(15), left = dpi(10) },
-        layout = wibox.container.margin
-    },
-    {
         id                  = "text",
         value               = volume_stuff:get_volume(),
         max_value           = 100,
-        forced_height       = dpi(35),
+        forced_height       = dpi(65),
         forced_width        = dpi(200),
         color               = beautiful.xcolor4,
         background_color    = beautiful.xcolor0,
@@ -239,13 +240,30 @@ local volume_progress = wibox.widget {
         end,
         widget              = wibox.widget.progressbar
     },
-    layout = wibox.layout.align.horizontal,
+    {
+        {   
+            id = "box",
+            {
+                image           = res_path .. "theme/res/sound.png",
+                valign          = "center",
+                halign          = "center",
+                forced_height   = dpi(25),
+                forced_width    = dpi(25),
+                widget          = wibox.widget.imagebox
+            },
+            margins = { left = dpi(((volume_stuff:get_volume() / 100) * 200) + 10) },
+            layout = wibox.container.margin
+        },
+        layout = wibox.layout.fixed.horizontal
+    },
+    layout = wibox.layout.stack
 }
 
 function update_volume_progress()
     local value = volume_stuff:get_volume()
 
     volume_progress:get_children_by_id("text")[1]:set_value(value)
+    volume_progress:get_children_by_id("box")[1]:set_margins({ left = dpi(((volume_stuff:get_volume() / 100) * 200) + 10) })
 end
 
 awesome.connect_signal("volume::update", function()
@@ -257,22 +275,10 @@ end)
 -- Backlight Progress
 local backlight_progress = wibox.widget {
     {
-        {
-            image           = res_path .. "theme/res/light.png",
-            valign          = "center",
-            halign          = "center",
-            forced_height   = dpi(20),
-            forced_width    = dpi(20),
-            widget          = wibox.widget.imagebox
-        },
-        margins = { right = dpi(15), left = dpi(10) },
-        layout = wibox.container.margin
-    },
-    {
         id                  = "text",
         value               = backlight_stuff:get_backlight(),
         max_value           = 100,
-        forced_height       = dpi(35),
+        forced_height       = dpi(100),
         forced_width        = dpi(200),
         color               = beautiful.xcolor4,
         background_color    = beautiful.xcolor0,
@@ -281,13 +287,31 @@ local backlight_progress = wibox.widget {
         end,
         widget = wibox.widget.progressbar
     },
-    layout = wibox.layout.align.horizontal,
+    {
+        {
+            id = "box",
+            {
+                id              = "img",
+                image           = res_path .. "theme/res/lamp.png",
+                valign          = "center",
+                halign          = "left",
+                forced_height   = dpi(25),
+                forced_width    = dpi(25),
+                widget          = wibox.widget.imagebox
+            },
+            margins = { left = dpi(((backlight_stuff:get_backlight() / 100) * 200) + 10) },
+            layout = wibox.container.margin
+        },
+        layout = wibox.layout.fixed.horizontal
+    },
+    layout = wibox.layout.stack
 }
 
 function update_backlight_progress()
     local value = backlight_stuff:get_backlight()
 
     backlight_progress:get_children_by_id("text")[1]:set_value(value)
+    backlight_progress:get_children_by_id("box")[1]:set_margins({ left = dpi(((backlight_stuff:get_backlight() / 100) * 200) + 10) })
 end
 
 awesome.connect_signal("backlight::update", function()
@@ -295,17 +319,18 @@ awesome.connect_signal("backlight::update", function()
     backlight_progress:emit_signal("widget::redraw_needed")
 end)
 
-return wibox.widget {
+
+local tinyboard = wibox.widget {
     {
         {
             {
                 { widget = wifi_button },
-                margins = { right = dpi(5.5) },
+                margins = { right = dpi(5) },
                 layout = wibox.container.margin
             },
             {
                 { widget = bluetooth_button },
-                margins = { left = dpi(5.5) },
+                margins = { left = dpi(5) },
                 layout = wibox.container.margin
             },
             layout = wibox.layout.ratio.horizontal 
@@ -313,29 +338,33 @@ return wibox.widget {
         {
             {
                 { widget = redshift_button },
-                margins = { right = dpi(5.5) },
+                margins = { right = dpi(5) },
                 layout = wibox.container.margin
             },
             {
                 { widget = mic_button },
-                margins = { left = dpi(5.5) },
+                margins = { left = dpi(5) },
                 layout = wibox.container.margin
             },
             layout = wibox.layout.ratio.horizontal 
         },
-        {
-            {
-                { widget = volume_progress },
-                margins = { bottom = dpi(10) },
-                layout = wibox.container.margin
-            },
-            { widget = backlight_progress },
-            layout = wibox.layout.fixed.vertical
-        },
-        spacing = dpi(11),
-        forced_width = dpi(250),
-        layout = wibox.layout.ratio.vertical
+        spacing = dpi(10),
+        layout = wibox.layout.flex.vertical
     },
-    margins = dpi(20),
-    layout = wibox.container.margin,
+    { widget = volume_progress },
+    { widget = backlight_progress },
+    spacing = dpi(10),
+    forced_width = dpi(250),
+    forced_height = dpi(290),
+    layout = wibox.layout.ratio.vertical
+}
+tinyboard:adjust_ratio(2, 0.50, 0.25, 0.25)
+
+return wibox.widget {
+    {
+        { widget = tinyboard },
+        layout = wibox.layout.fixed.vertical
+    },
+    margins = dpi(21),
+    layout = wibox.container.margin
 }
