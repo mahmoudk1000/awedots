@@ -13,10 +13,14 @@ local icon = {
 
 function volume_stuff:get_volume()
     local command = io.popen("pamixer --get-volume")
-    local status = command:read("*all")
+    local percent = command:read("*all")
     command:close()
 
-    return tonumber(status)
+    if percent ~= nil and percent ~= " " then
+	return tonumber(percent)
+    else
+	return tonumber(100)
+    end
 end
 
 function volume_stuff:is_muted()

@@ -28,39 +28,49 @@ awful.keyboard.append_global_keybindings({
 
 -- Tags Bindings
 awful.keyboard.append_global_keybindings({
-    awful.key({ modkey,         }, "c",
+    awful.key({ modkey }, "c",
             awful.tag.viewprev,
         { description = "Move Previous", group = "Tag" }),
-    awful.key({ modkey,         }, "v",
+    awful.key({ modkey }, "v",
             awful.tag.viewnext,
         { description = "Move Next", group = "Tag" }),
-    awful.key({ modkey,         }, "Escape",
+    awful.key({ modkey }, "Escape",
             awful.tag.history.restore,
         { description = "Go Back", group = "Tag" }),
-    awful.key({ modkey,           }, "space", 
+    awful.key({ modkey }, "space",
             function () awful.layout.inc(1) end,
         { description = "select next", group = "Layout" }),
-    awful.key({ modkey, "Shift"   }, "space",
+    awful.key({ modkey, shift }, "space",
             function () awful.layout.inc(-1) end,
         { description = "select previous", group = "Layout" }),
 })
 
 -- Applications Bindings
 awful.keyboard.append_global_keybindings({
-    awful.key({modkey,          }, "w",
-            function() awful.spawn(browser) end,
+    awful.key({ modkey }, "w",
+            function()
+                awful.spawn(browser)
+            end,
         { description = "Launch Browser", group = "Launcher" }),
-    awful.key({modkey,          }, "f",
-            function() awful.spawn(filemanager) end,
+    awful.key({ modkey }, "f",
+            function()
+                awful.spawn(filemanager)
+            end,
         { description = "Launch Filemanager", group = "Launcher" }),
-    awful.key({modkey,          }, "o",
-            function() awful.spawn(obsidian) end,
+    awful.key({ modkey }, "o",
+            function()
+                awful.spawn(obsidian)
+            end,
         { description = "Launch Obsidian", group = "Launcher" }),
-    awful.key({modkey,          }, "p",
-            function() awful.spawn("poww") end,
+    awful.key({ modkey }, "p",
+            function()
+                awful.spawn("poww")
+            end,
         { description = "Spawn Power Menu", group = "Launcher" }),
-    awful.key({modkey,          }, "b",
-            function() awful.spawn("blum") end,
+    awful.key({ modkey }, "b",
+            function()
+                awful.spawn("blum")
+            end,
         { description = "Spawn Bluetooth Menu", group = "Launcher" }),
 })
 
@@ -88,13 +98,19 @@ awful.keyboard.append_global_keybindings({
     
     -- Music
     awful.key({}, "XF86AudioPlay",
-            function() awful.spawn.with_shell("playerctl play-pause") end,
+            function()
+                awful.spawn.with_shell("playerctl play-pause")
+            end,
         { description = "Toggle Playerctl", group = "Music" }),
     awful.key({}, "XF86AudioPrev",
-            function() awful.spawn.with_shell("playerctl previous") end,
+            function()
+                awful.spawn.with_shell("playerctl previous")
+            end,
         { description = "Playerctl Previous", group = "Music" }),
     awful.key({}, "XF86AudioNext",
-            function() awful.spawn.with_shell("playerctl next") end,
+            function()
+                awful.spawn.with_shell("playerctl next")
+            end,
         { description = "Playerctl Next", group = "Music" }),
     awful.key({ctrl}, "XF86AudioNext",
             function() 
@@ -102,13 +118,13 @@ awful.keyboard.append_global_keybindings({
                 awesome.emit_signal("mpd::updated")
             end,
         { description = "Playerctl Next", group = "Music" }),
-    awful.key({ctrl}, "XF86AudioPrev",
+    awful.key({ ctrl }, "XF86AudioPrev",
             function() 
                 awful.spawn.with_shell("mpc prev")
                 awesome.emit_signal("mpd::updated")
             end,
         { description = "Playerctl Next", group = "Music" }),
-    awful.key({ctrl}, "XF86AudioPlay",
+    awful.key({ ctrl }, "XF86AudioPlay",
             function()
                 awful.spawn.with_shell("mpc toggle")
                 awesome.emit_signal("mpd::updated")
@@ -117,13 +133,19 @@ awful.keyboard.append_global_keybindings({
 
     -- Scrots
     awful.key({}, "Print",
-            function() awful.spawn.with_shell("flameshot full") end,
+            function()
+                awful.spawn.with_shell("flameshot full")
+            end,
         { description = "Take a Full Screenshot", group = "Scrots" }),
-    awful.key({shift}, "Print",
-            function() awful.spawn.with_shell("flameshot gui") end,
+    awful.key({ shift }, "Print",
+            function()
+                awful.spawn.with_shell("flameshot gui")
+            end,
         { description = "Take a Partial Screenshot", group = "Scrots" }),
-    awful.key({alt}, "Print",
-            function() awful.spawn.with_shell("flameshot full -d 5000") end,
+    awful.key({ alt }, "Print",
+            function()
+                awful.spawn.with_shell("flameshot full -d 5000")
+            end,
         { description = "Take a Delayed Screenshot", group = "Scrots" }),
     
     -- Brightness
@@ -167,58 +189,56 @@ end)
 
 -- Client Bindings
 awful.keyboard.append_global_keybindings({
-    awful.key({modkey}, "Down",
-    function()
-        awful.client.focus.bydirection("down")
-    end, 
-    { description = "focus down", group = "client" }),
-    awful.key({modkey}, "Up",
-    function()
-        awful.client.focus.bydirection("up")
-    end,
-    { description = "focus up", group = "client" }),
-    awful.key({modkey}, "Left",
-    function()
-        awful.client.focus.bydirection("left")
-    end,
-    { description = "focus left", group = "client" }),
-    awful.key({modkey}, "Right",
-    function()
-        awful.client.focus.bydirection("right")
-    end,
-    { description = "focus right", group = "client" }),
-    awful.key({modkey}, "j",
-    function()
-        awful.client.focus.byidx(1)
-    end,
-    { description = "focus next by index", group = "client" }),
-    awful.key({modkey}, "k",
-    function()
-        awful.client.focus.byidx(-1)
-    end,
-    { description = "focus previous by index", group = "client" }),
-    awful.key({modkey, "Shift"}, "j",
-    function()
-        awful.client.swap.byidx(1)
-    end,
-    { description = "swap with next client by index", group = "client" }),
-    awful.key({modkey, "Shift"}, "k",
-    function()
-        awful.client.swap.byidx(-1) 
-    end,
-    { description = "swap with previous client by index", group = "client" }),
+    awful.key({ modkey }, "Down",
+            function()
+                awful.client.focus.bydirection("down")
+            end,
+        { description = "focus down", group = "client" }),
+    awful.key({ modkey }, "Up",
+            function()
+                awful.client.focus.bydirection("up")
+            end,
+        { description = "focus up", group = "client" }),
+    awful.key({ modkey }, "Left",
+            function()
+                awful.client.focus.bydirection("left")
+            end,
+        { description = "focus left", group = "client" }),
+    awful.key({ modkey }, "Right",
+            function()
+                awful.client.focus.bydirection("right")
+            end,
+        { description = "focus right", group = "client" }),
+    awful.key({ modkey }, "j",
+            function()
+                awful.client.focus.byidx(1)
+            end,
+        { description = "focus next by index", group = "client" }),
+    awful.key({ modkey }, "k",
+            function()
+                awful.client.focus.byidx(-1)
+            end,
+        { description = "focus previous by index", group = "client" }),
+    awful.key({ modkey, shift }, "j",
+            function()
+                awful.client.swap.byidx(1)
+            end,
+        { description = "swap with next client by index", group = "client" }),
+    awful.key({ modkey, shift }, "k",
+            function()
+                awful.client.swap.byidx(-1)
+            end,
+        { description = "swap with previous client by index", group = "client" }),
     awful.key({ modkey }, "Tab", 
-    function ()
-        awful.client.focus.byidx(1) 
-    end,
-    { description = "Focus Next by Index", group = "Client" }
-    ),
+            function ()
+                awful.client.focus.byidx(1)
+            end,
+        { description = "Focus Next by Index", group = "Client" }),
     awful.key({ modkey, shift }, "Tab",
-    function ()
-        awful.client.focus.byidx(-1)
-    end,
-    { description = "Focus Previous by Index", group = "Client" }
-    ),
+            function ()
+                awful.client.focus.byidx(-1)
+            end,
+        { description = "Focus Previous by Index", group = "Client" }),
     awful.key {
         modifiers   = { modkey },
         keygroup    = "numrow",
@@ -252,13 +272,19 @@ awful.keyboard.append_global_keybindings({
 -- Client Options Bindings
 client.connect_signal("request::default_keybindings", function()
     awful.keyboard.append_client_keybindings({
-        awful.key({ modkey, shift}, "f",
+        awful.key({ modkey }, "g",
+            function (c)
+                c.x = (c.screen.geometry.width - c.width) / 2
+                c.y = (c.screen.geometry.height - c.height) / 2
+            end,
+            { description = "Center Client", group = "Client" }),
+        awful.key({ modkey, shift }, "f",
                 function (c)
                     c.fullscreen = not c.fullscreen
                     c:raise()
                 end,
             { description = "Toggle Fullscreen", group = "Client" }),
-        awful.key({ modkey,   }, "q",
+        awful.key({ modkey }, "q",
                 function (c) 
                     c:kill()   
                 end,

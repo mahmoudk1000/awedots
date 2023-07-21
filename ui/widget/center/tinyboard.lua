@@ -251,7 +251,7 @@ local volume_progress = wibox.widget {
                 forced_width    = dpi(25),
                 widget          = wibox.widget.imagebox
             },
-            margins = { left = dpi(((volume_stuff:get_volume() / 100) * 200) + 10) },
+            margins = { left = dpi(215) },
             layout = wibox.container.margin
         },
         layout = wibox.layout.fixed.horizontal
@@ -299,7 +299,7 @@ local backlight_progress = wibox.widget {
                 forced_width    = dpi(25),
                 widget          = wibox.widget.imagebox
             },
-            margins = { left = dpi(((backlight_stuff:get_backlight() / 100) * 200) + 10) },
+            margins = { left = dpi(215) },
             layout = wibox.container.margin
         },
         layout = wibox.layout.fixed.horizontal

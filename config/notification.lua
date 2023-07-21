@@ -5,13 +5,13 @@ local naughty = require("naughty")
 local wibox = require("wibox")
 local ruled = require("ruled")
 
+
 -- Notification Config
-naughty.config.defaults.ontop = true
-naughty.config.defaults.screen = awful.screen.focused()
-naughty.config.defaults.border_width = 0
-naughty.config.defaults.position = "top_right"
-naughty.config.defaults.title = "Notification"
-naughty.config.defaults.margin = dpi(10)
+naughty.config.defaults.position	= "top_right"
+naughty.config.defaults.title		= "Notification"
+naughty.config.defaults.margin		= beautiful.notification_margin
+naughty.config.defaults.border_color	= beautiful.notification_border_color
+naughty.config.defaults.border_width	= beautiful.notification_border_width
 
 
 -- Notification Types
@@ -31,7 +31,7 @@ ruled.notification.connect_signal('request::rules', function()
     -- Low
     ruled.notification.append_rule {
 	rule       = { urgency = 'low' },
-	properties = { bg = beautiful.bg_normal, fg = beautiful.fg_normal, timeout = 5 }
+	properties = { bg = beautiful.bg_normal, fg = beautiful.fg_normal, timeout = 3 }
     }
 end)
 
@@ -49,7 +49,7 @@ naughty.connect_signal("request::display", function(n)
 			    {
 				{
 				    naughty.widget.title,
-				    forced_height = dpi(38),
+				    forced_height = dpi(40),
 				    layout = wibox.layout.align.horizontal
 				},
 				left = dpi(15),

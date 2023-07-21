@@ -79,10 +79,10 @@ theme.taglist_disable_icon  = true
 
 
 -- Notifications:
-theme.notification_font = theme.font
-theme.notification_margin = dpi(20)
--- notification_[bg|fg]
--- notification_[width|height|margin]
+theme.notification_font         = theme.font
+theme.notification_margin       = theme.useless_gap
+theme.notification_border_color = theme.xcolor1
+theme.notification_border_width = dpi(0)
 
 
 -- Menu
