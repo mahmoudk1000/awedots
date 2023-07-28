@@ -16,10 +16,10 @@ function volume_stuff:get_volume()
     local percent = command:read("*all")
     command:close()
 
-    if percent ~= nil and percent ~= " " then
-	return tonumber(percent)
+    if percent == nil or percent == "" then
+        return tonumber(100)
     else
-	return tonumber(100)
+        return tonumber(percent)
     end
 end
 
@@ -37,6 +37,7 @@ end
 
 function volume_stuff:volume_icon()
     local muted = self:is_muted()
+
     if muted then
 	return recolor(icon[2], beautiful.xcolor3)
     else

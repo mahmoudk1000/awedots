@@ -75,11 +75,11 @@ ruled.client.connect_signal("request::rules", function()
         id = "global",
         rule = { },
         properties = {
-            focus       = awful.client.focus.filter,
-            raise       = true,
-            screen      = awful.screen.preferred,
-            size_hints_honor = false,
-            placement   = awful.placement.centered + awful.placement.no_overlap + awful.placement.no_offscreen
+            focus               = awful.client.focus.filter,
+            raise               = true,
+            screen              = awful.screen.preferred,
+            size_hints_honor    = false,
+            placement           = awful.placement.centered + awful.placement.no_overlap + awful.placement.no_offscreen
         }
     }
 
@@ -114,15 +114,20 @@ ruled.client.connect_signal("request::rules", function()
         properties = {
             focus = true,
             ontop = true,
-	    floating = true,
-	    placement = awful.placement.centered,
+            floating = true,
+            placement = awful.placement.centered,
 	}
     }
 
     -- Add titlebars to normal clients and dialogs
     ruled.client.append_rule {
         id         = "titlebars",
-        rule_any   = { type = { "normal", "dialog" } },
+        rule_any   = {
+            type = {
+                "normal",
+                "dialog"
+            }
+        },
         properties = { titlebars_enabled = true }
     }
 
