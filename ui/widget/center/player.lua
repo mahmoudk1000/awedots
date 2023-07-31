@@ -16,14 +16,14 @@ local album_cover = wibox.widget {
     halign          = "center",
     forced_height   = dpi(100),
     forced_width    = dpi(100),
+    widget          = wibox.widget.imagebox,
     clip_shape      = function(cr, w, h, r) 
         gears.shape.rounded_rect(cr, w, h, beautiful.border_radius)
-    end,
-    widget          = wibox.widget.imagebox
+    end
 }
 
 local song_name = wibox.widget {
-    markup  = "<b>" .. mpd_stuff:get_song_name() .. "</b>",
+    markup  = "<b>Song</b>",
     font    = beautiful.font_bold,
     align   = "center",
     valign  = "center",
@@ -31,7 +31,7 @@ local song_name = wibox.widget {
 }
 
 local song_artist = wibox.widget {
-    markup  = helpers:color_markup(mpd_stuff:get_song_artist(), beautiful.xcolor3),
+    markup  = helpers:color_markup("artist", beautiful.xcolor3),
     font    = beautiful.font,
     align   = "center",
     valign  = "center",
@@ -47,7 +47,6 @@ local prev_botton = wibox.widget {
     widget          = wibox.widget.imagebox,
     buttons = awful.button({}, awful.button.names.LEFT, function ()
         awful.spawn.with_shell("mpc prev")
-        awesome.emit_signal("mpd::updated") 
     end)
 }
 
@@ -60,7 +59,6 @@ local toggle_button = wibox.widget {
     widget          = wibox.widget.imagebox,
     buttons = awful.button({}, awful.button.names.LEFT, function ()
         awful.spawn.with_shell("mpc toggle") 
-        awesome.emit_signal("mpd::updated")
     end)
 }
 
@@ -73,7 +71,6 @@ local next_button = wibox.widget {
     widget          = wibox.widget.imagebox,
     buttons = awful.button({}, awful.button.names.LEFT, function ()
         awful.spawn.with_shell("mpc next") 
-        awesome.emit_signal("mpd::updated")
     end)
 }
 
@@ -103,20 +100,15 @@ local player = wibox.widget {
 player:adjust_ratio(2, 0.6, 0.2, 0.2)
 
 
-awesome.connect_signal("mpd::updated", function()
-    local name = mpd_stuff:get_song_name()
-    local artist = helpers:color_markup(mpd_stuff:get_song_artist(), beautiful.xcolor3)
-    local state = mpd_stuff:is_playing()
-
-    song_name:set_markup(name)
-    song_artist:set_markup(artist)
+awesome.connect_signal("mpd::info", function(song, artist, state)
+    song_name:set_markup(song)
+    song_artist:set_markup(helpers:color_markup(artist, beautiful.xcolor3))
     
     if state:match("playing") then
         toggle_button.image = recolor(res_path .. "theme/res/pause.png", beautiful.xcolor4)
     else
         toggle_button.image = recolor(res_path .. "theme/res/play.png", beautiful.xcolor4)
     end
-    
     player:emit_signal("widget::redraw_needed")
 end)
 

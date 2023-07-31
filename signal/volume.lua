@@ -1,3 +1,4 @@
+local awful	    = require("awful")
 local beautiful     = require("beautiful")
 local gears         = require "gears"
 local res_path      = gears.filesystem.get_configuration_dir()
@@ -11,50 +12,37 @@ local icon = {
     res_path .. "theme/res/mute.png"
 }
 
-function volume_stuff:get_volume()
-    local command = io.popen("pamixer --get-volume")
-    local percent = command:read("*all")
-    command:close()
+function volume_stuff:emit_volume_state()
+    awful.spawn.easy_async_with_shell(
+	"pamixer --get-volume; pamixer --get-mute",
+	function(stdout, _)
+	    local volume_percent = stdout:match("(.-)\n")
+	    local is_muted = stdout:match("\n(true)\n")
 
-    if percent == nil or percent == "" then
-        return tonumber(100)
-    else
-        return tonumber(percent)
-    end
+	    if volume_percent == nil or volume_percent == "" then
+		volume_percent = tonumber(100)
+	    end
+
+	    if is_muted then
+		volume_icon = recolor(icon[2], beautiful.xcolor3)
+	    else
+		volume_icon = recolor(icon[1], beautiful.xcolor3)
+	    end
+
+	    awesome.emit_signal("volume::value", tonumber(volume_percent), volume_icon)
+    end)
 end
 
-function volume_stuff:is_muted()
-    local command = io.popen("pamixer --get-mute")
-    local status = command:read("*all")
-    command:close()
-
-    if status:match("true") then
-	return true
-    else
-	return false
-    end
-end
-
-function volume_stuff:volume_icon()
-    local muted = self:is_muted()
-
-    if muted then
-	return recolor(icon[2], beautiful.xcolor3)
-    else
-	return recolor(icon[1], beautiful.xcolor3)
-    end
-end
-
-function volume_stuff:is_mic_on()
-    local command  = io.popen("amixer get Capture | tail -n2 | awk '/\\[on\\]/{print \"yes\"}'")
-    local status = command:read("*all")
-    command:close()
-
-    if status:match("yes") then
-	return "On"
-    else
-	return "Off"
-    end
+function volume_stuff:emit_mic_state()
+    awful.spawn.easy_async_with_shell(
+	"amixer get Capture | awk '/\\[on\\]/{print \"yes\"}'",
+	function(stdout, _)
+	    if stdout:match("yes") then
+		awesome.emit_signal("mic::state", "On")
+	    else
+		awesome.emit_signal("mic::state", "Off")
+	    end
+	end)
 end
 
 return volume_stuff

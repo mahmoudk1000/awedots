@@ -24,7 +24,7 @@ local time = wibox.widget {
 local weather = wibox.widget {
     {
         id      = "desc",
-        markup  = weather_stuff:get_desc(),
+        markup  = "Hot",
         font    = beautiful.font,
         widget  = wibox.widget.textbox
     },
@@ -35,19 +35,16 @@ local weather = wibox.widget {
     },
     {
         id      = "temp",
-        markup  = weather_stuff:get_temp() .. "<span>&#176;</span>",
+        markup  = "69" .. "<span>&#176;</span>",
         font    = beautiful.font,
         widget  = wibox.widget.textbox,
     },
     layout = wibox.layout.fixed.horizontal
 }
 
-awesome.connect_signal("weather::updated", function()
-    local temp = weather_stuff:get_temp() .. "<span>&#176;</span>"
-    local desc = weather_stuff:get_desc()
-
+awesome.connect_signal("weather::info", function(temp, desc)
+    weather:get_children_by_id("temp")[1]:set_markup(temp .. "<span>&#176;</span>")
     weather:get_children_by_id("desc")[1]:set_markup(desc)
-    weather:get_children_by_id("temp")[1]:set_markup(temp)
 end)
 
 -- Create Center Widget

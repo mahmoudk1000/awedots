@@ -7,9 +7,8 @@ local res_path          = gears.filesystem.get_configuration_dir()
 local recolor           = gears.color.recolor_image
 
 local helpers           = require("helpers")
-local battery_stuff     = require("signal.battery")
 local volume_stuff      = require("signal.volume")
-local backlight_stuff   = require("signal.backlight")
+local battery_stuff     = require("signal.battery")
 local bluetooth_stuff   = require("signal.bluetooth")
 
 
@@ -136,7 +135,7 @@ local volume = wibox.widget {
     {
         {
             id              = "icon",
-            image           = volume_stuff:volume_icon(),
+            image           = recolor(res_path .. "theme/res/volume.png", beautiful.xcolor3),
             align           = "center",
             valign          = "center",
             forced_height   = dpi(15),
@@ -147,7 +146,7 @@ local volume = wibox.widget {
     },
     {
         id      = "text",
-        text    = volume_stuff:get_volume() .. "%",
+        text    = "100%",
         font    = beautiful.font,
         align   = "center",
         valign  = "center",
@@ -156,13 +155,9 @@ local volume = wibox.widget {
     layout = wibox.layout.fixed.horizontal,
 }
 
-awesome.connect_signal("volume::update", function()
-    local value = volume_stuff:get_volume() .. "%"
-    local icon = volume_stuff:volume_icon()
-
-    volume:get_children_by_id("text")[1]:set_text(value)
+awesome.connect_signal("volume::value", function(value, icon)
+    volume:get_children_by_id("text")[1]:set_text(value .. "%")
     volume:get_children_by_id("icon")[1]:set_image(icon)
-
     volume:emit_signal("widget::redraw_needed")
 end)
 
@@ -182,7 +177,7 @@ local backlight = wibox.widget {
     },
     {
         id      = "text",
-        text    = backlight_stuff:get_backlight() .. "%",
+        text    = "100%",
         align   = "center",
         valign  = "center",
         font    = font,
@@ -191,11 +186,8 @@ local backlight = wibox.widget {
     layout = wibox.layout.fixed.horizontal,
 }
 
-awesome.connect_signal("backlight::update", function()
-    local value = backlight_stuff:get_backlight() .. "%"
-    
-    backlight:get_children_by_id("text")[1]:set_text(value)
-    
+awesome.connect_signal("brightness::value", function(value)
+    backlight:get_children_by_id("text")[1]:set_text(value .. "%")
     backlight:emit_signal("widget::redraw_needed")
 end)
 
@@ -205,7 +197,7 @@ local bluetooth = wibox.widget {
     {
         {
             id              = "icon",
-            markup          = bluetooth_stuff:bluetooth_icon(),
+            markup          = recolor(res_path .. "theme/res/blue-on.png", beautiful.xcolor4),
             align           = "center",
             valign          = "center",
             forced_height   = dpi(15),
@@ -216,7 +208,7 @@ local bluetooth = wibox.widget {
     },
     {
         id      = "text",
-        text    = bluetooth_stuff:get_status(),
+        text    = "On",
         align   = "center",
         valign  = "center",
         font    = font,
@@ -225,19 +217,19 @@ local bluetooth = wibox.widget {
     layout = wibox.layout.fixed.horizontal,
 }
 
-function update_bluetooth()
-    local icon = bluetooth_stuff:bluetooth_icon()
-    local value = bluetooth_stuff:get_status()
-
+awesome.connect_signal("bluetooth::status", function(is_powerd, is_connect, icon)
+    bluetooth:get_children_by_id("text")[1]:set_text(is_powerd)
     bluetooth:get_children_by_id("icon")[1]:set_image(icon)
-    bluetooth:get_children_by_id("text")[1]:set_text(value)
-end
+end)
 
 gears.timer({
     timeout = 5,
     autostart = true,
     call_now = true,
-    callback = update_bluetooth
+    callback = function()
+        bluetooth_stuff:emit_bluetooth_info()
+        volume_stuff:emit_volume_state()
+    end
 })
 
 
@@ -246,7 +238,7 @@ local battery = wibox.widget {
     {
         {
             id              = "icon",
-            image           = battery_stuff:battery_icon(),
+            image           = recolor(res_path .. "theme/res/bat-nor.png", beautiful.xcolor5),
             align           = "center",
             valign          = "center",
             forced_height   = dpi(15),
@@ -257,7 +249,7 @@ local battery = wibox.widget {
     },
     {
         id      = "text",
-        text    = battery_stuff:get_battery_percent() .. "%",
+        text    = "100%",
         align   = "center",
         valign  = "center",
         font    = font,
@@ -266,19 +258,19 @@ local battery = wibox.widget {
     layout = wibox.layout.fixed.horizontal,
 }
 
-function update_battery()
-    local icon = battery_stuff:battery_icon()
-    local value = battery_stuff:get_battery_percent() .. "%"
-
+awesome.connect_signal("battery::info", function(value, icon)
+    battery:get_children_by_id("text")[1]:set_text(value .. "%")
     battery:get_children_by_id("icon")[1]:set_image(icon)
-    battery:get_children_by_id("text")[1]:set_text(value)
-end
+    battery:emit_signal("widget::redraw_needed")
+end)
 
 gears.timer({
     timeout = 30,
     autostart = true,
     call_now = true,
-    callback = update_battery
+    callback = function()
+        battery_stuff:emit_battery_info()
+    end
 })
 
 

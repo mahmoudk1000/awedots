@@ -1,3 +1,4 @@
+local awful         = require("awful")
 local beautiful     = require("beautiful")
 local gears         = require "gears"
 local res_path      = gears.filesystem.get_configuration_dir()
@@ -12,32 +13,23 @@ local icon = {
     res_path .. "theme/res/bat-nor.png",
 }
 
-function battery_stuff:get_battery_status()
-    local command = io.popen("cat /sys/class/power_supply/BAT0/status")
-    local status = command:read("*all")
-    command:close()
+function battery_stuff:emit_battery_info()
+    awful.spawn.easy_async_with_shell(
+        "cat /sys/class/power_supply/BAT0/capacity; cat /sys/class/power_supply/BAT0/status",
+        function(stdout, _)
+            local battery_capacity = string.match(stdout, "(.-)\n")
+            local battery_icon
 
-    return tostring(status)
-end
+            if stdout:match("Discharging") then
+                battery_icon = recolor(icon[3], beautiful.xcolor1)
+            elseif stdout:match("Full") then
+                battery_icon = recolor(icon[2], beautiful.xcolor2)
+            elseif stdout:match("Charging") then
+                battery_icon = recolor(icon[1], beautiful.xcolor5)
+            end
 
-function battery_stuff:battery_icon()
-    status = self:get_battery_status()
-
-    if status:match("Discharging") then
-        return recolor(icon[3], beautiful.xcolor1)
-    elseif status:match("Full") then
-        return recolor(icon[2], beautiful.xcolor2)
-    else
-        return recolor(icon[1], beautiful.xcolor5)
-    end
-end
-
-function battery_stuff:get_battery_percent()
-    local command = io.popen("cat /sys/class/power_supply/BAT0/capacity")
-    local percent = command:read("*all")
-    command:close()
-
-    return tonumber(percent)
+            awesome.emit_signal("battery::info", battery_capacity, battery_icon)
+        end)
 end
 
 return battery_stuff

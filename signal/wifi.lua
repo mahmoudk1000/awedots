@@ -1,42 +1,18 @@
+local awful = require("awful")
+
+
 local wifi_stuff = {}
 
-function wifi_stuff:get_status()
-    local command = io.popen("iwctl device list | awk '/on/{print $4}'")
-    local status = command:read("*all")
-    command:close()
+function wifi_stuff:emit_wifi_info()
+    awful.spawn.easy_async_with_shell(
+        "iwctl device list | awk '/on/{print $4}'; iwctl station wlan0 show | awk '/State/ {print $NF}'; iwctl station wlan0 show | awk '/Connected network/ {print $NF}'",
+        function(stdout, _)
+            local is_powerd = stdout:match("^(on)\n")
+            local is_connected = stdout:match("\n(connected)\n")
+            local wifi_name = stdout:match("[^\n]+\n[^\n]+\n([^\n]+)")
 
-    if status:match("on") then
-        return "On"
-    else
-        return "Off"
-    end
-end 
-
-function wifi_stuff:is_connected()
-    local command = io.popen("iwctl station wlan0 get-networks | grep '>'")
-    local is_connected = command:read("*all")
-    command:close()
-
-    if is_connected then
-        return true
-    else
-        return false
-    end
+            awesome.emit_signal("wifi::info", is_powerd, is_connected, wifi_name)
+        end)
 end
-
-function wifi_stuff:wifi_name()
-    local connected = self:is_connected()
-    
-    if connected then
-        local command = io.popen("iwctl station wlan0 get-networks | grep '>' | awk '{print $4}'")
-        local name = command:read("*all")
-        command:close()
-
-        return name
-    else
-        return "WiFi"
-    end
-end
-
 
 return wifi_stuff

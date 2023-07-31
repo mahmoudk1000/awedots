@@ -3,6 +3,9 @@ local gears = require("gears")
 local menubar = require("menubar")
 local hotkeys_popup = require("awful.hotkeys_popup")
 
+local volume_stuff      = require("signal.volume")
+local backlight_stuff   = require("signal.backlight")
+
 
 -- Awesome Bindings
 awful.keyboard.append_global_keybindings({
@@ -79,23 +82,37 @@ awful.keyboard.append_global_keybindings({
     -- Volume
     awful.key({}, "XF86AudioRaiseVolume",
             function()
-                awful.spawn.with_shell("pamixer -i 5")
-                awesome.emit_signal("volume::update")
+                awful.spawn({"pamixer", "-i", "5"})
+                volume_stuff:emit_volume_state()
             end,
         { description = "Increase Volume", group = "System" }),
     awful.key({}, "XF86AudioLowerVolume", 
             function() 
-                awful.spawn.with_shell("pamixer -d 5")
-                awesome.emit_signal("volume::update")
+                awful.spawn({"pamixer", "-d", "5"})
+                volume_stuff:emit_volume_state()
             end,
         { description = "Decrease Volume", group = "System" }),
     awful.key({}, "XF86AudioMute",
             function() 
-                awful.spawn.with_shell("pamixer --toggle-mute")
-                awesome.emit_signal("volume::update")
+                awful.spawn({"pamixer", "--toggle-mute"})
+                volume_stuff:emit_volume_state()
             end,
         { description = "Toggle Mute", group = "System" }),
     
+    -- Brightness
+    awful.key({}, "XF86MonBrightnessUp",
+            function()
+                awful.spawn({"brightnessctl", "s", "+10%"})
+                backlight_stuff:emit_backlight_info()
+            end,
+        { description = "Increase Brightness", group = "System" }),
+    awful.key({}, "XF86MonBrightnessDown",
+            function()
+                awful.spawn({"brightnessctl", "s", "10%-"})
+                backlight_stuff:emit_backlight_info()
+            end,
+        { description = "Decrease Brightness", group = "System" }),
+
     -- Music
     awful.key({}, "XF86AudioPlay",
             function()
@@ -114,53 +131,36 @@ awful.keyboard.append_global_keybindings({
         { description = "Playerctl Next", group = "Music" }),
     awful.key({ctrl}, "XF86AudioNext",
             function() 
-                awful.spawn.with_shell("mpc next") 
-                awesome.emit_signal("mpd::updated")
+                awful.spawn.with_shell("mpc next")
             end,
         { description = "Playerctl Next", group = "Music" }),
     awful.key({ ctrl }, "XF86AudioPrev",
             function() 
                 awful.spawn.with_shell("mpc prev")
-                awesome.emit_signal("mpd::updated")
             end,
         { description = "Playerctl Next", group = "Music" }),
     awful.key({ ctrl }, "XF86AudioPlay",
             function()
                 awful.spawn.with_shell("mpc toggle")
-                awesome.emit_signal("mpd::updated")
             end,
         { description = "Playerctl Next", group = "Music" }),
 
     -- Scrots
     awful.key({}, "Print",
             function()
-                awful.spawn.with_shell("flameshot full")
+                awful.spawn({"flameshot", "full"})
             end,
         { description = "Take a Full Screenshot", group = "Scrots" }),
     awful.key({ shift }, "Print",
             function()
-                awful.spawn.with_shell("flameshot gui")
+                awful.spawn({"flameshot", "gui"})
             end,
         { description = "Take a Partial Screenshot", group = "Scrots" }),
     awful.key({ alt }, "Print",
             function()
-                awful.spawn.with_shell("flameshot full -d 5000")
+                awful.spawn({"flameshot", "full", "-d 5000"})
             end,
         { description = "Take a Delayed Screenshot", group = "Scrots" }),
-    
-    -- Brightness
-    awful.key({}, "XF86MonBrightnessUp",
-            function() 
-                awful.spawn.with_shell("brightnessctl s +10%")
-                awesome.emit_signal("backlight::update")
-            end,
-        { description = "Increase Brightness", group = "System" }),
-    awful.key({}, "XF86MonBrightnessDown",
-            function()
-                awful.spawn.with_shell("brightnessctl s 10%-")
-                awesome.emit_signal("backlight::update")
-            end,
-        { description = "Decrease Brightness", group = "System" }),
 })
 
 -- Mouse Bindings

@@ -3,40 +3,25 @@ local awful     = require("awful")
 
 local mpd_stuff = {}
 
-function mpd_stuff:get_song_name()
+function mpd_stuff:emit_mpd_info()
     local command = io.popen("mpc current -f %title%")
-    local name = command:read("*all")
-    command:close()
+    awful.spawn.easy_async_with_shell(
+        "mpc current -f '%title%_%artist%_'; mpc status | awk '/playing/{print \"playing\"}'",
+        function(stdout, _)
+            local song = stdout:match("^(.-)_")
+            local artist = stdout:match("_(.-)_")
+            local is_playing = stdout:match("playing")
 
-    if not name or name == "" then
-        return "Unknown"
-    else
-        return tostring(name)
-    end
-end
+            if name == "" then
+                name = "Unknown"
+            end
 
-function mpd_stuff:get_song_artist()
-    local command = io.popen("mpc current -f %artist%")
-    local artist = command:read("*all")
-    command:close()
+            if artist == "" then
+                artist = "Unknown"
+            end
 
-    if not artist or artist == "" then
-        return "Unknown"
-    else
-        return tostring(artist)
-    end
-end
-
-function mpd_stuff:is_playing()
-    local command = io.popen("mpc status | awk '/playing/{print \"yes\"}'")
-    local state = command:read("*all")
-    command:close()
-
-    if state:match("yes") then
-        return "playing"
-    else
-        return "paused"
-    end
+            awesome.emit_signal("mpd::info",  tostring(song), tostring(artist), tostring(is_playing))
+        end)
 end
 
 
@@ -44,12 +29,14 @@ local mpd_script = [[
     sh -c 'mpc idleloop player'
 ]]
 
-awful.spawn.easy_async_with_shell("ps x | grep \"mpc idleloop player\" | grep -v grep | awk '{print $1}' | xargs kill", function()
-    awful.spawn.with_line_callback(mpd_script, {
-        stdout = function()
-            awesome.emit_signal("mpd::updated")
-        end
-    })
+awful.spawn.easy_async_with_shell(
+    "ps x | grep \"mpc idleloop player\" | grep -v grep | awk '{print $1}' | xargs kill",
+    function()
+        awful.spawn.with_line_callback(mpd_script, {
+            stdout = function()
+                mpd_stuff.emit_mpd_info()
+            end
+        })
 end)
 
 return mpd_stuff
