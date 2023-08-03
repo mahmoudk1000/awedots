@@ -1,7 +1,7 @@
-local awful = require("awful")
-local gears = require("gears")
-local beautiful = require("beautiful")
-local ruled = require("ruled")
+local awful         = require("awful")
+local gears         = require("gears")
+local beautiful     = require("beautiful")
+local ruled         = require("ruled")
 
 
 -- Wallpaper

@@ -116,6 +116,7 @@ function toggle_bluetooth()
                 bluetooth_button.bg = beautiful.xcolor4
                 bluetooth_button:get_children_by_id("icon")[1]:set_image(recolor(res_path .. "theme/res/blue-off.png", beautiful.xcolor0))
             end
+            bluetooth_stuff:emit_bluetooth_info()
     end)
 end
 

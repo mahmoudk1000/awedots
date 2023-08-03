@@ -36,5 +36,4 @@ function bluetooth_stuff:emit_bluetooth_info()
         end)
 end
 
-
 return bluetooth_stuff
