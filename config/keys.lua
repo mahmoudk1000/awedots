@@ -1,7 +1,5 @@
-local awful = require("awful")
-local gears = require("gears")
-local menubar = require("menubar")
-local hotkeys_popup = require("awful.hotkeys_popup")
+local awful             = require("awful")
+local hotkeys_popup     = require("awful.hotkeys_popup")
 
 local volume_stuff      = require("signal.volume")
 local backlight_stuff   = require("signal.backlight")
@@ -86,7 +84,13 @@ awful.keyboard.append_global_keybindings({
                 volume_stuff:emit_volume_state()
             end,
         { description = "Increase Volume", group = "System" }),
-    awful.key({}, "XF86AudioLowerVolume", 
+        awful.key({ ctrl }, "XF86AudioRaiseVolume",
+            function()
+                awful.spawn({"pamixer", "--allow-boost", "-i", "10"})
+                volume_stuff:emit_volume_state()
+            end,
+        { description = "Increase Volume", group = "System" }),
+    awful.key({}, "XF86AudioLowerVolume",
             function() 
                 awful.spawn({"pamixer", "-d", "5"})
                 volume_stuff:emit_volume_state()

@@ -3,7 +3,7 @@ local gears             = require "gears"
 local wibox             = require("wibox")
 local beautiful         = require("beautiful")
 local dpi               = beautiful.xresources.apply_dpi
-local res_path          = gears.filesystem.get_configuration_dir()
+local res_path          = gears.filesystem.get_configuration_dir() .. "theme/res/"
 local recolor           = gears.color.recolor_image
 
 local helpers           = require("helpers")
@@ -100,7 +100,7 @@ local layoutbox = awful.widget.layoutbox {
 local clock = wibox.widget {
     {
         {
-            image           = recolor(res_path .. "theme/res/clock.png", beautiful.xcolor2),
+            image           = recolor(res_path .. "clock.png", beautiful.xcolor2),
             valign          = "center",
             align           = "center",
             forced_height   = dpi(15),
@@ -135,7 +135,7 @@ local volume = wibox.widget {
     {
         {
             id              = "icon",
-            image           = recolor(res_path .. "theme/res/volume.png", beautiful.xcolor3),
+            image           = recolor(res_path .. "volume.png", beautiful.xcolor3),
             align           = "center",
             valign          = "center",
             forced_height   = dpi(15),
@@ -166,7 +166,7 @@ end)
 local backlight = wibox.widget {
     {
         {   
-            image           = recolor(res_path .. "theme/res/lamp.png", beautiful.xcolor2),
+            image           = recolor(res_path .. "lamp.png", beautiful.xcolor2),
             align           = "center",
             valign          = "center",
             forced_height   = dpi(15),
@@ -197,7 +197,7 @@ local bluetooth = wibox.widget {
     {
         {
             id              = "icon",
-            markup          = recolor(res_path .. "theme/res/blue-on.png", beautiful.xcolor4),
+            markup          = recolor(res_path .. "blue-on.png", beautiful.xcolor4),
             align           = "center",
             valign          = "center",
             forced_height   = dpi(15),
@@ -238,7 +238,7 @@ local battery = wibox.widget {
     {
         {
             id              = "icon",
-            image           = recolor(res_path .. "theme/res/bat-nor.png", beautiful.xcolor5),
+            image           = recolor(res_path .. "bat-nor.png", beautiful.xcolor5),
             align           = "center",
             valign          = "center",
             forced_height   = dpi(15),
@@ -252,7 +252,7 @@ local battery = wibox.widget {
         text    = "100%",
         align   = "center",
         valign  = "center",
-        font    = font,
+        font    = beautiful.font,
         widget  = wibox.widget.textbox,
     },
     layout = wibox.layout.fixed.horizontal,

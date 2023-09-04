@@ -34,7 +34,7 @@ awful.spawn.easy_async_with_shell(
     function()
         awful.spawn.with_line_callback(mpd_script, {
             stdout = function()
-                mpd_stuff.emit_mpd_info()
+                mpd_stuff:emit_mpd_info()
             end
         })
 end)
