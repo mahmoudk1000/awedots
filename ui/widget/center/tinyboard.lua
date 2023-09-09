@@ -222,18 +222,29 @@ local mic_button = wibox.widget {
     end,
     buttons = {
         awful.button({}, 1, function()
-            volume_stuff:emit_mic_state()
+            toggle_mic()
         end)
     }
 }
 
+function toggle_mic()
+    awful.spawn.easy_async_with_shell(
+        "amixer get Capture | awk '/\\[on\\]/{print \"yes\"}'",
+        function(stdout, _)
+            if stdout:match("yes") then
+                awful.spawn.with_shell("amixer set Capture nocap")
+            else
+                awful.spawn.with_shell("amixer set Capture cap")
+            end
+        end)
+    volume_stuff:emit_mic_state()
+end
+
 awesome.connect_signal("mic::state", function(status)
     if status:match("On") then
-        awful.spawn.with_shell("amixer set Capture nocap")
         mic_button.bg = beautiful.xcolor0
         mic_button:get_children_by_id("icon")[1]:set_image(recolor(res_path .. "mic.png", beautiful.xcolor4))
     else
-        awful.spawn.with_shell("amixer set Capture cap")
         mic_button.bg = beautiful.xcolor4
         mic_button:get_children_by_id("icon")[1]:set_image(recolor(res_path .. "mic.png", beautiful.xcolor0))
     end
