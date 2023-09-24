@@ -1,22 +1,24 @@
-local awful         = require("awful")
+local awful = require("awful")
 
 
 local redshift_stuff = {}
 
 function redshift_stuff:emit_redshift_info()
-    awful.spawn.easy_async_with_shell(
-        "systemctl is-active --user redshift | awk '/^active/{print \"on\"}'",
-        function(stdout, _)
-            local status
+    awful.spawn.easy_async(
+        "systemctl --user is-active --quiet redshift.service",
+        function(_, _, _, exitcode)
+            local state
 
-            if stdout:match("on") then
-                status = "On"
+            if exitcode == 0 then
+                state = "On"
             else
-                status = "Off"
+                state = "Off"
             end
 
-            awesome.emit_signal("redshift::status", status)
+            awesome.emit_signal("redshift::state", state)
         end)
 end
+
+redshift_stuff:emit_redshift_info()
 
 return redshift_stuff

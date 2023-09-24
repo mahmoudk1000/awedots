@@ -6,11 +6,10 @@ local dpi               = beautiful.xresources.apply_dpi
 local res_path          = gears.filesystem.get_configuration_dir() .. "theme/res/"
 local recolor           = gears.color.recolor_image
 
-local volume_stuff      = require("signal.volume")
-local backlight_stuff   = require("signal.backlight")
-local bluetooth_stuff   = require("signal.bluetooth")
 local wifi_stuff        = require("signal.wifi")
+local bluetooth_stuff   = require("signal.bluetooth")
 local redshift_stuff    = require("signal.redshift")
+local volume_stuff      = require("signal.volume")
 
 
 -- Wifi Button
@@ -47,21 +46,34 @@ local wifi_button = wibox.widget {
         gears.shape.rounded_rect(cr, width, height, beautiful.border_radius)
     end,
     buttons = {
-        awful.button({}, awful.button.names.LEFT, function ()
-            wifi_stuff:emit_wifi_info()
+        awful.button({}, awful.button.names.LEFT, function()
+            toggle_wifi()
         end)
     }
 }
 
+function toggle_wifi()
+    awful.spawn.easy_async_with_shell(
+        "iwctl device list | awk '/on/{print $4}'",
+        function(stdout, _)
+            if stdout:match("on") then
+                awful.spawn.with_shell("rfkill block wlan")
+            else
+                awful.spawn.with_shell("rfkill unblock wlan")
+            end
+            wifi_stuff:emit_wifi_info()
+        end)
+end
+
 awesome.connect_signal("wifi::info", function(is_powerd, is_connected, wifi_name)
-    if is_powerd then
-        awful.spawn.with_shell("rfkill block wlan")
-        wifi_button.bg = beautiful.xcolor0
-        wifi_button:get_children_by_id("icon")[1]:set_image(recolor(res_path.. "wifi.png", beautiful.xcolor4))
-    else
-        awful.spawn.with_shell("rfkill unblock wlan")
+    if is_powerd or (is_powerd and is_connected) then
         wifi_button.bg = beautiful.xcolor4
+        wifi_button:get_children_by_id("text")[1]:set_text(wifi_name)
         wifi_button:get_children_by_id("icon")[1]:set_image(recolor(res_path.. "wifi.png", beautiful.xcolor0))
+    else
+        wifi_button.bg = beautiful.xcolor0
+        wifi_button:get_children_by_id("text")[1]:set_text(wifi_name)
+        wifi_button:get_children_by_id("icon")[1]:set_image(recolor(res_path.. "wifi.png", beautiful.xcolor4))
     end
 end)
 
@@ -98,7 +110,7 @@ local bluetooth_button = wibox.widget {
         gears.shape.rounded_rect(cr, width, height, beautiful.border_radius)
     end,
     buttons = {
-        awful.button({}, awful.button.names.LEFT, function ()
+        awful.button({}, awful.button.names.LEFT, function()
             toggle_bluetooth()
         end)
     }
@@ -112,8 +124,8 @@ function toggle_bluetooth()
             elseif stdout == nil or stdout == "" then
                 awful.spawn.with_shell("bluetoothctl power on")
             end
+            bluetooth_stuff:emit_bluetooth_info()
         end)
-    bluetooth_stuff:emit_bluetooth_info()
 end
 
 awesome.connect_signal("bluetooth::status", function(is_powerd, is_connect, icon)
@@ -167,24 +179,24 @@ local redshift_button = wibox.widget {
 
 function toggle_redshift()
     awful.spawn.easy_async_with_shell(
-        "systemctl is-active --user redshift | awk '/^active/{print \"on\"}'", function(stdout, _)
-            if stdout:match("on") then
-                awful.spawn.with_shell("systemctl stop --user redshift.service")
+        "systemctl --user is-active --quiet redshift.service",
+        function(_, _, _, exitcode)
+            if exitcode == 0 then
+                awful.spawn("systemctl --user stop redshift.service")
             else
-                awful.spawn.with_shell("systemctl start --user redshift.service")
+                awful.spawn("systemctl --user start redshift.service")
             end
+            redshift_stuff:emit_redshift_info()
         end)
-    redshift_stuff:emit_redshift_info()
 end
 
-
-awesome.connect_signal("redshift::status", function(status)
-    if status:match("On") then
-        redshift_button.bg = beautiful.xcolor0
-        redshift_button:get_children_by_id("icon")[1]:set_image(recolor(res_path .. "redshift.png", beautiful.xcolor4))
-    elseif status:match("Off") then
+awesome.connect_signal("redshift::state", function(state)
+    if state == "On" then
         redshift_button.bg = beautiful.xcolor4
         redshift_button:get_children_by_id("icon")[1]:set_image(recolor(res_path .. "redshift.png", beautiful.xcolor0))
+    elseif state == "Off" then
+        redshift_button.bg = beautiful.xcolor0
+        redshift_button:get_children_by_id("icon")[1]:set_image(recolor(res_path .. "redshift.png", beautiful.xcolor4))
     end
 end)
 
@@ -205,7 +217,7 @@ local mic_button = wibox.widget {
             {
                 text    = "Mic",
                 align   = "center",
-                font    = beautiful.icofont,
+                font    = beautiful.font,
                 widget  = wibox.widget.textbox,
             },
             spacing = dpi(5),
@@ -221,7 +233,7 @@ local mic_button = wibox.widget {
         gears.shape.rounded_rect(cr, width, height, beautiful.border_radius)
     end,
     buttons = {
-        awful.button({}, 1, function()
+        awful.button({}, awful.button.names.LEFT, function()
             toggle_mic()
         end)
     }
@@ -229,24 +241,24 @@ local mic_button = wibox.widget {
 
 function toggle_mic()
     awful.spawn.easy_async_with_shell(
-        "amixer get Capture | awk '/\\[on\\]/{print \"yes\"}'",
-        function(stdout, _)
-            if stdout:match("yes") then
-                awful.spawn.with_shell("amixer set Capture nocap")
+        "amixer get Capture | grep -q '\\[on\\]'",
+        function(_, _, _, exitcode)
+            if exitcode == 0 then
+                awful.spawn.easy_async("amixer set Capture nocap")
             else
-                awful.spawn.with_shell("amixer set Capture cap")
+                awful.spawn.easy_async("amixer set Capture cap")
             end
+            volume_stuff:emit_mic_state()
         end)
-    volume_stuff:emit_mic_state()
 end
 
 awesome.connect_signal("mic::state", function(status)
-    if status:match("On") then
-        mic_button.bg = beautiful.xcolor0
-        mic_button:get_children_by_id("icon")[1]:set_image(recolor(res_path .. "mic.png", beautiful.xcolor4))
-    else
+    if status == "On" then
         mic_button.bg = beautiful.xcolor4
         mic_button:get_children_by_id("icon")[1]:set_image(recolor(res_path .. "mic.png", beautiful.xcolor0))
+    else
+        mic_button.bg = beautiful.xcolor0
+        mic_button:get_children_by_id("icon")[1]:set_image(recolor(res_path .. "mic.png", beautiful.xcolor4))
     end
 end)
 

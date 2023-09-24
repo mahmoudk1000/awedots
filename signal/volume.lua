@@ -16,8 +16,9 @@ function volume_stuff:emit_volume_state()
     awful.spawn.easy_async_with_shell(
 	"pamixer --get-volume; pamixer --get-mute",
 	function(stdout, _)
-	    local volume_percent = stdout:match("(.-)\n")
+	    local volume_percent = tonumber(stdout:match("(.-)\n"))
 	    local is_muted = stdout:match("\n(true)\n")
+	    local volume_icon
 
 	    if volume_percent == nil or volume_percent == "" then
 		volume_percent = tonumber(100)
@@ -29,20 +30,27 @@ function volume_stuff:emit_volume_state()
 		volume_icon = recolor(icon[1], beautiful.xcolor3)
 	    end
 
-	    awesome.emit_signal("volume::value", tonumber(volume_percent), volume_icon)
+	    awesome.emit_signal("volume::value", volume_percent, volume_icon)
     end)
 end
 
 function volume_stuff:emit_mic_state()
     awful.spawn.easy_async_with_shell(
-	"amixer get Capture | awk '/\\[on\\]/{print \"yes\"}'",
-	function(stdout, _)
-	    if stdout:match("yes") then
-		awesome.emit_signal("mic::state", "On")
-	    else
-		awesome.emit_signal("mic::state", "Off")
-	    end
-	end)
+        "amixer get Capture | grep -q '\\[on\\]'",
+        function(_, _, _, exitcode)
+            local status
+
+	    if exitcode == 0 then
+                status = "On"
+            else
+                status = "Off"
+            end
+
+            awesome.emit_signal("mic::state", status)
+        end)
 end
+
+volume_stuff:emit_volume_state()
+volume_stuff:emit_mic_state()
 
 return volume_stuff

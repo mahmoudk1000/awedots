@@ -49,7 +49,7 @@ theme.bg_urgent         = theme.xcolor1
 theme.useless_gap       = dpi(4)
 theme.border_radius     = dpi(2)
 
-theme.wallpaper         =  gears.filesystem.get_configuration_dir() .. "theme/wall.png"
+theme.wallpaper         =  gears.filesystem.get_configuration_dir() .. "theme/wall.jpg"
 
 
 -- Borders

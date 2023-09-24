@@ -12,16 +12,16 @@ function weather_stuff:emit_weather_info()
     local command = "curl -s '" .. url .."' -o /home/mahmoud/.cache/weather.json"
 
     awful.spawn.easy_async_with_shell(command, function()
-        awful.spawn.easy_async_with_shell("cat ~/.cache/weather.json", function(stdout, _)
-            local data = json.decode(stdout)
+        awful.spawn.easy_async_with_shell("cat ~/.cache/weather.json",
+            function(stdout, _)
+                local data = json.decode(stdout)
 
-            local temp = data.main.temp
-            local desc = data.weather[1].description:gsub("^%l", string.upper)
+                local temp = data.main.temp
+                local desc = data.weather[1].description:gsub("^%l", string.upper)
 
-            awesome.emit_signal("weather::info", temp, desc)
-        end)
+                awesome.emit_signal("weather::info", temp, desc)
+            end)
     end)
-
 end
 
 gears.timer {
