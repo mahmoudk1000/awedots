@@ -47,23 +47,19 @@ local wifi_button = wibox.widget {
     end,
     buttons = {
         awful.button({}, awful.button.names.LEFT, function()
-            toggle_wifi()
+            awful.spawn.easy_async_with_shell(
+                "iwctl device list | awk '/on/{print $4}'",
+                function(stdout, _)
+                    if stdout:match("on") then
+                        awful.spawn.with_shell("rfkill block wlan")
+                    else
+                        awful.spawn.with_shell("rfkill unblock wlan")
+                    end
+                    wifi_stuff:emit_wifi_info()
+                end)
         end)
     }
 }
-
-function toggle_wifi()
-    awful.spawn.easy_async_with_shell(
-        "iwctl device list | awk '/on/{print $4}'",
-        function(stdout, _)
-            if stdout:match("on") then
-                awful.spawn.with_shell("rfkill block wlan")
-            else
-                awful.spawn.with_shell("rfkill unblock wlan")
-            end
-            wifi_stuff:emit_wifi_info()
-        end)
-end
 
 awesome.connect_signal("wifi::info", function(is_powerd, is_connected, wifi_name)
     if is_powerd or (is_powerd and is_connected) then
@@ -111,22 +107,18 @@ local bluetooth_button = wibox.widget {
     end,
     buttons = {
         awful.button({}, awful.button.names.LEFT, function()
-            toggle_bluetooth()
+            awful.spawn.easy_async_with_shell(
+                "bluetoothctl show | awk '/Powered: yes/{print \"powerd\"}'", function(stdout, _)
+                    if stdout and stdout ~= "" then
+                        awful.spawn.with_shell("bluetoothctl power off")
+                    elseif stdout == nil or stdout == "" then
+                        awful.spawn.with_shell("bluetoothctl power on")
+                    end
+                    bluetooth_stuff:emit_bluetooth_info()
+                end)
         end)
     }
 }
-
-function toggle_bluetooth()
-    awful.spawn.easy_async_with_shell(
-        "bluetoothctl show | awk '/Powered: yes/{print \"powerd\"}'", function(stdout, _)
-            if stdout and stdout ~= "" then
-                awful.spawn.with_shell("bluetoothctl power off")
-            elseif stdout == nil or stdout == "" then
-                awful.spawn.with_shell("bluetoothctl power on")
-            end
-            bluetooth_stuff:emit_bluetooth_info()
-        end)
-end
 
 awesome.connect_signal("bluetooth::status", function(is_powerd, is_connect, icon)
     if is_powerd:match("On") then
@@ -172,29 +164,25 @@ local redshift_button = wibox.widget {
     end,
     buttons = {
         awful.button({}, awful.button.names.LEFT, function()
-            toggle_redshift()
+            awful.spawn.easy_async(
+                "systemctl --user is-active --quiet redshift.service",
+                function(_, _, _, exitcode)
+                    if exitcode == 0 then
+                        awful.spawn("systemctl --user stop redshift.service")
+                    else
+                        awful.spawn("systemctl --user start redshift.service")
+                    end
+                    redshift_stuff:emit_redshift_info()
+                end)
         end)
     }
 }
-
-function toggle_redshift()
-    awful.spawn.easy_async_with_shell(
-        "systemctl --user is-active --quiet redshift.service",
-        function(_, _, _, exitcode)
-            if exitcode == 0 then
-                awful.spawn("systemctl --user stop redshift.service")
-            else
-                awful.spawn("systemctl --user start redshift.service")
-            end
-            redshift_stuff:emit_redshift_info()
-        end)
-end
 
 awesome.connect_signal("redshift::state", function(state)
     if state == "On" then
         redshift_button.bg = beautiful.xcolor4
         redshift_button:get_children_by_id("icon")[1]:set_image(recolor(res_path .. "redshift.png", beautiful.xcolor0))
-    elseif state == "Off" then
+    else
         redshift_button.bg = beautiful.xcolor0
         redshift_button:get_children_by_id("icon")[1]:set_image(recolor(res_path .. "redshift.png", beautiful.xcolor4))
     end
@@ -234,25 +222,22 @@ local mic_button = wibox.widget {
     end,
     buttons = {
         awful.button({}, awful.button.names.LEFT, function()
-            toggle_mic()
+            awful.spawn.easy_async(
+                "amixer sget Capture",
+                function(stdout)
+                    local muted = stdout:match("%[off%]")
+                    if muted then
+                        awful.spawn("amixer set Capture cap")
+                    else
+                        awful.spawn("amixer set Capture nocap")
+                    end
+                    volume_stuff:emit_mic_state()
+                end)
         end)
     }
 }
 
-function toggle_mic()
-    awful.spawn.easy_async_with_shell(
-        "amixer get Capture | grep -q '\\[on\\]'",
-        function(_, _, _, exitcode)
-            if exitcode == 0 then
-                awful.spawn.easy_async("amixer set Capture nocap")
-            else
-                awful.spawn.easy_async("amixer set Capture cap")
-            end
-            volume_stuff:emit_mic_state()
-        end)
-end
-
-awesome.connect_signal("mic::state", function(status)
+awesome.connect_signal("mic::status", function(status)
     if status == "On" then
         mic_button.bg = beautiful.xcolor4
         mic_button:get_children_by_id("icon")[1]:set_image(recolor(res_path .. "mic.png", beautiful.xcolor0))

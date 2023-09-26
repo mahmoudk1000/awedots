@@ -35,18 +35,18 @@ function volume_stuff:emit_volume_state()
 end
 
 function volume_stuff:emit_mic_state()
-    awful.spawn.easy_async_with_shell(
-        "amixer get Capture | grep -q '\\[on\\]'",
-        function(_, _, _, exitcode)
-            local status
+    awful.spawn.easy_async(
+        "amixer sget Capture",
+        function(stdout)
+            local is_muted = stdout:match("%[off%]")
 
-	    if exitcode == 0 then
-                status = "On"
-            else
+	    if is_muted then
                 status = "Off"
+            else
+                status = "On"
             end
 
-            awesome.emit_signal("mic::state", status)
+            awesome.emit_signal("mic::status", status)
         end)
 end
 
