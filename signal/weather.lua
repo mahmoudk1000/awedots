@@ -13,7 +13,7 @@ function weather_stuff:emit_weather_info()
 
     awful.spawn.easy_async_with_shell(command, function()
         awful.spawn.easy_async_with_shell("cat ~/.cache/weather.json",
-            function(stdout, _)
+            function(stdout)
                 local data = json.decode(stdout)
 
                 local temp = data.main.temp

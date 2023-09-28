@@ -15,7 +15,7 @@ local icon = {
 function volume_stuff:emit_volume_state()
     awful.spawn.easy_async_with_shell(
 	"pamixer --get-volume; pamixer --get-mute",
-	function(stdout, _)
+	function(stdout)
 	    local volume_percent = tonumber(stdout:match("(.-)\n"))
 	    local is_muted = stdout:match("\n(true)\n")
 	    local volume_icon

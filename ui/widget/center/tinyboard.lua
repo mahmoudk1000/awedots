@@ -49,11 +49,11 @@ local wifi_button = wibox.widget {
         awful.button({}, awful.button.names.LEFT, function()
             awful.spawn.easy_async_with_shell(
                 "iwctl device list | awk '/on/{print $4}'",
-                function(stdout, _)
+                function(stdout)
                     if stdout:match("on") then
-                        awful.spawn.with_shell("rfkill block wlan")
+                        awful.spawn("rfkill block wlan")
                     else
-                        awful.spawn.with_shell("rfkill unblock wlan")
+                        awful.spawn("rfkill unblock wlan")
                     end
                     wifi_stuff:emit_wifi_info()
                 end)
@@ -108,25 +108,24 @@ local bluetooth_button = wibox.widget {
     buttons = {
         awful.button({}, awful.button.names.LEFT, function()
             awful.spawn.easy_async_with_shell(
-                "bluetoothctl show | awk '/Powered: yes/{print \"powerd\"}'", function(stdout, _)
-                    if stdout and stdout ~= "" then
-                        awful.spawn.with_shell("bluetoothctl power off")
-                    elseif stdout == nil or stdout == "" then
-                        awful.spawn.with_shell("bluetoothctl power on")
-                    end
-                    bluetooth_stuff:emit_bluetooth_info()
+                "bluetoothctl show | grep -q 'Powered: yes'",
+                function(_, _, _, exitcode)
+                    local toggle_command = (exitcode == 0) and "bluetoothctl power off" or "bluetoothctl power on"
+                    awful.spawn.easy_async(toggle_command, function()
+                        bluetooth_stuff:emit_bluetooth_info()
+                    end)
                 end)
         end)
     }
 }
 
-awesome.connect_signal("bluetooth::status", function(is_powerd, is_connect, icon)
-    if is_powerd:match("On") then
+awesome.connect_signal("bluetooth::status", function(status, _, icon)
+    if status == "On" then
         bluetooth_button.bg = beautiful.xcolor4
         bluetooth_button:get_children_by_id("icon")[1]:set_image(recolor(icon, beautiful.xcolor0))
     else
         bluetooth_button.bg = beautiful.xcolor0
-        bluetooth_button:get_children_by_id("icon")[1]:set_image(recolor(icon, beautiful.xcolor4))
+        bluetooth_button:get_children_by_id("icon")[1]:set_image(icon)
     end
 end)
 
@@ -167,12 +166,10 @@ local redshift_button = wibox.widget {
             awful.spawn.easy_async(
                 "systemctl --user is-active --quiet redshift.service",
                 function(_, _, _, exitcode)
-                    if exitcode == 0 then
-                        awful.spawn("systemctl --user stop redshift.service")
-                    else
-                        awful.spawn("systemctl --user start redshift.service")
-                    end
-                    redshift_stuff:emit_redshift_info()
+                    local toggle_command = (exitcode == 0) and "systemctl --user stop redshift.service" or "systemctl --user start redshift.service"
+                    awful.spawn.easy_async(toggle_command, function()
+                        redshift_stuff:emit_redshift_info()
+                    end)
                 end)
         end)
     }
@@ -254,7 +251,7 @@ local volume_progress = wibox.widget {
         id                  = "text",
         value               = 100,
         max_value           = 100,
-        forced_height       = dpi(65),
+        forced_height       = dpi(100),
         forced_width        = dpi(200),
         color               = beautiful.xcolor4,
         background_color    = beautiful.xcolor0,
@@ -270,8 +267,8 @@ local volume_progress = wibox.widget {
                 image           = res_path .. "sound.png",
                 valign          = "center",
                 halign          = "center",
-                forced_height   = dpi(25),
-                forced_width    = dpi(25),
+                forced_height   = dpi(20),
+                forced_width    = dpi(20),
                 widget          = wibox.widget.imagebox
             },
             margins = { left = dpi(215) },
@@ -284,7 +281,7 @@ local volume_progress = wibox.widget {
 
 awesome.connect_signal("volume::value", function(value)
     volume_progress:get_children_by_id("text")[1]:set_value(value)
-    volume_progress:get_children_by_id("box")[1]:set_margins({ left = dpi(((value / 100) * 200) + 10) })
+    volume_progress:get_children_by_id("box")[1]:set_margins({ left = dpi(math.min(((value / 100) * 200) + 15, 215)) })
     volume_progress:emit_signal("widget::redraw_needed")
 end)
 
@@ -312,8 +309,8 @@ local backlight_progress = wibox.widget {
                 image           = res_path .. "lamp.png",
                 valign          = "center",
                 halign          = "left",
-                forced_height   = dpi(25),
-                forced_width    = dpi(25),
+                forced_height   = dpi(20),
+                forced_width    = dpi(20),
                 widget          = wibox.widget.imagebox
             },
             margins = { left = dpi(215) },
@@ -326,7 +323,7 @@ local backlight_progress = wibox.widget {
 
 awesome.connect_signal("brightness::value", function(value)
     backlight_progress:get_children_by_id("text")[1]:set_value(value)
-    backlight_progress:get_children_by_id("box")[1]:set_margins({ left = dpi(((value / 100) * 200) + 10) })
+    backlight_progress:get_children_by_id("box")[1]:set_margins({ left = dpi(math.min(((value / 100) * 200) + 15, 215)) })
     backlight_progress:emit_signal("widget::redraw_needed")
 end)
 
@@ -344,7 +341,7 @@ local tinyboard = wibox.widget {
                 margins = { left = dpi(5) },
                 layout = wibox.container.margin
             },
-            layout = wibox.layout.ratio.horizontal 
+            layout = wibox.layout.ratio.horizontal
         },
         {
             {
@@ -357,7 +354,7 @@ local tinyboard = wibox.widget {
                 margins = { left = dpi(5) },
                 layout = wibox.container.margin
             },
-            layout = wibox.layout.ratio.horizontal 
+            layout = wibox.layout.ratio.horizontal
         },
         spacing = dpi(10),
         layout = wibox.layout.flex.vertical
@@ -366,16 +363,16 @@ local tinyboard = wibox.widget {
     { widget = backlight_progress },
     spacing = dpi(10),
     forced_width = dpi(250),
-    forced_height = dpi(290),
+    forced_height = dpi(254),
     layout = wibox.layout.ratio.vertical
 }
-tinyboard:adjust_ratio(2, 0.50, 0.25, 0.25)
+tinyboard:adjust_ratio(2, 0.60, 0.20, 0.20)
 
 return wibox.widget {
     {
         { widget = tinyboard },
         layout = wibox.layout.fixed.vertical
     },
-    margins = dpi(21),
+    margins = { top = dpi(21), bottom = dpi(20), right = dpi(20), left = dpi(20) },
     layout = wibox.container.margin
 }

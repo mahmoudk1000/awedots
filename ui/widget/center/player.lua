@@ -11,13 +11,13 @@ local mpd_stuff         = require("signal.mpd")
 
 
 local album_cover = wibox.widget {
-    image           = recolor(res_path .. "theme/res/cover.png", beautiful.xcolor0),
+    image           = recolor(res_path .. "theme/res/cover.png", beautiful.xcolor8),
     valign          = "center",
     halign          = "center",
     forced_height   = dpi(100),
     forced_width    = dpi(100),
     widget          = wibox.widget.imagebox,
-    clip_shape      = function(cr, w, h, r) 
+    clip_shape      = function(cr, w, h, r)
         gears.shape.rounded_rect(cr, w, h, beautiful.border_radius)
     end
 }
@@ -80,10 +80,10 @@ local player = wibox.widget {
         margins = { top = dpi(0), left = dpi(20), right = dpi(20), bottom = dpi(0) },
         layout = wibox.container.margin
     },
-    { 
+    {
         {widget = song_name},
         {widget = song_artist},
-        layout = wibox.layout.fixed.vertical
+        layout = wibox.layout.align.vertical
     },
     {
         {
@@ -92,23 +92,24 @@ local player = wibox.widget {
             { widget = next_button },
             layout = wibox.layout.flex.horizontal
         },
-        margins = dpi(15),
+        margins = dpi(7),
         layout = wibox.container.margin
     },
     layout = wibox.layout.ratio.vertical,
 }
-player:adjust_ratio(2, 0.6, 0.2, 0.2)
+player:adjust_ratio(2, 0.65, 0.20, 0.15)
 
 
 awesome.connect_signal("mpd::info", function(song, artist, state)
     song_name:set_markup(song)
     song_artist:set_markup(helpers:color_markup(artist, beautiful.xcolor3))
-    
+
     if state:match("playing") then
         toggle_button.image = recolor(res_path .. "theme/res/pause.png", beautiful.xcolor4)
     else
         toggle_button.image = recolor(res_path .. "theme/res/play.png", beautiful.xcolor4)
     end
+
     player:emit_signal("widget::redraw_needed")
 end)
 

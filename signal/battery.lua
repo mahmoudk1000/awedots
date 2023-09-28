@@ -16,7 +16,7 @@ local icon = {
 function battery_stuff:emit_battery_info()
     awful.spawn.easy_async_with_shell(
         "cat /sys/class/power_supply/BAT0/capacity; cat /sys/class/power_supply/BAT0/status",
-        function(stdout, _)
+        function(stdout)
             local battery_capacity = string.match(stdout, "(.-)\n")
             local battery_icon
 

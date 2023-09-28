@@ -17,14 +17,14 @@ local taglist = function(s)
     local taglist_buttons = awful.util.table.join(
         awful.button({ }, awful.button.names.LEFT, function(t) t:view_only() end),
         awful.button({ modkey }, awful.button.names.LEFT, function(t)
-            if client.focus then
-                client.focus:move_to_tag(t)
+            if c.focus then
+                c.focus:move_to_tag(t)
             end
         end),
         awful.button({ }, awful.button.names.RIGHT, awful.tag.viewtoggle),
         awful.button({ modkey }, awful.button.names.RIGHT, function(t)
-            if client.focus then
-                client.focus:toggle_tag(t)
+            if c.focus then
+                c.focus:toggle_tag(t)
             end
         end),
         awful.button({ }, awful.button.names.SCROLL_UP, function(t) awful.tag.viewprev(t.screen) end),
@@ -180,7 +180,7 @@ local backlight = wibox.widget {
         text    = "100%",
         align   = "center",
         valign  = "center",
-        font    = font,
+        font    = beautiful.font,
         widget  = wibox.widget.textbox
     },
     layout = wibox.layout.fixed.horizontal,
@@ -211,13 +211,13 @@ local bluetooth = wibox.widget {
         text    = "On",
         align   = "center",
         valign  = "center",
-        font    = font,
+        font    = beautiful.font,
         widget  = wibox.widget.textbox,
     },
     layout = wibox.layout.fixed.horizontal,
 }
 
-awesome.connect_signal("bluetooth::status", function(is_powerd, is_connect, icon)
+awesome.connect_signal("bluetooth::status", function(is_powerd, _, icon)
     bluetooth:get_children_by_id("text")[1]:set_text(is_powerd)
     bluetooth:get_children_by_id("icon")[1]:set_image(icon)
 end)

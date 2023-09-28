@@ -5,10 +5,13 @@ local backlight_stuff = {}
 
 function backlight_stuff:emit_backlight_info()
     awful.spawn.easy_async_with_shell(
-	"brightnessctl info", function(stdout, _)
+	"brightnessctl info",
+	function(stdout)
 	    local value = stdout:match("(%d+)%%")
         awesome.emit_signal("brightness::value", tonumber(value))
     end)
 end
+
+backlight_stuff:emit_backlight_info()
 
 return backlight_stuff
