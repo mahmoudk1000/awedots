@@ -120,32 +120,32 @@ awful.keyboard.append_global_keybindings({
     -- Music
     awful.key({}, "XF86AudioPlay",
             function()
-                awful.spawn.with_shell("playerctl play-pause")
+                awful.spawn({"playerctl", "play-pause"})
             end,
         { description = "Toggle Playerctl", group = "Music" }),
     awful.key({}, "XF86AudioPrev",
             function()
-                awful.spawn.with_shell("playerctl previous")
+                awful.spawn({"playerctl", "previous"})
             end,
         { description = "Playerctl Previous", group = "Music" }),
     awful.key({}, "XF86AudioNext",
             function()
-                awful.spawn.with_shell("playerctl next")
+                awful.spawn({"playerctl", "next"})
             end,
         { description = "Playerctl Next", group = "Music" }),
     awful.key({ctrl}, "XF86AudioNext",
-            function() 
-                awful.spawn.with_shell("mpc next")
+            function()
+                awful.spawn({"mpc", "next"})
             end,
         { description = "Playerctl Next", group = "Music" }),
     awful.key({ ctrl }, "XF86AudioPrev",
-            function() 
-                awful.spawn.with_shell("mpc prev")
+            function()
+                awful.spawn({"mpc", "prev"})
             end,
         { description = "Playerctl Next", group = "Music" }),
     awful.key({ ctrl }, "XF86AudioPlay",
             function()
-                awful.spawn.with_shell("mpc toggle")
+                awful.spawn({"mpc", "toggle"})
             end,
         { description = "Playerctl Next", group = "Music" }),
 

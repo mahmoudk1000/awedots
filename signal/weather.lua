@@ -11,13 +11,17 @@ function weather_stuff:emit_weather_info()
     local url = "https://api.openweathermap.org/data/2.5/weather?id=" .. cityId .. "&appid=" .. apiKey .."&cnt=5&units=metric&lang=en"
     local command = "curl -s '" .. url .."' -o /home/mahmoud/.cache/weather.json"
 
-    awful.spawn.easy_async_with_shell(command, function()
+    awful.spawn.easy_async(command, function()
         awful.spawn.easy_async_with_shell("cat ~/.cache/weather.json",
             function(stdout)
                 local data = json.decode(stdout)
+                local temp = 69
+                local desc = "Hot"
 
-                local temp = data.main.temp
-                local desc = data.weather[1].description:gsub("^%l", string.upper)
+                if data then
+                    temp = data.main.temp
+                    desc = data.weather[1].description:gsub("^%l", string.upper)
+                end
 
                 awesome.emit_signal("weather::info", temp, desc)
             end)

@@ -51,9 +51,9 @@ local wifi_button = wibox.widget {
                 "iwctl device list | awk '/on/{print $4}'",
                 function(stdout)
                     if stdout:match("on") then
-                        awful.spawn("rfkill block wlan")
+                        awful.spawn({"rfkill", "block", "wlan"})
                     else
-                        awful.spawn("rfkill unblock wlan")
+                        awful.spawn({"rfkill", "unblock", "wlan"})
                     end
                     wifi_stuff:emit_wifi_info()
                 end)
@@ -224,9 +224,9 @@ local mic_button = wibox.widget {
                 function(stdout)
                     local muted = stdout:match("%[off%]")
                     if muted then
-                        awful.spawn("amixer set Capture cap")
+                        awful.spawn({"amixer", "set", "Capture", "cap"})
                     else
-                        awful.spawn("amixer set Capture nocap")
+                        awful.spawn({"amixer", "set", "Capture", "nocap"})
                     end
                     volume_stuff:emit_mic_state()
                 end)

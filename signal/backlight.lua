@@ -4,7 +4,7 @@ local awful = require("awful")
 local backlight_stuff = {}
 
 function backlight_stuff:emit_backlight_info()
-    awful.spawn.easy_async_with_shell(
+    awful.spawn.easy_async(
 	"brightnessctl info",
 	function(stdout)
 	    local value = stdout:match("(%d+)%%")

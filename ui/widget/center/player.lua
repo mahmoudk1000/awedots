@@ -45,8 +45,8 @@ local prev_botton = wibox.widget {
     forced_height   = dpi(10),
     forced_width    = dpi(10),
     widget          = wibox.widget.imagebox,
-    buttons = awful.button({}, awful.button.names.LEFT, function ()
-        awful.spawn.with_shell("mpc prev")
+    buttons = awful.button({}, awful.button.names.LEFT, function()
+        awful.spawn({"mpc", "prev"})
     end)
 }
 
@@ -57,8 +57,8 @@ local toggle_button = wibox.widget {
     forced_height   = dpi(10),
     forced_width    = dpi(10),
     widget          = wibox.widget.imagebox,
-    buttons = awful.button({}, awful.button.names.LEFT, function ()
-        awful.spawn.with_shell("mpc toggle") 
+    buttons = awful.button({}, awful.button.names.LEFT, function()
+        awful.spawn({"mpc", "toggle"})
     end)
 }
 
@@ -69,8 +69,8 @@ local next_button = wibox.widget {
     forced_height   = dpi(10),
     forced_width    = dpi(10),
     widget          = wibox.widget.imagebox,
-    buttons = awful.button({}, awful.button.names.LEFT, function ()
-        awful.spawn.with_shell("mpc next") 
+    buttons = awful.button({}, awful.button.names.LEFT, function()
+        awful.spawn({"mpc", "next"})
     end)
 }
 
@@ -126,6 +126,7 @@ return wibox.widget {
         border_color = beautiful.border_normal,
         layout = wibox.container.background,
         forced_width = dpi(250),
+        forced_height = dpi(270),
         shape = function(cr, w, h)
             gears.shape.rounded_rect(cr, w, h, beautiful.border_radius)
         end

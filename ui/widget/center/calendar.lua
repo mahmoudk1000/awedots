@@ -8,7 +8,7 @@ local dpi               = beautiful.xresources.apply_dpi
 -- Calendar Styling
 local styles = {}
 
-styles.month   = { 
+styles.month   = {
     padding      = dpi(13),
     border_width = beautiful.border_width,
     bg_color     = beautiful.xbackground,
@@ -21,7 +21,7 @@ styles.normal  = {
         gears.shape.rounded_rect(cr, w, h, beautiful.border_radius)
     end,
 }
-styles.focus   = { 
+styles.focus   = {
     fg_color = beautiful.xbackground,
     bg_color = beautiful.xcolor4,
     markup   = function(t) return '<b>' .. t .. '</b>' end,
@@ -29,7 +29,7 @@ styles.focus   = {
         gears.shape.rounded_rect(cr, w, h, beautiful.border_radius)
     end,
 }
-styles.header  = { 
+styles.header  = {
     fg_color = beautiful.xforeground,
     font = beautiful.font_bold,
     markup   = function(t) return '<b>' .. t .. '</b>' end,
@@ -49,16 +49,16 @@ local function decorate_cell(widget, flag, date)
     if flag == "monthheader" and not styles.monthheader then
         flag = "header"
     end
-    
+
     local props = styles[flag] or {}
     if props.markup and widget.get_text and widget.set_markup then
         widget:set_markup(props.markup(widget:get_text()))
     end
-    
+
     -- Change bg color for weekends
     local d = { year = date.year, month = (date.month or 1), day = (date.day or 1)}
     local weekday = tonumber(os.date("%w", os.time(d)))
-    local default_bg = (weekday==0 or weekday==6) and beautiful.xcolor2 or beautiful.xcolor8
+    local default_bg = (weekday==0) and beautiful.xcolor8 or beautiful.xcolor0
     local ret = wibox.widget {
         {
             widget,
@@ -69,7 +69,7 @@ local function decorate_cell(widget, flag, date)
         border_color    = props.border_color or beautiful.border_normal,
         border_width    = props.border_width or 0,
         fg              = props.fg_color or beautiful.xforeground,
-        bg              = props.bg_color or beautiful.xcolor0,
+        bg              = props.bg_color or default_bg,
         widget          = wibox.container.background
     }
     return ret

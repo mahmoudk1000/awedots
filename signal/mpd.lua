@@ -5,7 +5,7 @@ local mpd_stuff = {}
 
 function mpd_stuff:emit_mpd_info()
     awful.spawn.easy_async_with_shell(
-        "mpc current -f '%title%_%artist%_'; mpc status | awk '/playing/{print \"playing\"}'",
+        "mpc current -f '%title%_%artist%_';mpc status | awk '/playing/{print \"playing\"}'",
         function(stdout)
             local song = stdout:match("^(.-)_")
             local artist = stdout:match("_(.-)_")
