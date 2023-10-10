@@ -37,7 +37,7 @@ local weather = wibox.widget {
         id      = "temp",
         markup  = "69" .. "<span>&#176;</span>",
         font    = beautiful.font,
-        widget  = wibox.widget.textbox,
+        widget  = wibox.widget.textbox
     },
     layout = wibox.layout.fixed.horizontal
 }

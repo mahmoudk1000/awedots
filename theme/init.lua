@@ -33,6 +33,7 @@ theme.xcolor15        = xrdb.color15
 
 
 -- General
+theme.vont              = "Iosevka "
 theme.font              = "Iosevka 9"
 theme.font_bold         = "Iosevka Heavy 9"
 theme.font_boit         = "Iosevka Heavy Italic 9"
