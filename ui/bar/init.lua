@@ -6,7 +6,6 @@ local dpi               = beautiful.xresources.apply_dpi
 local res_path          = gears.filesystem.get_configuration_dir() .. "theme/res/"
 local recolor           = gears.color.recolor_image
 
-local helpers           = require("helpers")
 local volume_stuff      = require("signal.volume")
 local battery_stuff     = require("signal.battery")
 local bluetooth_stuff   = require("signal.bluetooth")
@@ -114,17 +113,17 @@ local clock = wibox.widget {
         font    = beautiful.font,
         valign  = "center",
         align   = "center",
-        widget  = wibox.widget.textclock,
+        widget  = wibox.widget.textclock
     },
     {
         format  = "%R",
         font    = beautiful.font_bold,
         align   = "center",
         valign  = "center",
-        widget  = wibox.widget.textclock,
+        widget  = wibox.widget.textclock
     },
     layout = wibox.layout.fixed.horizontal,
-    buttons = gears.table.join(awful.button({}, awful.button.names.LEFT, nil, function() 
+    buttons = gears.table.join(awful.button({}, awful.button.names.LEFT, nil, function()
         awesome.emit_signal("clock::clicked")
     end))
 }
@@ -150,7 +149,7 @@ local volume = wibox.widget {
         font    = beautiful.font,
         align   = "center",
         valign  = "center",
-        widget  = wibox.widget.textbox,
+        widget  = wibox.widget.textbox
     },
     layout = wibox.layout.fixed.horizontal,
 }
@@ -212,7 +211,7 @@ local bluetooth = wibox.widget {
         align   = "center",
         valign  = "center",
         font    = beautiful.font,
-        widget  = wibox.widget.textbox,
+        widget  = wibox.widget.textbox
     },
     layout = wibox.layout.fixed.horizontal,
 }
@@ -253,7 +252,7 @@ local battery = wibox.widget {
         align   = "center",
         valign  = "center",
         font    = beautiful.font,
-        widget  = wibox.widget.textbox,
+        widget  = wibox.widget.textbox
     },
     layout = wibox.layout.fixed.horizontal,
 }
@@ -283,18 +282,18 @@ local function init_bar(s)
         visible     = true,
         ontop       = false,
         height      = dpi(30),
-        width       = s.geometry.width,
+        width       = s.geometry.width
     }
     bar:struts { left = dpi(0), right = dpi(0), top = dpi(0), bottom = dpi(30) }
     bar:setup {
         layout = wibox.layout.align.horizontal,
-        { 
+        {
             -- Left Widgets
             layout = wibox.layout.fixed.horizontal,
             {
                 layoutbox,
                 margins = { left = dpi(10), right = dpi(9), top = dpi(9), bottom = dpi(9) },
-                widget = wibox.container.margin,
+                widget = wibox.container.margin
             },
             {
                 taglist(s),
@@ -307,7 +306,7 @@ local function init_bar(s)
             layout = wibox.container.place,
             clock,
         },
-        { 
+        {
             -- Right Widgets
             layout = wibox.layout.fixed.horizontal,
             {

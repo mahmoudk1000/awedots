@@ -2,6 +2,8 @@ local awful     = require("awful")
 local beautiful = require("beautiful")
 local dpi       = beautiful.xresources.apply_dpi
 local wibox     = require("wibox")
+local gears     = require("gears")
+local helpers   = require("helpers")
 
 local textclock = wibox.widget {
     format = "%k.%M",
@@ -27,7 +29,7 @@ local song_artist = wibox.widget {
 
 local weather_temp = wibox.widget {
     markup = "1" .. "<span>&#176;</span>",
-    font = beautiful.vont .. "Bold 14",
+    font = beautiful.vont .. "Bold 10",
     align = "left",
     valign = "center",
     widget = wibox.widget.textbox
@@ -35,7 +37,7 @@ local weather_temp = wibox.widget {
 
 local weather_desc = wibox.widget {
     markup = "Cold",
-    font = beautiful.vont .. "Bold 14",
+    font = beautiful.vont .. "Bold 10",
     align = "left",
     valign = "center",
     widget = wibox.widget.textbox
@@ -47,8 +49,8 @@ awesome.connect_signal("mpd::info", function(song, artist, _)
 end)
 
 awesome.connect_signal("weather::info", function(temp, desc)
-    weather_temp:set_markup(temp .. "<span>&#176;</span>")
-    weather_desc:set_markup(desc)
+    weather_temp:set_markup(helpers:color_markup(temp .. "<span>&#176;</span>", beautiful.xcolor8))
+    weather_desc:set_markup(helpers:color_markup(desc, beautiful.xcolor8))
 end)
 
 return awful.popup {
@@ -74,12 +76,26 @@ return awful.popup {
         {
             {
                 {
-                    weather_temp,
-                    margins = { right = dpi(10) },
-                    layout = wibox.container.margin,
+                    {
+                        {
+                            {
+                                weather_temp,
+                                margins = { right = dpi(10) },
+                                layout = wibox.container.margin
+                            },
+                            weather_desc,
+                            layout = wibox.layout.align.horizontal
+                        },
+                        margins = { left = dpi(5), right = dpi(5) },
+                        layout = wibox.container.margin
+                    },
+                    bg = beautiful.xforeground,
+                    shape = function(cr, w, h, r)
+                         gears.shape.rounded_rect(cr, w, h, dpi(3))
+                    end,
+                    layout = wibox.container.background
                 },
-                weather_desc,
-                layout = wibox.layout.align.horizontal
+                layout = wibox.layout.fixed.horizontal
             },
             margins = { top = dpi(3) },
             layout = wibox.container.margin
@@ -93,6 +109,6 @@ return awful.popup {
     visible = true,
     input_passthrough = true,
     placement = function(c)
-        awful.placement.top_left(c, { margins = dpi(10) })
+        awful.placement.top_left(c, { margins = { left = dpi(10) } })
     end
 }
