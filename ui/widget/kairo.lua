@@ -6,7 +6,7 @@ local gears     = require("gears")
 local helpers   = require("helpers")
 
 local textclock = wibox.widget {
-    format = "%k.%M",
+    format = "%H.%M",
     font = beautiful.vont .. "Heavy 40",
     widget = wibox.widget.textclock
 }

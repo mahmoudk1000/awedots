@@ -50,7 +50,7 @@ end)
 
 
 -- Window Bordering
-client.connect_signal("manage", function (c, startup)
+client.connect_signal("manage", function (c)
     c.border_width = beautiful.border_width
     c.border_color = beautiful.border_focus
 
@@ -85,13 +85,13 @@ ruled.client.connect_signal("request::rules", function()
 
     ruled.client.append_rule {
 	id = "multimedia",
-	rule_any = {  
+	rule_any = {
 	    class = {
                 "vlc",
-                "mpv" 
+                "mpv"
             }
 	},
-	properties = { 
+	properties = {
 	    tag = "3",
             switchtotag = true,
             raise = true,

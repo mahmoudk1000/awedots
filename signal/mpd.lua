@@ -11,11 +11,11 @@ function mpd_stuff:emit_mpd_info()
             local artist = stdout:match("_(.-)_")
             local is_playing = stdout:match("playing")
 
-            if name == "" then
-                name = "Unknown"
+            if song == ("" or nil) then
+                song = "Unknown"
             end
 
-            if artist == "" then
+            if artist == ("" or nil) then
                 artist = "Unknown"
             end
 

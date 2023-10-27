@@ -80,40 +80,40 @@ awful.keyboard.append_global_keybindings({
     -- Volume
     awful.key({}, "XF86AudioRaiseVolume",
             function()
-                awful.spawn({"pamixer", "-i", "5"})
-                volume_stuff:emit_volume_state()
+                awful.spawn({"pamixer", "-i", "5"},
+                    volume_stuff:emit_volume_state())
             end,
         { description = "Increase Volume", group = "System" }),
         awful.key({ ctrl }, "XF86AudioRaiseVolume",
             function()
-                awful.spawn({"pamixer", "--allow-boost", "-i", "10"})
-                volume_stuff:emit_volume_state()
+                awful.spawn({"pamixer", "--allow-boost", "-i", "10"},
+                    volume_stuff:emit_volume_state())
             end,
-        { description = "Increase Volume", group = "System" }),
+        { description = "Boost Volume", group = "System" }),
     awful.key({}, "XF86AudioLowerVolume",
-            function() 
-                awful.spawn({"pamixer", "-d", "5"})
-                volume_stuff:emit_volume_state()
+            function()
+                awful.spawn({"pamixer", "-d", "5"},
+                    volume_stuff:emit_volume_state())
             end,
         { description = "Decrease Volume", group = "System" }),
     awful.key({}, "XF86AudioMute",
-            function() 
-                awful.spawn({"pamixer", "--toggle-mute"})
-                volume_stuff:emit_volume_state()
+            function()
+                awful.spawn({"pamixer", "--toggle-mute"},
+                    volume_stuff:emit_volume_state())
             end,
         { description = "Toggle Mute", group = "System" }),
-    
+
     -- Brightness
     awful.key({}, "XF86MonBrightnessUp",
             function()
-                awful.spawn({"brightnessctl", "s", "+10%"})
-                backlight_stuff:emit_backlight_info()
+                awful.spawn({"brightnessctl", "s", "+10%"},
+                    backlight_stuff:emit_backlight_info())
             end,
         { description = "Increase Brightness", group = "System" }),
     awful.key({}, "XF86MonBrightnessDown",
             function()
-                awful.spawn({"brightnessctl", "s", "10%-"})
-                backlight_stuff:emit_backlight_info()
+                awful.spawn({"brightnessctl", "s", "10%-"},
+                    backlight_stuff:emit_backlight_info())
             end,
         { description = "Decrease Brightness", group = "System" }),
 
@@ -169,9 +169,10 @@ awful.keyboard.append_global_keybindings({
 
 -- Mouse Bindings
 awful.mouse.append_global_mousebindings({
-    awful.button({ }, 3, function () awemenu:toggle() end),
-    awful.button({ }, 4, awful.tag.viewprev),
-    awful.button({ }, 5, awful.tag.viewnext),
+    awful.button({ }, awful.button.names.LEFT, function() das_menu:hide() end),
+    awful.button({ }, awful.button.names.RIGHT, function() das_menu:toggle() end),
+    awful.button({ }, awful.button.names.SCROLL_UP, awful.tag.viewprev),
+    awful.button({ }, awful.button.names.SCROLL_DOWN, awful.tag.viewnext),
 })
 
 client.connect_signal("request::default_mousebindings", function()
@@ -182,11 +183,11 @@ client.connect_signal("request::default_mousebindings", function()
         end),
         awful.button({ modkey }, awful.button.names.LEFT,
             function (c)
-            c:activate { context = "mouse_click", action = "mouse_move"  }
+            c:activate { context = "mouse_click", action = "mouse_move" }
         end),
         awful.button({ modkey }, awful.button.names.RIGHT,
             function (c)
-            c:activate { context = "mouse_click", action = "mouse_resize"}
+            c:activate { context = "mouse_click", action = "mouse_resize" }
         end),
     })
 end)
@@ -233,7 +234,7 @@ awful.keyboard.append_global_keybindings({
                 awful.client.swap.byidx(-1)
             end,
         { description = "swap with previous client by index", group = "client" }),
-    awful.key({ modkey }, "Tab", 
+    awful.key({ modkey }, "Tab",
             function ()
                 awful.client.focus.byidx(1)
             end,
@@ -289,21 +290,21 @@ client.connect_signal("request::default_keybindings", function()
                 end,
             { description = "Toggle Fullscreen", group = "Client" }),
         awful.key({ modkey }, "q",
-                function (c) 
-                    c:kill()   
+                function (c)
+                    c:kill()
                 end,
             { description = "close", group = "Client" }),
         awful.key({ modkey, shift }, "t",
                 awful.client.floating.toggle,
             { description = "Toggle Floating", group = "Client" }),
         awful.key({ modkey, ctrl }, "Return",
-                function (c) 
-                    c:swap(awful.client.getmaster()) 
+                function (c)
+                    c:swap(awful.client.getmaster())
                 end,
             { description = "Move to Master", group = "Client" }),
         awful.key({ modkey }, "o",
                 function (c)
-                    c:move_to_screen()     
+                    c:move_to_screen()
                 end,
             { description = "Move to Screen", group = "Client" }),
         awful.key({ modkey }, "t",

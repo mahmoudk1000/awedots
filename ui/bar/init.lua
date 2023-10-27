@@ -67,7 +67,7 @@ local taglist = function(s)
                     widget  = wibox.container.margin,
                 },
                 id      = "index_icon",
-                shape   = function(cr, w, h)
+                shape   = function(cr, _)
                     gears.shape.circle(cr, dpi(8), dpi(8))
                 end,
                 widget  = wibox.container.background
@@ -286,10 +286,8 @@ local function init_bar(s)
     }
     bar:struts { left = dpi(0), right = dpi(0), top = dpi(0), bottom = dpi(30) }
     bar:setup {
-        layout = wibox.layout.align.horizontal,
         {
             -- Left Widgets
-            layout = wibox.layout.fixed.horizontal,
             {
                 layoutbox,
                 margins = { left = dpi(10), right = dpi(9), top = dpi(9), bottom = dpi(9) },
@@ -300,15 +298,15 @@ local function init_bar(s)
                 margins = { left = dpi(8), right = dpi(8), top = dpi(12), bottom = dpi(10) },
                 layout = wibox.container.margin
             },
+            layout = wibox.layout.fixed.horizontal,
         },
         {
             -- Middle Widget
-            layout = wibox.container.place,
             clock,
+            layout = wibox.container.place
         },
         {
             -- Right Widgets
-            layout = wibox.layout.fixed.horizontal,
             {
                 volume,
                 margins = dpi(8),
@@ -329,7 +327,9 @@ local function init_bar(s)
                 margins = { left = dpi(8), right = dpi(10), top = dpi(8), bottom = dpi(8) },
                 layout = wibox.container.margin
             },
+            layout = wibox.layout.fixed.horizontal,
         },
+        layout = wibox.layout.align.horizontal
     }
 end
 
