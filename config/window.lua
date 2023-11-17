@@ -102,7 +102,7 @@ ruled.client.connect_signal("request::rules", function()
     }
 
     ruled.client.append_rule {
-        id = "Events",
+        id = "events",
         rule_any = {
             class = {
                 "Nsxiv",

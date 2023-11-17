@@ -10,14 +10,14 @@ local battery_stuff = {}
 local icon = {
     res_path .. "bat-char.png",
     res_path .. "bat-full.png",
-    res_path .. "bat-nor.png",
+    res_path .. "bat-nor.png"
 }
 
 function battery_stuff:emit_battery_info()
     awful.spawn.easy_async_with_shell(
         "cat /sys/class/power_supply/BAT0/capacity; cat /sys/class/power_supply/BAT0/status",
         function(stdout)
-            local battery_capacity = string.match(stdout, "(.-)\n")
+            local battery_capacity = stdout:match("(.-)\n")
             local battery_icon
 
             if stdout:match("Charging") then

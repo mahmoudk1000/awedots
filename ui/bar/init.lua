@@ -49,6 +49,7 @@ local taglist = function(s)
         end
     end
 
+
     return awful.widget.taglist {
         screen = s,
         filter = awful.widget.taglist.filter.all,
@@ -157,14 +158,14 @@ local volume = wibox.widget {
 awesome.connect_signal("volume::value", function(value, icon)
     volume:get_children_by_id("text")[1]:set_text(value .. "%")
     volume:get_children_by_id("icon")[1]:set_image(icon)
-    volume:emit_signal("widget::redraw_needed")
+    awesome.emit_signal("widget::redraw_needed")
 end)
 
 
 -- Backlight Widget
 local backlight = wibox.widget {
     {
-        {   
+        {
             image           = recolor(res_path .. "lamp.png", beautiful.xcolor2),
             align           = "center",
             valign          = "center",
@@ -187,7 +188,7 @@ local backlight = wibox.widget {
 
 awesome.connect_signal("brightness::value", function(value)
     backlight:get_children_by_id("text")[1]:set_text(value .. "%")
-    backlight:emit_signal("widget::redraw_needed")
+    awesome.emit_signal("widget::redraw_needed")
 end)
 
 
@@ -260,7 +261,7 @@ local battery = wibox.widget {
 awesome.connect_signal("battery::info", function(value, icon)
     battery:get_children_by_id("text")[1]:set_text(value .. "%")
     battery:get_children_by_id("icon")[1]:set_image(icon)
-    battery:emit_signal("widget::redraw_needed")
+    awesome.emit_signal("widget::redraw_needed")
 end)
 
 gears.timer({

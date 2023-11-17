@@ -18,13 +18,15 @@ function weather_stuff:emit_weather_info()
                 local data = json.decode(stdout)
                 local temp = 69
                 local desc = "Hot"
+                local land = "Reality, Sucks"
 
                 if data then
                     temp = data.main.temp
                     desc = data.weather[1].description:gsub("^%l", string.upper)
+                    land = data.name .. ", " .. data.sys.country
                 end
 
-                awesome.emit_signal("weather::info", temp, desc)
+                awesome.emit_signal("weather::info", temp, desc, land)
             end)
     end)
 end
