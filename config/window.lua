@@ -1,19 +1,44 @@
 local awful         = require("awful")
+local wibox         = require("wibox")
 local gears         = require("gears")
+local gfs           = require("gears.filesystem")
 local beautiful     = require("beautiful")
 local ruled         = require("ruled")
 
 
 -- Wallpaper
 local function set_wallpaper(s)
-    -- Wallpaper
-    if beautiful.wallpaper then
+    if gfs.file_readable(gfs.get_configuration_dir() .. "theme/wall.jpg") then
         local wallpaper = beautiful.wallpaper
         -- If wallpaper is a function, call it with the screen
         if type(wallpaper) == "function" then
             wallpaper = wallpaper(s)
         end
         gears.wallpaper.maximized(wallpaper, s)
+    else
+        awful.wallpaper {
+            screen = s,
+            widget = wibox.widget {
+                {
+                    markup  = "[WALLPAPER FAILURE]",
+                    font    = beautiful.vont .. "Bold 22",
+                    valign  = "center",
+                    halign  = "center",
+                    widget  = wibox.widget.textbox
+                },
+                fg      = beautiful.xbackground,
+                bg      = {
+                    type    = "linear",
+                    from    = { 1920, 0 },
+                    to      = { 0, 1920 },
+                    stops   = {
+                        { 0, beautiful.xcolor4 },
+                        { 1, beautiful.xcolor8 }
+                    }
+                },
+                layout  = wibox.container.background
+            }
+        }
     end
 end
 
