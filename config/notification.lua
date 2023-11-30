@@ -1,17 +1,18 @@
-local awful = require("awful")
+local wibox	= require("wibox")
+local naughty	= require("naughty")
+local ruled	= require("ruled")
 local beautiful = require("beautiful")
-local dpi = beautiful.xresources.apply_dpi
-local naughty = require("naughty")
-local wibox = require("wibox")
-local ruled = require("ruled")
+local dpi	= beautiful.xresources.apply_dpi
 
 
 -- Notification Config
-naughty.config.defaults.position	= "top_right"
-naughty.config.defaults.title		= "Notification"
-naughty.config.defaults.margin		= beautiful.notification_margin
-naughty.config.defaults.border_color	= beautiful.notification_border_color
-naughty.config.defaults.border_width	= beautiful.notification_border_width
+naughty.config.defaults = {
+    position	    = "top_right",
+    title	    = "Notification",
+    margin	    = beautiful.notification_margin,
+    border_color    = beautiful.notification_border_color,
+    border_width    = beautiful.notification_border_width
+}
 
 
 -- Notification Types
@@ -40,7 +41,7 @@ naughty.connect_signal("request::display", function(n)
     naughty.layout.box {
 	notification = n,
 	type = "notification",
-	bg = beautiful.bg_normal,
+	bg = beautiful.xbackground,
 	widget_template = {
 	    {
 		{
