@@ -5,6 +5,7 @@ local xrdb              = xresources.get_current_theme()
 local gears             = require("gears")
 local gfs               = require("gears.filesystem")
 local themes_path       = gfs.get_themes_dir()
+local config_path       = gfs.get_configuration_dir()
 
 
 -- Define Theme based on the default theme
@@ -50,7 +51,7 @@ theme.bg_urgent         = theme.xcolor1
 theme.useless_gap       = dpi(4)
 theme.border_radius     = dpi(0)
 
-theme.wallpaper         =  gears.filesystem.get_configuration_dir() .. "theme/wall.jpg"
+theme.wallpaper         = config_path .. "theme/wall.jpg"
 
 
 -- Borders
@@ -88,13 +89,13 @@ theme.notification_border_width = dpi(0)
 
 -- Menu
 theme.menu_font         = theme.font
-theme.menu_submenu_icon = gears.color.recolor_image(gears.filesystem.get_configuration_dir() .. "theme/submenu.png", theme.xcolor0)
-theme.menu_bg_focus     = theme.xcolor4 .. 60
-theme.menu_fg_focus     = theme.xforeground
+theme.menu_submenu_icon = gears.color.recolor_image(config_path .. "theme/submenu.png", theme.xcolor8)
+theme.menu_bg_focus     = theme.xcolor4
+theme.menu_fg_focus     = theme.xbackground
 theme.menu_bg_normal    = theme.xbackground
 theme.menu_fg_normal    = theme.xforeground
-theme.menu_height       = dpi(25)
-theme.menu_width        = dpi(130)
+theme.menu_height       = dpi(20)
+theme.menu_width        = dpi(110)
 theme.menu_border_color = theme.xcolor0
 theme.menu_border_width = theme.border_width
 
