@@ -110,7 +110,7 @@ local clock = wibox.widget {
         layout  = wibox.container.margin
     },
     {
-        format  = "%b %d,",
+        format  = "%a %d %b, ",
         font    = beautiful.font,
         valign  = "center",
         align   = "center",
