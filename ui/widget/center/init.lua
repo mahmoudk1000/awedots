@@ -9,6 +9,7 @@ local tinyboard         = require("ui.widget.center.tinyboard")
 local player            = require("ui.widget.center.player")
 
 local weather_stuff     = require("signal.weather")
+local wifi_stuff        = require("signal.wifi")
 
 
 -- Clock Widget
@@ -86,6 +87,7 @@ local center_popup = awful.popup {
 
 -- Toggle the visibility of the calendar popup when clicking on the clock widget
 awesome.connect_signal("clock::clicked", function()
+    wifi_stuff:emit_wifi_info()
     center_popup.visible = not center_popup.visible
 end)
 
