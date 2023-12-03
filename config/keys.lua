@@ -25,6 +25,9 @@ awful.keyboard.append_global_keybindings({
     awful.key({ modkey }, "z",
             function() awful.spawn.with_shell("betterlockscreen -l") end,
         { description = "Lock Screen", group = "Awesome" }),
+    awful.key({ modkey }, "j",
+            function() Bye.visible = not Bye.visible end,
+        { description = "Toggle Power Menu", group = "Awesome" })
 })
 
 -- Tags Bindings
@@ -43,7 +46,7 @@ awful.keyboard.append_global_keybindings({
         { description = "select next", group = "Layout" }),
     awful.key({ modkey, shift }, "space",
             function () awful.layout.inc(-1) end,
-        { description = "select previous", group = "Layout" }),
+        { description = "select previous", group = "Layout" })
 })
 
 -- Applications Bindings
@@ -72,7 +75,7 @@ awful.keyboard.append_global_keybindings({
             function()
                 awful.spawn("blum")
             end,
-        { description = "Spawn Bluetooth Menu", group = "Launcher" }),
+        { description = "Spawn Bluetooth Menu", group = "Launcher" })
 })
 
 -- System Bindings
@@ -164,15 +167,18 @@ awful.keyboard.append_global_keybindings({
             function()
                 awful.spawn({"flameshot", "full", "-d 5000"})
             end,
-        { description = "Take a Delayed Screenshot", group = "Scrots" }),
+        { description = "Take a Delayed Screenshot", group = "Scrots" })
 })
 
 -- Mouse Bindings
 awful.mouse.append_global_mousebindings({
-    awful.button({ }, awful.button.names.LEFT, function() das_menu:hide() end),
+    awful.button({ }, awful.button.names.LEFT, function()
+        das_menu:hide()
+        Bye.visible = false
+     end),
     awful.button({ }, awful.button.names.RIGHT, function() das_menu:toggle() end),
     awful.button({ }, awful.button.names.SCROLL_UP, awful.tag.viewprev),
-    awful.button({ }, awful.button.names.SCROLL_DOWN, awful.tag.viewnext),
+    awful.button({ }, awful.button.names.SCROLL_DOWN, awful.tag.viewnext)
 })
 
 client.connect_signal("request::default_mousebindings", function()
@@ -188,7 +194,7 @@ client.connect_signal("request::default_mousebindings", function()
         awful.button({ modkey }, awful.button.names.RIGHT,
             function (c)
             c:activate { context = "mouse_click", action = "mouse_resize" }
-        end),
+        end)
     })
 end)
 
@@ -255,7 +261,7 @@ awful.keyboard.append_global_keybindings({
             if tag then
                 tag:view_only()
             end
-        end,
+        end
     },
     awful.key {
         modifiers = { modkey, shift },
@@ -270,8 +276,8 @@ awful.keyboard.append_global_keybindings({
                     tag:view_only()
                 end
             end
-        end,
-    },
+        end
+    }
 })
 
 -- Client Options Bindings
@@ -334,6 +340,6 @@ client.connect_signal("request::default_keybindings", function()
                     c.maximized_horizontal = not c.maximized_horizontal
                     c:raise()
                 end ,
-            { description = "(Un)Maximize Horizontally", group = "Client" }),
+            { description = "(Un)Maximize Horizontally", group = "Client" })
     })
 end)
