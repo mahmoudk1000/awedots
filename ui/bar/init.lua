@@ -34,17 +34,17 @@ local taglist = function(s)
         if c3.selected then
             self:get_children_by_id("index_icon")[1].bg = beautiful.xcolor4
             self:get_children_by_id("index_icon")[1].shape = function(cr, w, h)
-                gears.shape.rounded_bar(cr, dpi(15), dpi(8))
+                gears.shape.rounded_bar(cr, dpi(20), dpi(8))
             end
         elseif #c3:clients() == 0 then
             self:get_children_by_id("index_icon")[1].bg = beautiful.xcolor0
             self:get_children_by_id("index_icon")[1].shape = function(cr, w, h)
-                gears.shape.circle(cr, dpi(8), dpi(8))
+                gears.shape.rounded_bar(cr, dpi(12), dpi(8))
             end
         else
             self:get_children_by_id("index_icon")[1].bg = beautiful.xcolor8
             self:get_children_by_id("index_icon")[1].shape = function(cr, w, h)
-                gears.shape.circle(cr, dpi(8), dpi(8))
+                gears.shape.rounded_bar(cr, dpi(15), dpi(8))
             end
         end
     end
