@@ -8,7 +8,7 @@ local recolor   = gears.color.recolor_image
 local res_path  = gears.filesystem.get_configuration_dir() .. "theme/res/"
 
 local function create_option(index, icon, command)
-    local option = wibox.widget {
+    return wibox.widget {
         {
             {
                 id              = index,
@@ -18,9 +18,6 @@ local function create_option(index, icon, command)
                 halign          = "center",
                 forced_height   = dpi(35),
                 forced_width    = dpi(35),
-                buttons         = awful.button({}, awful.button.names.LEFT, function()
-                    awful.spawn(command)
-                end),
                 layout          = wibox.widget.imagebox
             },
             margins = dpi(15),
@@ -30,23 +27,16 @@ local function create_option(index, icon, command)
         shape   = function(cr, w, h)
             gears.shape.rounded_rect(cr, w, h, dpi(4))
         end,
+        buttons = awful.button({}, awful.button.names.LEFT, function()
+            awful.spawn.with_shell(command)
+        end),
         layout  = wibox.container.background
     }
-
-    option:connect_signal("mouse::enter", function()
-        option.bg = beautiful.xcolor8
-    end)
-
-    option:connect_signal("mouse::leave", function()
-        option.bg = beautiful.xcolor0
-    end)
-
-    return option
 end
 
-local shutdown  = create_option(1, res_path .. "shutdown.png", "systemctl poweroff")
+local lock      = create_option(1, res_path .. "lock.png", "betterlockscreen -l")
 local reboot    = create_option(2, res_path .. "reboot.png", "systemctl reboot")
-local lock      = create_option(3, res_path .. "lock.png", "betterlockscreen -l")
+local shutdown  = create_option(3, res_path .. "shutdown.png", "systemctl poweroff")
 local logout    = create_option(4, res_path .. "logout.png", "killall -u $USER")
 local suspend   = create_option(5, res_path .. "suspend.png", "systemctl suspend")
 
@@ -57,12 +47,8 @@ local power_menu = wibox.widget {
         shutdown,
         logout,
         suspend,
-        forced_num_cols = 5,
-        forced_num_rows = 1,
-        homogeneous     = true,
-        expand          = true,
-        spacing         = dpi(10),
-        layout          = wibox.layout.grid
+        spacing = dpi(10),
+        layout = wibox.layout.fixed.horizontal
     },
     margins = dpi(15),
     layout  = wibox.container.margin
@@ -78,38 +64,47 @@ Bye = awful.popup {
     end
 }
 
-power_menu.focused_index = 3
+local function sel_option_by_index(index)
+    local options = power_menu.children[1].children
 
-local function move(direction)
-    local current_index = power_menu.focused_index or 1
-    local total_options = #power_menu.widget.children
-
-    if direction == "right" then
-        current_index = current_index % total_options + 1
-        power_menu:get_children_by_id(current_index).bg = beautiful.xcolor4
-    elseif direction == "left" then
-        current_index = (current_index - 2 + total_options) % total_options + 1
-        power_menu:get_children_by_id(current_index).bg = beautiful.xcolor4
+    for i, option in ipairs(options) do
+        if i == index then
+            option.bg = beautiful.xcolor8
+        else
+            option.bg = beautiful.xcolor0
+        end
     end
-
-    power_menu:set_focus_by_index(current_index)
 end
+
+local keygrabber
 
 Bye:connect_signal("property::visible", function()
     if Bye.visible then
-        awful.keygrabber.run(function(_, key, event)
+        local options = power_menu.children[1].children
+        local index = 3
+
+        sel_option_by_index(index)
+
+        keygrabber = awful.keygrabber.run(function(_, key, event)
             if event == "press" then
                 if key == "Right" then
-                    move("right")
+                    index = (index % #options) + 1
+                    sel_option_by_index(index)
                 elseif key == "Left" then
-                    move("left")
+                    index = ((index - 2 + #options) % #options) + 1
+                    sel_option_by_index(index)
+                elseif key == "Return" then
+                    Bye.visible = false
+                    power_menu.children[1].children[index].buttons[1]:trigger({ buttons = awful.button.names.LEFT })
                 else
                     Bye.visible = false
                 end
             end
         end)
     else
-        awful.keygrabber.stop()
+        if keygrabber then
+            awful.keygrabber.stop(keygrabber)
+        end
     end
 end)
 
