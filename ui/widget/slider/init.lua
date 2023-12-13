@@ -40,7 +40,7 @@ awesome.connect_signal("weather::info", function(temp, desc, land)
     weather_land:set_markup(helpers:color_markup(land, beautiful.xforeground))
 end)
 
-local tiktok = gears.timer {
+local tiktak = gears.timer {
     timeout     = 3,
     autostart   = true,
     call_now    = true,
@@ -100,7 +100,7 @@ local function show_slider(s, x)
 
         slider_popup:connect_signal("mouse::leave", function()
             slider_popup.visible = false
-            tiktok:stop()
+            tiktak:stop()
         end)
     end
 end
@@ -109,7 +109,7 @@ root.buttons(gears.table.join(root.buttons(),
     awful.button({}, awful.button.names.LEFT, function()
         local screen = awful.screen.focused()
         local mouse = mouse.coords()
-        tiktok:start()
+        tiktak:start()
         show_slider(screen.geometry, mouse.x)
     end)
 ))
