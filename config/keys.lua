@@ -168,10 +168,10 @@ awful.keyboard.append_global_keybindings({
 -- Mouse Bindings
 awful.mouse.append_global_mousebindings({
     awful.button({ }, awful.button.names.LEFT, function()
-        das_menu:hide()
+        TheMenu:hide()
         Bye.visible = false
      end),
-    awful.button({ }, awful.button.names.RIGHT, function() das_menu:toggle() end),
+    awful.button({ }, awful.button.names.RIGHT, function() TheMenu:toggle() end),
     awful.button({ }, awful.button.names.SCROLL_UP, awful.tag.viewprev),
     awful.button({ }, awful.button.names.SCROLL_DOWN, awful.tag.viewnext)
 })
