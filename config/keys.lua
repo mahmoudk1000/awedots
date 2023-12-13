@@ -16,16 +16,10 @@ awful.keyboard.append_global_keybindings({
     awful.key({ modkey, shift }, "q",
             awesome.quit,
         { description = "Quit Awesome", group = "Awesome" }),
-    awful.key({ modkey }, "Return",
-            function () awful.spawn(terminal) end,
-        { description = "Open Terminal", group = "Launcher" }),
-    awful.key({ modkey }, "d",
-           function() awful.spawn(rofi) end,
-        { description = "Spawn Rofi", group = "Launcher" }),
     awful.key({ modkey }, "z",
             function() awful.spawn.with_shell("betterlockscreen -l") end,
         { description = "Lock Screen", group = "Awesome" }),
-    awful.key({ modkey }, "j",
+    awful.key({ modkey }, "p",
             function() Bye.visible = not Bye.visible end,
         { description = "Toggle Power Menu", group = "Awesome" })
 })
@@ -51,6 +45,12 @@ awful.keyboard.append_global_keybindings({
 
 -- Applications Bindings
 awful.keyboard.append_global_keybindings({
+    awful.key({ modkey }, "Return",
+            function () awful.spawn(terminal) end,
+        { description = "Open Terminal", group = "Launcher" }),
+    awful.key({ modkey }, "d",
+            function() awful.spawn(rofi) end,
+        { description = "Spawn Rofi", group = "Launcher" }),
     awful.key({ modkey }, "w",
             function()
                 awful.spawn(browser)
@@ -66,11 +66,6 @@ awful.keyboard.append_global_keybindings({
                 awful.spawn(obsidian)
             end,
         { description = "Launch Obsidian", group = "Launcher" }),
-    awful.key({ modkey }, "p",
-            function()
-                awful.spawn("poww")
-            end,
-        { description = "Spawn Power Menu", group = "Launcher" }),
     awful.key({ modkey }, "b",
             function()
                 awful.spawn("blum")
@@ -78,12 +73,12 @@ awful.keyboard.append_global_keybindings({
         { description = "Spawn Bluetooth Menu", group = "Launcher" })
 })
 
--- System Bindings
+-- System Control Bindings
 awful.keyboard.append_global_keybindings({
     -- Volume
     awful.key({}, "XF86AudioRaiseVolume",
             function()
-                awful.spawn({"pamixer", "-i", "5"},
+                awful.spawn({"pamixer", "-i", "5"}, false,
                     volume_stuff:emit_volume_state())
             end,
         { description = "Increase Volume", group = "System" }),
