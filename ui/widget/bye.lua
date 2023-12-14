@@ -95,7 +95,7 @@ Bye:connect_signal("property::visible", function()
                     sel_option_by_index(index)
                 elseif key == "Return" then
                     Bye.visible = false
-                    power_menu.children[1].children[index].buttons[1]:trigger({ buttons = awful.button.names.LEFT })
+                    power_menu.children[1].children[index].buttons[1]:trigger()
                 else
                     Bye.visible = false
                 end

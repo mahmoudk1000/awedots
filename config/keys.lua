@@ -78,40 +78,44 @@ awful.keyboard.append_global_keybindings({
     -- Volume
     awful.key({}, "XF86AudioRaiseVolume",
             function()
-                awful.spawn({"pamixer", "-i", "5"}, false,
-                    volume_stuff:emit_volume_state())
+                awful.spawn({"pamixer", "-i", "5"})
+                volume_stuff:emit_volume_state()
             end,
         { description = "Increase Volume", group = "System" }),
         awful.key({ ctrl }, "XF86AudioRaiseVolume",
             function()
-                awful.spawn({"pamixer", "--allow-boost", "-i", "10"},
-                    volume_stuff:emit_volume_state())
+                awful.spawn({"pamixer", "--allow-boost", "-i", "10"})
+                volume_stuff:emit_volume_state()
             end,
         { description = "Boost Volume", group = "System" }),
     awful.key({}, "XF86AudioLowerVolume",
             function()
-                awful.spawn({"pamixer", "-d", "5"},
-                    volume_stuff:emit_volume_state())
+                awful.spawn({"pamixer", "-d", "5"})
+                volume_stuff:emit_volume_state()
             end,
         { description = "Decrease Volume", group = "System" }),
     awful.key({}, "XF86AudioMute",
             function()
-                awful.spawn({"pamixer", "--toggle-mute"},
-                    volume_stuff:emit_volume_state())
+                awful.spawn({"pamixer", "--toggle-mute"})
+                volume_stuff:emit_volume_state()
             end,
         { description = "Toggle Mute", group = "System" }),
 
     -- Brightness
     awful.key({}, "XF86MonBrightnessUp",
             function()
-                awful.spawn({"brightnessctl", "s", "+10%"},
-                    backlight_stuff:emit_backlight_info())
+                awful.spawn.easy_async({"brightnessctl", "s", "+10%"},
+                    function()
+                        backlight_stuff:emit_backlight_info()
+                end)
             end,
         { description = "Increase Brightness", group = "System" }),
     awful.key({}, "XF86MonBrightnessDown",
             function()
-                awful.spawn({"brightnessctl", "s", "10%-"},
-                    backlight_stuff:emit_backlight_info())
+                awful.spawn.easy_async({"brightnessctl", "s", "10%-"},
+                    function()
+                        backlight_stuff:emit_backlight_info()
+                end)
             end,
         { description = "Decrease Brightness", group = "System" }),
 
