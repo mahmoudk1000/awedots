@@ -15,7 +15,7 @@ local icon_suspend = recolor(res_path .. "suspend.png", beautiful.xcolor2)
 
 local awesome_menu = {
     { "Restart", awesome.restart },
-    { "Quit", awesome.quit }
+    { "Quit", function() awesome.quit() end}
 }
 
 local scrots_menu = {
