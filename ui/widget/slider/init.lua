@@ -84,16 +84,18 @@ local function show_slider(s, x)
                 info,
                 layout = wibox.layout.align.vertical
             },
-            ontop = true,
-            visible = true,
-            minimum_width = (20 / 100) * s.width,
-            minimum_height = s.height - dpi(40),
-            border_color = beautiful.border_normal,
-            border_width = beautiful.border_width,
-            placement = function(c)
+            ontop           = true,
+            visible         = true,
+            minimum_width   = (20 / 100) * s.width,
+            maximum_width   = (20 / 100) * s.width,
+            minimum_height  = s.height - dpi(40),
+            maximum_height  = s.height - dpi(40),
+            border_color    = beautiful.border_normal,
+            border_width    = beautiful.border_width,
+            placement       = function(c)
                 awful.placement.top_right(c)
             end,
-            shape = function (cr, w, h)
+            shape           = function (cr, w, h)
                 gears.shape.rounded_rect(cr, w, h, beautiful.border_radius)
             end
         }
