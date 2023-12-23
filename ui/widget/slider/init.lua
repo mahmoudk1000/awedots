@@ -21,7 +21,7 @@ local weather_temp = wibox.widget {
 local weather_desc = wibox.widget {
     markup = "Cold AF",
     font = beautiful.vont .. "Bold 13",
-    align = "left",
+    align = "right",
     valign = "center",
     widget = wibox.widget.textbox
 }

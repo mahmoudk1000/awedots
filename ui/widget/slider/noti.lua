@@ -16,7 +16,6 @@ local function notification_widget(n)
         font    = beautiful.vont .. "Bold 11",
         align   = "left",
         valign  = "center",
-        forced_height = dpi(10),
         widget  = wibox.widget.textbox
     }
 
