@@ -39,7 +39,7 @@ local song_artist = wibox.widget {
 
 local weather_temp = wibox.widget {
     markup = "1" .. "<span>&#176;</span>",
-    font = beautiful.vont .. "Bold 10",
+    font = beautiful.font_bold,
     align = "left",
     valign = "center",
     widget = wibox.widget.textbox
@@ -47,7 +47,7 @@ local weather_temp = wibox.widget {
 
 local weather_desc = wibox.widget {
     markup = "Cold",
-    font = beautiful.vont .. "Bold 10",
+    font = beautiful.font_bold,
     align = "left",
     valign = "center",
     widget = wibox.widget.textbox

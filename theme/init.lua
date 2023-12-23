@@ -36,8 +36,8 @@ theme.xcolor15        = xrdb.color15
 -- General
 theme.vont              = "Iosevka "
 theme.font              = "Iosevka 9"
-theme.font_bold         = "Iosevka Heavy 9"
-theme.font_boit         = "Iosevka Heavy Italic 9"
+theme.font_bold         = "Iosevka Bold 9"
+theme.font_boit         = "Iosevka Bold Italic 9"
 theme.iconfont          = "IosevkaTerm Nerd Font 11"
 
 theme.fg_focus          = theme.xforeground
