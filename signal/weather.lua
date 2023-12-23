@@ -22,7 +22,7 @@ function weather_stuff:emit_weather_info()
 
                 if data then
                     temp = data.main.temp
-                    desc = data.weather[1].description:gsub("^%l", string.upper)
+                    desc = data.weather[1].description:gsub("%S+", function(word) return word:sub(1,1):upper()..word:sub(2) end)
                     land = data.name .. ", " .. data.sys.country
                 end
 
