@@ -39,8 +39,8 @@ local function notification_widget(n)
                         n_text,
                         layout = wibox.layout.flex.vertical
                     },
-                    margins = dpi(15),
-                    widget  = wibox.container.margin,
+                    margins = dpi(10),
+                    widget  = wibox.container.margin
                 },
                 shape   = function(cr, w, h)
                     gears.shape.rounded_rect(cr, w, h, dpi(2))
@@ -48,10 +48,9 @@ local function notification_widget(n)
                 bg      = beautiful.xbackground,
                 widget  = wibox.container.background
             },
-            margins = dpi(10),
+            margins = { left = dpi(10), right = dpi(10), top = dpi(10), bottom = dpi(0) },
             layout  = wibox.container.margin
         },
-        spacing = dpi(10),
         layout  = wibox.layout.fixed.vertical
     }
 end
@@ -74,9 +73,15 @@ local function create_notification_container(noties)
         }
     end
 
+    local notification_layout = wibox.layout.fixed.vertical()
+
+    for i = #notifications, 1, -1 do
+        notification_layout:add(notifications[i])
+    end
+
     return wibox.widget {
         {
-            table.unpack(noties),
+            notification_layout,
             layout  = wibox.layout.align.vertical
         },
         shape = function(cr, w, h)
@@ -92,8 +97,8 @@ local notification_container = create_notification_container(notifications)
 naughty.connect_signal("request::display", function(n)
     table.insert(notifications, notification_widget(n))
 
-    if #notifications >= 8 then
-        table.remove(notifications, 8)
+    if #notifications >= 11 then
+        table.remove(notifications, 1)
     end
 
     notification_container:set_widget(create_notification_container(notifications))
