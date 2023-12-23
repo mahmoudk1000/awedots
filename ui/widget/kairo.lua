@@ -1,13 +1,23 @@
 local awful     = require("awful")
-local beautiful = require("beautiful")
-local dpi       = beautiful.xresources.apply_dpi
 local wibox     = require("wibox")
 local gears     = require("gears")
+local beautiful = require("beautiful")
+local dpi       = beautiful.xresources.apply_dpi
+
 local helpers   = require("helpers")
 
-local textclock = wibox.widget {
+local clock = wibox.widget {
     format = "%H.%M",
     font = beautiful.vont .. "Heavy 40",
+    opacity = 0.6,
+    widget = wibox.widget.textclock
+}
+
+local today = wibox.widget {
+    format = "%A",
+    font = beautiful.vont .. "Bold Italic 26",
+    align = "center",
+    valign = "center",
     widget = wibox.widget.textclock
 }
 
@@ -56,7 +66,11 @@ end)
 return awful.popup {
     widget = {
         {
-            textclock,
+            {
+                clock,
+                today,
+                layout = wibox.layout.stack
+            },
             {
                 {
                     markup = "|",
@@ -90,7 +104,7 @@ return awful.popup {
                         layout = wibox.container.margin
                     },
                     bg = beautiful.xforeground,
-                    shape = function(cr, w, h, r)
+                    shape = function(cr, w, h)
                          gears.shape.rounded_rect(cr, w, h, dpi(3))
                     end,
                     layout = wibox.container.background
