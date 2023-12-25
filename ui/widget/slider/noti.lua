@@ -23,6 +23,7 @@ local function notification_widget(n)
         markup  = n.message,
         align   = "left",
         valign  = "center",
+        forced_height = dpi(15),
         widget  = wibox.widget.textbox
     }
 
@@ -33,7 +34,7 @@ local function notification_widget(n)
                     {
                         {
                             n_title,
-                            margins = { bottom = dpi(5) },
+                            margins = { bottom = dpi(4) },
                             layout = wibox.container.margin
                         },
                         n_text,
@@ -51,6 +52,8 @@ local function notification_widget(n)
             margins = { left = dpi(10), right = dpi(10), top = dpi(10), bottom = dpi(0) },
             layout  = wibox.container.margin
         },
+        spacing = dpi(0),
+        forced_height = dpi(60),
         layout  = wibox.layout.fixed.vertical
     }
 end
@@ -97,7 +100,7 @@ local notification_container = create_notification_container(notifications)
 naughty.connect_signal("request::display", function(n)
     table.insert(notifications, notification_widget(n))
 
-    if #notifications >= 11 then
+    if #notifications >= 13 then
         table.remove(notifications, 1)
     end
 
