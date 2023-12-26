@@ -251,8 +251,6 @@ local volume_progress = wibox.widget {
         id                  = "text",
         value               = 100,
         max_value           = 100,
-        forced_height       = dpi(100),
-        forced_width        = dpi(200),
         color               = beautiful.xcolor4,
         background_color    = beautiful.xcolor0,
         shape               = function(cr, width, height)
@@ -261,7 +259,7 @@ local volume_progress = wibox.widget {
         widget              = wibox.widget.progressbar
     },
     {
-        {   
+        {
             id = "box",
             {
                 image           = res_path .. "sound.png",
@@ -271,18 +269,18 @@ local volume_progress = wibox.widget {
                 forced_width    = dpi(20),
                 widget          = wibox.widget.imagebox
             },
-            margins = { left = dpi(215) },
+            margins = { left = dpi(200) },
             layout = wibox.container.margin
         },
         layout = wibox.layout.fixed.horizontal
     },
+    forced_height = dpi(50),
     layout = wibox.layout.stack
 }
 
 awesome.connect_signal("volume::value", function(value)
     volume_progress:get_children_by_id("text")[1]:set_value(value)
-    volume_progress:get_children_by_id("box")[1]:set_margins({ left = dpi(math.min(((value / 100) * 200) + 15, 215)) })
-    volume_progress:emit_signal("widget::redraw_needed")
+    volume_progress:get_children_by_id("box")[1]:set_margins({ left = dpi(math.min(((value / 100) * 200) + 10, 200)) })
 end)
 
 
@@ -292,12 +290,10 @@ local backlight_progress = wibox.widget {
         id                  = "text",
         value               = 100,
         max_value           = 100,
-        forced_height       = dpi(100),
-        forced_width        = dpi(200),
         color               = beautiful.xcolor4,
         background_color    = beautiful.xcolor0,
-        shape               = function(cr, width, height)
-            gears.shape.rounded_rect(cr, width, height, beautiful.border_radius)
+        shape               = function(cr, w, h)
+            gears.shape.rounded_rect(cr, w, h, beautiful.border_radius)
         end,
         widget = wibox.widget.progressbar
     },
@@ -313,66 +309,41 @@ local backlight_progress = wibox.widget {
                 forced_width    = dpi(20),
                 widget          = wibox.widget.imagebox
             },
-            margins = { left = dpi(215) },
+            margins = { left = dpi(200) },
             layout = wibox.container.margin
         },
         layout = wibox.layout.fixed.horizontal
     },
+    forced_height = dpi(50),
     layout = wibox.layout.stack
 }
 
 awesome.connect_signal("brightness::value", function(value)
     backlight_progress:get_children_by_id("text")[1]:set_value(value)
-    backlight_progress:get_children_by_id("box")[1]:set_margins({ left = dpi(math.min(((value / 100) * 200) + 15, 215)) })
-    backlight_progress:emit_signal("widget::redraw_needed")
+    backlight_progress:get_children_by_id("box")[1]:set_margins({ left = dpi(math.min(((value / 100) * 200) + 10, 200)) })
 end)
 
-
-local tinyboard = wibox.widget {
+local controls = wibox.widget {
     {
-        {
-            {
-                { widget = wifi_button },
-                margins = { right = dpi(5) },
-                layout = wibox.container.margin
-            },
-            {
-                { widget = bluetooth_button },
-                margins = { left = dpi(5) },
-                layout = wibox.container.margin
-            },
-            layout = wibox.layout.ratio.horizontal
-        },
-        {
-            {
-                { widget = redshift_button },
-                margins = { right = dpi(5) },
-                layout = wibox.container.margin
-            },
-            {
-                { widget = mic_button },
-                margins = { left = dpi(5) },
-                layout = wibox.container.margin
-            },
-            layout = wibox.layout.ratio.horizontal
-        },
-        spacing = dpi(10),
-        layout = wibox.layout.flex.vertical
+        wifi_button,
+        bluetooth_button,
+        redshift_button,
+        mic_button,
+        spacing         = dpi(10),
+        forced_num_cols = 2,
+        forced_num_rows = 2,
+        expand          = true,
+        forced_height   = dpi(169),
+        layout          = wibox.layout.grid
     },
-    { widget = volume_progress },
-    { widget = backlight_progress },
+    volume_progress,
+    backlight_progress,
     spacing = dpi(10),
-    forced_width = dpi(250),
-    forced_height = dpi(254),
-    layout = wibox.layout.ratio.vertical
+    layout  = wibox.layout.fixed.vertical
 }
-tinyboard:adjust_ratio(2, 0.60, 0.20, 0.20)
 
 return wibox.widget {
-    {
-        { widget = tinyboard },
-        layout = wibox.layout.fixed.vertical
-    },
-    margins = { top = dpi(21), bottom = dpi(20), right = dpi(20), left = dpi(20) },
-    layout = wibox.container.margin
+    controls,
+    margins = dpi(10),
+    layout  = wibox.container.margin
 }

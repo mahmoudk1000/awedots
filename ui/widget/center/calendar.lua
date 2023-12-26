@@ -9,7 +9,7 @@ local dpi               = beautiful.xresources.apply_dpi
 local styles = {}
 
 styles.month   = {
-    padding      = dpi(13),
+    padding      = dpi(8),
     border_width = beautiful.border_width,
     bg_color     = beautiful.xbackground,
     shape = function(cr, w, h)
@@ -62,7 +62,7 @@ local function decorate_cell(widget, flag, date)
     local ret = wibox.widget {
         {
             widget,
-            margins = (props.padding or dpi(5)) + (props.border_width or dpi(0)),
+            margins = (props.padding or dpi(7)) + (props.border_width or dpi(0)),
             widget  = wibox.container.margin
         },
         shape           = props.shape,
@@ -76,11 +76,15 @@ local function decorate_cell(widget, flag, date)
 end
 
 return wibox.widget {
-    font            = beautiful.font,
-    date            = os.date("*t"),
-    spacing         = dpi(10),
-    fn_embed        = decorate_cell,
-    flex_height     = true,
-    start_sunday    = true,
-    widget          = wibox.widget.calendar.month,
+    {
+        font            = beautiful.font,
+        date            = os.date("*t"),
+        spacing         = dpi(5),
+        fn_embed        = decorate_cell,
+        flex_height     = true,
+        start_sunday    = true,
+        widget          = wibox.widget.calendar.month,
+    },
+    margins = dpi(10),
+    layout = wibox.container.margin
 }

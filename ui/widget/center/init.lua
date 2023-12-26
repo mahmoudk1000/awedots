@@ -3,6 +3,7 @@ local wibox             = require("wibox")
 local gears             = require "gears"
 local beautiful         = require("beautiful")
 local dpi               = beautiful.xresources.apply_dpi
+local s                 = awful.screen.focused().geometry
 
 local calendar          = require("ui.widget.center.calendar")
 local tinyboard         = require("ui.widget.center.tinyboard")
@@ -53,23 +54,25 @@ local center_popup = awful.popup {
     widget = {
         {
             {
-                { widget = time },
+                time,
                 nil,
-                { widget = weather},
+                weather,
                 layout = wibox.layout.align.horizontal
             },
             margins = { top = dpi(20), left = dpi(20), right = dpi(20) },
-            layout = wibox.container.margin
+            layout  = wibox.container.margin
         },
         {
-            { widget = tinyboard },
-            { widget = player },
             {
-                { widget = calendar },
-                margins = dpi(20),
-                layout = wibox.container.margin
+                tinyboard,
+                player,
+                calendar,
+                forced_width    = s.width / 2.5,
+                forced_height   = s.height / 3.5,
+                layout          = wibox.layout.flex.horizontal
             },
-            layout = wibox.layout.align.horizontal
+            margins = dpi(10),
+            layout  = wibox.container.margin
         },
         layout = wibox.layout.align.vertical
     },
@@ -77,12 +80,12 @@ local center_popup = awful.popup {
     visible         = false,
     border_color    = beautiful.border_normal,
     border_width    = beautiful.border_width,
-    placement = function(c)
-        awful.placement.bottom(c, { margins = { bottom = dpi(35) }, parent = awful.screen.focused() })
+    placement       = function(c)
+        awful.placement.bottom(c, { margins = { bottom = dpi(40) }, parent = awful.screen.focused() })
     end,
-    shape = function(cr, w, h)
+    shape           = function(cr, w, h)
         gears.shape.rounded_rect(cr, w, h, beautiful.border_radius)
-    end,
+    end
 }
 
 -- Toggle the visibility of the calendar popup when clicking on the clock widget

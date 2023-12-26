@@ -17,7 +17,7 @@ local album_cover = wibox.widget {
     forced_height   = dpi(100),
     forced_width    = dpi(100),
     widget          = wibox.widget.imagebox,
-    clip_shape      = function(cr, w, h, r)
+    clip_shape      = function(cr, w, h)
         gears.shape.rounded_rect(cr, w, h, beautiful.border_radius)
     end
 }
@@ -26,7 +26,7 @@ local song_name = wibox.widget {
     markup  = "<b>Song</b>",
     font    = beautiful.font_bold,
     align   = "center",
-    valign  = "center",
+    valign  = "bottom",
     widget  = wibox.widget.textbox
 }
 
@@ -76,7 +76,7 @@ local next_button = wibox.widget {
 
 local player = wibox.widget {
     {
-        { widget = album_cover },
+        album_cover,
         margins = { top = dpi(0), left = dpi(20), right = dpi(20), bottom = dpi(0) },
         layout = wibox.container.margin
     },
@@ -93,10 +93,10 @@ local player = wibox.widget {
             next_button,
             layout = wibox.layout.flex.horizontal
         },
-        margins = dpi(7),
+        margins = dpi(8),
         layout = wibox.container.margin
     },
-    layout = wibox.layout.ratio.vertical,
+    layout = wibox.layout.ratio.vertical
 }
 player:adjust_ratio(2, 0.65, 0.20, 0.15)
 
@@ -118,7 +118,7 @@ end)
 return wibox.widget {
     {
         {
-            { widget = player },
+            player,
             margins = dpi(15),
             layout = wibox.container.margin
         },
@@ -126,12 +126,10 @@ return wibox.widget {
         border_width = beautiful.border_width,
         border_color = beautiful.border_normal,
         layout = wibox.container.background,
-        forced_width = dpi(250),
-        forced_height = dpi(270),
         shape = function(cr, w, h)
             gears.shape.rounded_rect(cr, w, h, beautiful.border_radius)
         end
     },
-    margins = { top = dpi(20), bottom = dpi(20) },
+    margins = dpi(10),
     layout = wibox.container.margin
 }
