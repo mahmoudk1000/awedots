@@ -10,12 +10,14 @@ local clock = wibox.widget {
     format = "%H.%M",
     font = beautiful.vont .. "Heavy 40",
     opacity = 0.6,
+    align = "center",
+    valign = "center",
     widget = wibox.widget.textclock
 }
 
 local today = wibox.widget {
     format = "%A",
-    font = beautiful.vont .. "Bold Italic 26",
+    font = beautiful.vont .. "Bold Italic 24",
     align = "center",
     valign = "center",
     widget = wibox.widget.textclock
