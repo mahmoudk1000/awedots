@@ -14,19 +14,17 @@ local album_cover = wibox.widget {
     image           = recolor(res_path .. "cover.png", beautiful.xcolor8),
     valign          = "center",
     halign          = "center",
-    forced_height   = dpi(100),
-    forced_width    = dpi(100),
-    widget          = wibox.widget.imagebox,
     clip_shape      = function(cr, w, h)
-        gears.shape.rounded_rect(cr, w, h, beautiful.border_radius)
-    end
+        gears.shape.rounded_rect(cr, w, h, dpi(4))
+    end,
+    widget	    = wibox.widget.imagebox
 }
 
 local song_name = wibox.widget {
     markup  = "<b>Song</b>",
     font    = beautiful.font_bold,
     align   = "center",
-    valign  = "bottom",
+    valign  = "center",
     widget  = wibox.widget.textbox
 }
 
@@ -44,10 +42,10 @@ local prev_botton = wibox.widget {
     halign          = "center",
     forced_height   = dpi(10),
     forced_width    = dpi(10),
-    widget          = wibox.widget.imagebox,
     buttons = awful.button({}, awful.button.names.LEFT, function()
         awful.spawn({"mpc", "prev"})
-    end)
+    end),
+    widget          = wibox.widget.imagebox
 }
 
 local toggle_button = wibox.widget {
@@ -56,10 +54,10 @@ local toggle_button = wibox.widget {
     halign          = "center",
     forced_height   = dpi(10),
     forced_width    = dpi(10),
-    widget          = wibox.widget.imagebox,
     buttons = awful.button({}, awful.button.names.LEFT, function()
         awful.spawn({"mpc", "toggle"})
-    end)
+    end),
+    widget          = wibox.widget.imagebox
 }
 
 local next_button = wibox.widget {
@@ -68,23 +66,22 @@ local next_button = wibox.widget {
     halign          = "center",
     forced_height   = dpi(10),
     forced_width    = dpi(10),
-    widget          = wibox.widget.imagebox,
     buttons = awful.button({}, awful.button.names.LEFT, function()
         awful.spawn({"mpc", "next"})
-    end)
+    end),
+    widget          = wibox.widget.imagebox
 }
 
 local player = wibox.widget {
     {
         album_cover,
-        margins = { top = dpi(0), left = dpi(20), right = dpi(20), bottom = dpi(0) },
+        margins = { top = dpi(0), left = dpi(15), right = dpi(15), bottom = dpi(0) },
         layout = wibox.container.margin
     },
     {
-        nil,
         song_name,
         song_artist,
-        layout = wibox.layout.align.vertical
+        layout = wibox.layout.flex.vertical
     },
     {
         {
@@ -93,13 +90,12 @@ local player = wibox.widget {
             next_button,
             layout = wibox.layout.flex.horizontal
         },
-        margins = dpi(8),
+        margins = { left = dpi(6), right = dpi(6), top = dpi(2), bottom = dpi(2) },
         layout = wibox.container.margin
     },
     layout = wibox.layout.ratio.vertical
 }
-player:adjust_ratio(2, 0.65, 0.20, 0.15)
-
+player:adjust_ratio(2, 0.75, 0.15, 0.10)
 
 awesome.connect_signal("mpd::info", function(song, artist, state)
     song_name:set_markup(song)
@@ -110,8 +106,14 @@ awesome.connect_signal("mpd::info", function(song, artist, state)
     else
         toggle_button.image = recolor(res_path .. "play.png", beautiful.xcolor4)
     end
+end)
 
-    player:emit_signal("widget::redraw_needed")
+awesome.connect_signal("mpd::cover", function(isDefault, cover)
+    if not isDefault then
+        album_cover:set_image(cover)
+    else
+        album_cover:set_image(recolor(res_path .. "cover.png", beautiful.xcolor8))
+    end
 end)
 
 

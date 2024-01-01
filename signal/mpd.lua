@@ -1,4 +1,6 @@
 local awful     = require("awful")
+local gfs       = require("gears.filesystem")
+local res_path  = gfs.get_configuration_dir() .. "theme/res/"
 
 
 local mpd_stuff = {}
@@ -23,21 +25,40 @@ function mpd_stuff:emit_mpd_info()
         end)
 end
 
+function mpd_stuff:update_cover()
+    awful.spawn.easy_async_with_shell(
+        "ffmpeg -i $XDG_MUSIC_DIR/\"$(mpc current -f %file%)\" -map 0:1 -c:v copy -y " .. res_path .. "cover.jpg",
+        function(_, _, _, exitcode)
+            local cover
+	    local isDefault
 
-local mpd_script = [[
-    sh -c 'mpc idleloop player'
-]]
-
-awful.spawn.easy_async_with_shell(
-    "ps x | grep \"mpc idleloop player\" | grep -v grep | awk '{print $1}' | xargs kill",
-    function()
-        awful.spawn.with_line_callback(mpd_script, {
-            stdout = function()
-                mpd_stuff:emit_mpd_info()
+            if exitcode == 0 and gfs.file_readable(res_path .. "cover.jpg") then
+                isDefault = false
+                cover = res_path .. "cover.jpg"
+            else
+                isDefault = true
+                cover = res_path .. "cover.png"
             end
-        })
-end)
 
+            awesome.emit_signal("mpd::cover", isDefault, cover)
+        end)
+end
+
+function mpd_stuff:start_idleloop()
+    awful.spawn.easy_async_with_shell(
+        "pkill -f 'mpc idleloop player'",
+        function()
+            awful.spawn.with_line_callback("mpc idleloop player", {
+                stdout = function()
+                    self:emit_mpd_info()
+                    self:update_cover()
+                end
+            })
+        end)
+end
+
+mpd_stuff:start_idleloop()
 mpd_stuff:emit_mpd_info()
+mpd_stuff:update_cover()
 
 return mpd_stuff
