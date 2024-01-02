@@ -26,15 +26,18 @@ function mpd_stuff:emit_mpd_info()
 end
 
 function mpd_stuff:update_cover()
+    local timestamp = os.time()
+    awful.spawn.with_shell("rm -f " .. res_path .. "cover_*.jpg")
+
     awful.spawn.easy_async_with_shell(
-        "ffmpeg -i $XDG_MUSIC_DIR/\"$(mpc current -f %file%)\" -map 0:1 -c:v copy -y " .. res_path .. "cover.jpg",
+        "ffmpeg -i $XDG_MUSIC_DIR/\"$(mpc current -f %file%)\" -map 0:1 -c:v copy -y " .. res_path .. "cover_" .. timestamp ..".jpg",
         function(_, _, _, exitcode)
             local cover
 	    local isDefault
 
-            if exitcode == 0 and gfs.file_readable(res_path .. "cover.jpg") then
+            if exitcode == 0 and gfs.file_readable(res_path .. "cover_" .. timestamp .. ".jpg") then
                 isDefault = false
-                cover = res_path .. "cover.jpg"
+                cover = res_path .. "cover_" .. timestamp .. ".jpg"
             else
                 isDefault = true
                 cover = res_path .. "cover.png"
