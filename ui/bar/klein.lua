@@ -33,17 +33,17 @@ local taglist = function(s)
         awful.button({ }, awful.button.names.SCROLL_DOWN, function(t) awful.tag.viewnext(t.screen) end)
     )
 
-    local cool_tags = function(self, c3, _)
+    local cool_tags = function(self, t, _)
         local timed = rubato.timed {
             intro = 0.1,
             duration = 0.3,
             subscribed = function(pos)
-                if c3.selected then
+                if t.selected then
                     self:get_children_by_id("index_icon")[1].bg = beautiful.xcolor4
                     self:get_children_by_id("index_icon")[1].shape = function(cr, _)
                         gears.shape.rounded_bar(cr, dpi(20) * pos, dpi(8))
                     end
-                elseif #c3:clients() == 0 then
+                elseif #t:clients() == 0 then
                     self:get_children_by_id("index_icon")[1].bg = beautiful.xcolor0
                     self:get_children_by_id("index_icon")[1].shape = function(cr, _)
                         gears.shape.rounded_bar(cr, dpi(12), dpi(8))
@@ -207,10 +207,10 @@ local clock = wibox.widget {
         valign  = "center",
         widget  = wibox.widget.textclock
     },
-    layout = wibox.layout.fixed.horizontal,
     buttons = gears.table.join(awful.button({}, awful.button.names.LEFT, nil, function()
         awesome.emit_signal("clock::clicked")
-    end))
+    end)),
+    layout = wibox.layout.fixed.horizontal
 }
 
 
@@ -372,54 +372,60 @@ local function init_bar(s)
     bar:struts { left = dpi(0), right = dpi(0), top = dpi(0), bottom = dpi(30) }
     bar:setup {
         {
-            -- Left Widgets
             {
-                layoutbox,
-                margins = { left = dpi(10), right = dpi(9), top = dpi(9), bottom = dpi(9) },
-                widget = wibox.container.margin
+                -- Left Widgets
+                {
+                    layoutbox,
+                    margins = { left = dpi(10), right = dpi(9), top = dpi(9), bottom = dpi(9) },
+                    widget = wibox.container.margin
+                },
+                {
+                    taglist(s),
+                    margins = { left = dpi(8), right = dpi(8), top = dpi(12), bottom = dpi(10) },
+                    layout = wibox.container.margin
+                },
+                {
+                    tasklist(s),
+                    margins = { left = dpi(9), right = dpi(9), top = dpi(4), bottom = dpi(0) },
+                    layout = wibox.container.margin
+                },
+                layout = wibox.layout.fixed.horizontal
             },
+            nil,
             {
-                taglist(s),
-                margins = { left = dpi(8), right = dpi(8), top = dpi(12), bottom = dpi(10) },
-                layout = wibox.container.margin
+                -- Right Widgets
+                {
+                    volume,
+                    margins = dpi(8),
+                    layout = wibox.container.margin
+                },
+                {
+                    backlight,
+                    margins = dpi(8),
+                    layout = wibox.container.margin
+                },
+                {
+                    bluetooth,
+                    margins = dpi(8),
+                    layout = wibox.container.margin
+                },
+                {
+                    battery,
+                    margins = { left = dpi(8), right = dpi(10), top = dpi(8), bottom = dpi(8) },
+                    layout = wibox.container.margin
+                },
+                layout = wibox.layout.fixed.horizontal
             },
-            {
-                tasklist(s),
-                margins = { left = dpi(9), right = dpi(9), top = dpi(4), bottom = dpi(0) },
-                layout = wibox.container.margin
-            },
-            layout = wibox.layout.fixed.horizontal
+            layout = wibox.layout.align.horizontal
         },
         {
             -- Middle Widget
             clock,
+            haligh = "center",
+            valign = "center",
             layout = wibox.container.place
         },
-        {
-            -- Right Widgets
-            {
-                volume,
-                margins = dpi(8),
-                layout = wibox.container.margin
-            },
-            {
-                backlight,
-                margins = dpi(8),
-                layout = wibox.container.margin
-            },
-            {
-                bluetooth,
-                margins = dpi(8),
-                layout = wibox.container.margin
-            },
-            {
-                battery,
-                margins = { left = dpi(8), right = dpi(10), top = dpi(8), bottom = dpi(8) },
-                layout = wibox.container.margin
-            },
-            layout = wibox.layout.fixed.horizontal
-        },
-        layout = wibox.layout.align.horizontal
+        layout = wibox.layout.stack
     }
 end
 
