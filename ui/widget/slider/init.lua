@@ -101,8 +101,8 @@ local function show_slider(s, x)
         }
 
         slider_popup:connect_signal("mouse::leave", function()
-            slider_popup.visible = false
             tiktak:stop()
+            slider_popup.visible = false
         end)
     end
 end
@@ -111,7 +111,8 @@ root.buttons(gears.table.join(root.buttons(),
     awful.button({}, awful.button.names.LEFT, function()
         local screen = awful.screen.focused()
         local mouse = mouse.coords()
-        tiktak:start()
+
         show_slider(screen.geometry, mouse.x)
+        tiktak:start()
     end)
 ))
