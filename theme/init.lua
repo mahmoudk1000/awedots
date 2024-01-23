@@ -80,6 +80,12 @@ theme.taglist_squares_unsel = nil
 theme.taglist_disable_icon  = true
 
 
+-- Tsasklist
+theme.tasklist_bg_focus     = theme.bg_focus
+theme.tasklist_bg_urgent    = theme.bg_urgent
+theme.tasklist_bg_minimize  = theme.xcolor4
+
+
 -- Notifications:
 theme.notification_font         = theme.font
 theme.notification_margin       = theme.useless_gap
