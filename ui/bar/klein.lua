@@ -2,6 +2,7 @@ local awful             = require("awful")
 local gears             = require "gears"
 local wibox             = require("wibox")
 local beautiful         = require("beautiful")
+local rubato            = require("mods.rubato")
 
 local dpi               = beautiful.xresources.apply_dpi
 local recolor           = gears.color.recolor_image
@@ -33,24 +34,30 @@ local taglist = function(s)
     )
 
     local cool_tags = function(self, c3, _)
-        if c3.selected then
-            self:get_children_by_id("index_icon")[1].bg = beautiful.xcolor4
-            self:get_children_by_id("index_icon")[1].shape = function(cr, w, h)
-                gears.shape.rounded_bar(cr, dpi(20), dpi(8))
+        local timed = rubato.timed {
+            intro = 0.1,
+            duration = 0.3,
+            subscribed = function(pos)
+                if c3.selected then
+                    self:get_children_by_id("index_icon")[1].bg = beautiful.xcolor4
+                    self:get_children_by_id("index_icon")[1].shape = function(cr, _)
+                        gears.shape.rounded_bar(cr, dpi(20) * pos, dpi(8))
+                    end
+                elseif #c3:clients() == 0 then
+                    self:get_children_by_id("index_icon")[1].bg = beautiful.xcolor0
+                    self:get_children_by_id("index_icon")[1].shape = function(cr, _)
+                        gears.shape.rounded_bar(cr, dpi(12), dpi(8))
+                    end
+                else
+                    self:get_children_by_id("index_icon")[1].bg = beautiful.xcolor8
+                    self:get_children_by_id("index_icon")[1].shape = function(cr, _)
+                        gears.shape.rounded_bar(cr, dpi(15), dpi(8))
+                    end
+                end
             end
-        elseif #c3:clients() == 0 then
-            self:get_children_by_id("index_icon")[1].bg = beautiful.xcolor0
-            self:get_children_by_id("index_icon")[1].shape = function(cr, w, h)
-                gears.shape.rounded_bar(cr, dpi(12), dpi(8))
-            end
-        else
-            self:get_children_by_id("index_icon")[1].bg = beautiful.xcolor8
-            self:get_children_by_id("index_icon")[1].shape = function(cr, w, h)
-                gears.shape.rounded_bar(cr, dpi(15), dpi(8))
-            end
-        end
+        }
+        timed.target = 1
     end
-
 
     return awful.widget.taglist {
         screen = s,
@@ -381,7 +388,7 @@ local function init_bar(s)
                 margins = { left = dpi(9), right = dpi(9), top = dpi(4), bottom = dpi(0) },
                 layout = wibox.container.margin
             },
-            layout = wibox.layout.fixed.horizontal,
+            layout = wibox.layout.fixed.horizontal
         },
         {
             -- Middle Widget
@@ -410,7 +417,7 @@ local function init_bar(s)
                 margins = { left = dpi(8), right = dpi(10), top = dpi(8), bottom = dpi(8) },
                 layout = wibox.container.margin
             },
-            layout = wibox.layout.fixed.horizontal,
+            layout = wibox.layout.fixed.horizontal
         },
         layout = wibox.layout.align.horizontal
     }
