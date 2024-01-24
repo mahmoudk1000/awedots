@@ -69,16 +69,16 @@ local function widget_template(name, value, color)
         update_value = function(new_value)
             local timed = rubato.timed {
                 duration    = 0.8,
-                pos         = 1,
+                pos         = math.rad(pie.value * 3.6) / math.rad(new_value * 3.6),
                 subscribed  = function(pos)
                     pie.bar_shape = function(cr, w, h)
-                        gears.shape.arc(cr, w, h, nil, 0, math.rad(new_value * pos * 3.6))
+                        gears.shape.arc(cr, w, h, nil, 0, math.rad(new_value * 3.6 * pos))
                     end
+                    percent.markup = math.floor(new_value * pos) .. "%"
                 end
             }
             timed.target    = 1
             pie.value       = new_value
-            percent.markup  = new_value .. "%"
         end
     }
 end
