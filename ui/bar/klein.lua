@@ -33,32 +33,6 @@ local taglist = function(s)
         awful.button({ }, awful.button.names.SCROLL_DOWN, function(t) awful.tag.viewnext(t.screen) end)
     )
 
-    local cool_tags = function(self, t, _)
-        local timed = rubato.timed {
-            intro = 0.1,
-            duration = 0.3,
-            subscribed = function(pos)
-                if t.selected then
-                    self:get_children_by_id("index_icon")[1].bg = beautiful.xcolor4
-                    self:get_children_by_id("index_icon")[1].shape = function(cr, _)
-                        gears.shape.rounded_bar(cr, dpi(20) * pos, dpi(8))
-                    end
-                elseif #t:clients() == 0 then
-                    self:get_children_by_id("index_icon")[1].bg = beautiful.xcolor0
-                    self:get_children_by_id("index_icon")[1].shape = function(cr, _)
-                        gears.shape.rounded_bar(cr, dpi(12), dpi(8))
-                    end
-                else
-                    self:get_children_by_id("index_icon")[1].bg = beautiful.xcolor8
-                    self:get_children_by_id("index_icon")[1].shape = function(cr, _)
-                        gears.shape.rounded_bar(cr, dpi(15), dpi(8))
-                    end
-                end
-            end
-        }
-        timed.target = 1
-    end
-
     return awful.widget.taglist {
         screen = s,
         filter = awful.widget.taglist.filter.all,
@@ -83,8 +57,42 @@ local taglist = function(s)
                 widget  = wibox.container.background
             },
             id = "background_role",
-            create_callback = cool_tags,
-            update_callback = cool_tags,
+            create_callback = function(self, c3, _)
+                if c3.selected then
+                    self:get_children_by_id("index_icon")[1].bg = beautiful.xcolor4
+                    self:get_children_by_id("index_icon")[1].shape = function(cr, _)
+                        gears.shape.rounded_bar(cr, dpi(20), dpi(8))
+                    end
+                elseif #c3:clients() == 0 then
+                    self:get_children_by_id("index_icon")[1].bg = beautiful.xcolor0
+                    self:get_children_by_id("index_icon")[1].shape = function(cr, _)
+                        gears.shape.rounded_bar(cr, dpi(12), dpi(8))
+                    end
+                else
+                    self:get_children_by_id("index_icon")[1].bg = beautiful.xcolor8
+                    self:get_children_by_id("index_icon")[1].shape = function(cr, _)
+                        gears.shape.rounded_bar(cr, dpi(15), dpi(8))
+                    end
+                end
+            end,
+            update_callback = function(self, c3, _)
+                if c3.selected then
+                    self:get_children_by_id("index_icon")[1].bg = beautiful.xcolor4
+                    self:get_children_by_id("index_icon")[1].shape = function(cr, _)
+                        gears.shape.rounded_bar(cr, dpi(20), dpi(8))
+                    end
+                elseif #c3:clients() == 0 then
+                    self:get_children_by_id("index_icon")[1].bg = beautiful.xcolor0
+                    self:get_children_by_id("index_icon")[1].shape = function(cr, _)
+                        gears.shape.rounded_bar(cr, dpi(12), dpi(8))
+                    end
+                else
+                    self:get_children_by_id("index_icon")[1].bg = beautiful.xcolor8
+                    self:get_children_by_id("index_icon")[1].shape = function(cr, _)
+                        gears.shape.rounded_bar(cr, dpi(15), dpi(8))
+                    end
+                end
+            end,
             layout = wibox.container.background
         },
         buttons = taglist_buttons
@@ -95,20 +103,21 @@ end
 -- Tasklist Widget
 local tasklist = function(s)
     local tasklist_buttons = awful.util.table.join(
-        awful.button({ }, awful.button.names.LEFT, function (c)
-            if c == client.focus then
-                c.minimized = true
-            else
-                c:emit_signal("request::activate", "tasklist", { raise = true })
-            end
-        end),
-        awful.button({ }, awful.button.names.RIGHT, function()
+        awful.button({}, awful.button.names.LEFT,
+            function(c)
+                if c == client.focus then
+                    c.minimized = true
+                else
+                    c:emit_signal("request::activate", "tasklist", { raise = true })
+                end
+            end),
+        awful.button({}, awful.button.names.RIGHT, function()
             awful.menu.client_list({ theme = { width = dpi(250) } })
         end),
-        awful.button({ }, awful.button.names.SCROLL_UP, function ()
+        awful.button({}, awful.button.names.SCROLL_UP, function()
             awful.client.focus.byidx(1)
         end),
-        awful.button({ }, awful.button.names.SCROLL_DOWN, function ()
+        awful.button({}, awful.button.names.SCROLL_DOWN, function()
             awful.client.focus.byidx(-1)
         end)
     )
