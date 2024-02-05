@@ -127,10 +127,10 @@ return wibox.widget {
         bg = beautiful.xbackground,
         border_width = beautiful.border_width,
         border_color = beautiful.border_normal,
-        layout = wibox.container.background,
         shape = function(cr, w, h)
             gears.shape.rounded_rect(cr, w, h, beautiful.border_radius)
-        end
+        end,
+        layout = wibox.container.background
     },
     margins = dpi(10),
     layout = wibox.container.margin

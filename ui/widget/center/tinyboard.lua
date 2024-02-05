@@ -11,54 +11,57 @@ local bluetooth_stuff   = require("signal.bluetooth")
 local redshift_stuff    = require("signal.redshift")
 local volume_stuff      = require("signal.volume")
 
-
--- Wifi Button
-local wifi_button = wibox.widget {
-    {
+local make_button = function(text, icon)
+    return wibox.widget {
         {
             {
-                id              = "icon",
-                image           =  recolor(res_path .. "wifi.png", beautiful.xcolor0),
-                valign          = "center",
-                halign          = "center",
-                downscale       = true,
-                forced_height   = dpi(25),
-                forced_width    = dpi(25),
-                widget          = wibox.widget.imagebox
+                {
+                    id              = "icon",
+                    image           = recolor(res_path .. icon, beautiful.xcolor0),
+                    valign          = "center",
+                    halign          = "center",
+                    forced_height   = dpi(25),
+                    forced_width    = dpi(25),
+                    widget          = wibox.widget.imagebox
+                },
+                {
+                    id      = "text",
+                    text    = text,
+                    align   = "center",
+                    font    = beautiful.font,
+                    widget  = wibox.widget.textbox
+                },
+                spacing = dpi(5),
+                layout = wibox.layout.flex.vertical,
             },
-            {
-                id      = "text",
-                text    = "WiFi",
-                align   = "center",
-                font    = beautiful.font,
-                widget  = wibox.widget.textbox,
-            },
-            spacing = dpi(5),
-            layout = wibox.layout.flex.vertical,
+            valign = "center",
+            halign = "center",
+            widget = wibox.container.place
         },
-        valign = "center",
-        halign = "center",
-        widget = wibox.container.place
-    },
-    bg      = beautiful.xcolor4,
-    widget  = wibox.container.background,
-    shape   = function(cr, width, height)
-        gears.shape.rounded_rect(cr, width, height, beautiful.border_radius)
-    end,
-    buttons = {
-        awful.button({}, awful.button.names.LEFT, function()
-            awful.spawn.easy_async_with_shell(
-                "iwctl device list | awk '/on/{print $4}'",
-                function(stdout)
-                    if stdout:match("on") then
-                        awful.spawn({"rfkill", "block", "wlan"})
-                    else
-                        awful.spawn({"rfkill", "unblock", "wlan"})
-                    end
-                    wifi_stuff:emit_wifi_info()
-                end)
-        end)
+        bg      = beautiful.xcolor4,
+        widget  = wibox.container.background,
+        shape   = function(cr, width, height)
+            gears.shape.rounded_rect(cr, width, height, beautiful.border_radius)
+        end
     }
+end
+
+-- Wifi Button
+local wifi_button = make_button("Wifi", "wifi.png")
+
+wifi_button.buttons = {
+    awful.button({}, awful.button.names.LEFT, function()
+        awful.spawn.easy_async_with_shell(
+            "iwctl device list | awk '/on/{print $4}'",
+            function(stdout)
+                if stdout:match("on") then
+                    awful.spawn({"rfkill", "block", "wlan"})
+                else
+                    awful.spawn({"rfkill", "unblock", "wlan"})
+                end
+                wifi_stuff:emit_wifi_info()
+            end)
+    end)
 }
 
 awesome.connect_signal("wifi::info", function(is_powerd, is_connected, wifi_name)
@@ -75,48 +78,19 @@ end)
 
 
 -- Bluetooth Button
-local bluetooth_button = wibox.widget {
-    {
-        {
-            {
-                id              = "icon",
-                image           = recolor(res_path.. "blue-off.png", beautiful.xcolor0),
-                valign          = "center",
-                halign          = "center",
-                forced_height   = dpi(25),
-                forced_width    = dpi(25),
-                widget          = wibox.widget.imagebox
-            },
-            {
-                text    = "Bluetooth",
-                font    = beautiful.font,
-                align   = "center",
-                widget  = wibox.widget.textbox
-            },
-            spacing = dpi(5),
-            layout = wibox.layout.flex.vertical,
-        },
-        valign = "center",
-        halign = "center",
-        widget = wibox.container.place
-    },
-    bg      = beautiful.xcolor4,
-    widget  = wibox.container.background,
-    shape   = function(cr, width, height)
-        gears.shape.rounded_rect(cr, width, height, beautiful.border_radius)
-    end,
-    buttons = {
-        awful.button({}, awful.button.names.LEFT, function()
-            awful.spawn.easy_async_with_shell(
-                "bluetoothctl show | grep -q 'Powered: yes'",
-                function(_, _, _, exitcode)
-                    local toggle_command = (exitcode == 0) and "bluetoothctl power off" or "bluetoothctl power on"
-                    awful.spawn.easy_async(toggle_command, function()
-                        bluetooth_stuff:emit_bluetooth_info()
-                    end)
+local bluetooth_button = make_button("Bluetooth", "blue-off.png")
+
+bluetooth_button.buttons = {
+    awful.button({}, awful.button.names.LEFT, function()
+        awful.spawn.easy_async_with_shell(
+            "bluetoothctl show | grep -q 'Powered: yes'",
+            function(_, _, _, exitcode)
+                local toggle_command = (exitcode == 0) and "bluetoothctl power off" or "bluetoothctl power on"
+                awful.spawn.easy_async(toggle_command, function()
+                    bluetooth_stuff:emit_bluetooth_info()
                 end)
-        end)
-    }
+            end)
+    end)
 }
 
 awesome.connect_signal("bluetooth::status", function(status, _, icon)
@@ -131,48 +105,19 @@ end)
 
 
 -- Redshift Button
-local redshift_button = wibox.widget {
-    {
-        {
-            {
-                id              = "icon",
-                image           =  recolor(res_path .. "redshift.png", beautiful.xcolor0),
-                valign          = "center",
-                halign          = "center",
-                forced_height   = dpi(25),
-                forced_width    = dpi(25),
-                widget          = wibox.widget.imagebox
-            },
-            {
-                text    = "Redshift",
-                font    = beautiful.icofont,
-                align   = "center",
-                widget  = wibox.widget.textbox,
-            },
-            spacing = dpi(5),
-            layout = wibox.layout.flex.vertical,
-        },
-        valign = "center",
-        halign = "center",
-        widget = wibox.container.place
-    },
-    bg      = beautiful.xcolor4,
-    widget  = wibox.container.background,
-    shape = function(cr, width, height)
-        gears.shape.rounded_rect(cr, width, height, beautiful.border_radius)
-    end,
-    buttons = {
-        awful.button({}, awful.button.names.LEFT, function()
-            awful.spawn.easy_async(
-                "systemctl --user is-active --quiet redshift.service",
-                function(_, _, _, exitcode)
-                    local toggle_command = (exitcode == 0) and "systemctl --user stop redshift.service" or "systemctl --user start redshift.service"
-                    awful.spawn.easy_async(toggle_command, function()
-                        redshift_stuff:emit_redshift_info()
-                    end)
+local redshift_button = make_button("Redshift", "redshift.png")
+
+redshift_button.buttons = {
+    awful.button({}, awful.button.names.LEFT, function()
+        awful.spawn.easy_async(
+            "systemctl --user is-active --quiet redshift.service",
+            function(_, _, _, exitcode)
+                local toggle_command = (exitcode == 0) and "systemctl --user stop redshift.service" or "systemctl --user start redshift.service"
+                awful.spawn.easy_async(toggle_command, function()
+                    redshift_stuff:emit_redshift_info()
                 end)
-        end)
-    }
+            end)
+    end)
 }
 
 awesome.connect_signal("redshift::state", function(state)
@@ -187,51 +132,22 @@ end)
 
 
 -- Mic Button
-local mic_button = wibox.widget {
-    {
-        {
-            {
-                id              = "icon",
-                image           = recolor(res_path .. "mic.png", beautiful.xcolor0),
-                valign          = "center",
-                halign          = "center",
-                forced_height   = dpi(25),
-                forced_width    = dpi(25),
-                widget          = wibox.widget.imagebox
-            },
-            {
-                text    = "Mic",
-                align   = "center",
-                font    = beautiful.font,
-                widget  = wibox.widget.textbox,
-            },
-            spacing = dpi(5),
-            layout = wibox.layout.flex.vertical,
-        },
-        valign = "center",
-        halign = "center",
-        widget = wibox.container.place
-    },
-    bg      = beautiful.xcolor4,
-    widget  = wibox.container.background,
-    shape = function(cr, width, height)
-        gears.shape.rounded_rect(cr, width, height, beautiful.border_radius)
-    end,
-    buttons = {
-        awful.button({}, awful.button.names.LEFT, function()
-            awful.spawn.easy_async(
-                "amixer sget Capture",
-                function(stdout)
-                    local muted = stdout:match("%[off%]")
-                    if muted then
-                        awful.spawn({"amixer", "set", "Capture", "cap"})
-                    else
-                        awful.spawn({"amixer", "set", "Capture", "nocap"})
-                    end
-                    volume_stuff:emit_mic_state()
-                end)
-        end)
-    }
+local mic_button = make_button("Mic", "mic.png")
+
+mic_button.buttons = {
+    awful.button({}, awful.button.names.LEFT, function()
+        awful.spawn.easy_async(
+            "amixer sget Capture",
+            function(stdout)
+                local muted = stdout:match("%[off%]")
+                if muted then
+                    awful.spawn({"amixer", "set", "Capture", "cap"})
+                else
+                    awful.spawn({"amixer", "set", "Capture", "nocap"})
+                end
+                volume_stuff:emit_mic_state()
+            end)
+    end)
 }
 
 awesome.connect_signal("mic::status", function(status)
@@ -245,85 +161,57 @@ awesome.connect_signal("mic::status", function(status)
 end)
 
 
--- Volume Progress
-local volume_progress = wibox.widget {
-    {
-        id                  = "text",
-        value               = 100,
-        max_value           = 100,
-        color               = beautiful.xcolor4,
-        background_color    = beautiful.xcolor0,
-        shape               = function(cr, width, height)
-            gears.shape.rounded_rect(cr, width, height, beautiful.border_radius)
-        end,
-        widget              = wibox.widget.progressbar
-    },
-    {
+local make_slider = function(icon)
+    return wibox.widget {
         {
-            id = "box",
             {
-                image           = res_path .. "sound.png",
+                image           = recolor(res_path .. icon, beautiful.xcolor4),
                 valign          = "center",
-                halign          = "center",
+                halign          = "cneter",
                 forced_height   = dpi(20),
                 forced_width    = dpi(20),
                 widget          = wibox.widget.imagebox
             },
-            margins = { left = dpi(200) },
+            margins = { left = dpi(0), right = dpi(7) },
             layout = wibox.container.margin
         },
-        layout = wibox.layout.fixed.horizontal
-    },
-    forced_height = dpi(50),
-    layout = wibox.layout.stack
-}
-
-awesome.connect_signal("volume::value", function(value)
-    volume_progress:get_children_by_id("text")[1]:set_value(value)
-    volume_progress:get_children_by_id("box")[1]:set_margins({ left = dpi(math.min(((value / 100) * 200) + 10, 200)) })
-end)
-
+        {
+            id                  = "text",
+            value               = 100,
+            handle_border_color = beautiful.xcolor8,
+            handle_border_width = dpi(1),
+            handle_color        = beautiful.xcolor12,
+            handle_width        = dpi(10),
+            handle_shape        = function(cr, w, h)
+                gears.shape.rounded_rect(cr, w, h)
+            end,
+            bar_active_color    = beautiful.xcolor4,
+            bar_color           = beautiful.xcolor0,
+            bar_shape           = function(cr, w, h)
+                gears.shape.rounded_rect(cr, w, h)
+            end,
+            widget = wibox.widget.slider
+        },
+        layout = wibox.layout.align.horizontal
+    }
+end
 
 -- Backlight Progress
-local backlight_progress = wibox.widget {
-    {
-        id                  = "text",
-        value               = 100,
-        max_value           = 100,
-        color               = beautiful.xcolor4,
-        background_color    = beautiful.xcolor0,
-        shape               = function(cr, w, h)
-            gears.shape.rounded_rect(cr, w, h, beautiful.border_radius)
-        end,
-        widget = wibox.widget.progressbar
-    },
-    {
-        {
-            id = "box",
-            {
-                id              = "img",
-                image           = res_path .. "lamp.png",
-                valign          = "center",
-                halign          = "left",
-                forced_height   = dpi(20),
-                forced_width    = dpi(20),
-                widget          = wibox.widget.imagebox
-            },
-            margins = { left = dpi(200) },
-            layout = wibox.container.margin
-        },
-        layout = wibox.layout.fixed.horizontal
-    },
-    forced_height = dpi(50),
-    layout = wibox.layout.stack
-}
+local backlight_progress = make_slider("lamp.png")
 
 awesome.connect_signal("brightness::value", function(value)
     backlight_progress:get_children_by_id("text")[1]:set_value(value)
-    backlight_progress:get_children_by_id("box")[1]:set_margins({ left = dpi(math.min(((value / 100) * 200) + 10, 200)) })
 end)
 
-local controls = wibox.widget {
+
+-- Volume Progress
+local volume_progress = make_slider("sound.png")
+
+awesome.connect_signal("volume::value", function(value)
+    volume_progress:get_children_by_id("text")[1]:set_value(value)
+end)
+
+local options = wibox.widget {
     {
         wifi_button,
         bluetooth_button,
@@ -333,17 +221,32 @@ local controls = wibox.widget {
         forced_num_cols = 2,
         forced_num_rows = 2,
         expand          = true,
-        forced_height   = dpi(169),
+        homogeneous     = true,
         layout          = wibox.layout.grid
     },
-    volume_progress,
-    backlight_progress,
-    spacing = dpi(10),
-    layout  = wibox.layout.fixed.vertical
+    {
+        {
+            volume_progress,
+            backlight_progress,
+            spacing = dpi(10),
+            layout = wibox.layout.flex.vertical
+        },
+        margins = { top = dpi(10) },
+        layout  = wibox.container.margin
+    },
+    layout  = wibox.layout.ratio.vertical
 }
 
+options:adjust_ratio(2, 0.65, 0.35, 0)
+
 return wibox.widget {
-    controls,
+    {
+        options,
+        shape = function(cr, w, h)
+            gears.shape.rounded_rect(cr, w, h, beautiful.border_radius)
+        end,
+        layout  = wibox.container.background
+    },
     margins = dpi(10),
     layout  = wibox.container.margin
 }
