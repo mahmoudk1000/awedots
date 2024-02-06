@@ -2,7 +2,6 @@ local awful             = require("awful")
 local gears             = require "gears"
 local wibox             = require("wibox")
 local beautiful         = require("beautiful")
-local rubato            = require("mods.rubato")
 
 local dpi               = beautiful.xresources.apply_dpi
 local recolor           = gears.color.recolor_image
@@ -17,27 +16,46 @@ local bluetooth_stuff   = require("signal.bluetooth")
 -- Taglist Widget
 local taglist = function(s)
     local taglist_buttons = awful.util.table.join(
-        awful.button({ }, awful.button.names.LEFT, function(t) t:view_only() end),
+        awful.button({}, awful.button.names.LEFT, function(t) t:view_only() end),
         awful.button({ modkey }, awful.button.names.LEFT, function(t)
-            if c.focus then
-                c.focus:move_to_tag(t)
+            if client.focus then
+                client.focus:move_to_tag(t)
             end
         end),
-        awful.button({ }, awful.button.names.RIGHT, awful.tag.viewtoggle),
+        awful.button({}, awful.button.names.RIGHT, awful.tag.viewtoggle),
         awful.button({ modkey }, awful.button.names.RIGHT, function(t)
-            if c.focus then
-                c.focus:toggle_tag(t)
+            if client.focus then
+                client.focus:toggle_tag(t)
             end
         end),
-        awful.button({ }, awful.button.names.SCROLL_UP, function(t) awful.tag.viewprev(t.screen) end),
-        awful.button({ }, awful.button.names.SCROLL_DOWN, function(t) awful.tag.viewnext(t.screen) end)
+        awful.button({}, awful.button.names.SCROLL_UP, function(t) awful.tag.viewprev(t.screen) end),
+        awful.button({}, awful.button.names.SCROLL_DOWN, function(t) awful.tag.viewnext(t.screen) end)
     )
+
+    local cool_tags = function(self, c3, _)
+        if c3.selected then
+            self:get_children_by_id("index_icon")[1].bg = beautiful.xcolor4
+            self:get_children_by_id("index_icon")[1].shape = function(cr, _, h)
+                gears.shape.rounded_bar(cr, dpi(20), h)
+            end
+        elseif #c3:clients() == 0 then
+            self:get_children_by_id("index_icon")[1].bg = beautiful.xcolor0
+            self:get_children_by_id("index_icon")[1].shape = function(cr, _, h)
+                gears.shape.rounded_bar(cr, dpi(10), h)
+            end
+        else
+            self:get_children_by_id("index_icon")[1].bg = beautiful.xcolor8
+            self:get_children_by_id("index_icon")[1].shape = function(cr, _, h)
+                gears.shape.rounded_bar(cr, dpi(15), h)
+            end
+        end
+    end
 
     return awful.widget.taglist {
         screen = s,
         filter = awful.widget.taglist.filter.all,
         layout = {
-            spacing = dpi(8),
+            spacing = dpi(6),
             layout = wibox.layout.fixed.horizontal
         },
         widget_template = {
@@ -45,54 +63,19 @@ local taglist = function(s)
                 {
                     {
                         id     = "index_role",
-                        widget = wibox.widget.textbox,
+                        widget = wibox.widget.textbox
                     },
                     margins = dpi(10),
-                    widget  = wibox.container.margin,
+                    widget  = wibox.container.margin
                 },
                 id      = "index_icon",
-                shape   = function(cr, _)
-                    gears.shape.circle(cr, dpi(8), dpi(8))
+                shape   = function(cr, w, h)
+                    gears.shape.circle(cr, w, h)
                 end,
                 widget  = wibox.container.background
             },
-            id = "background_role",
-            create_callback = function(self, c3, _)
-                if c3.selected then
-                    self:get_children_by_id("index_icon")[1].bg = beautiful.xcolor4
-                    self:get_children_by_id("index_icon")[1].shape = function(cr, _)
-                        gears.shape.rounded_bar(cr, dpi(20), dpi(8))
-                    end
-                elseif #c3:clients() == 0 then
-                    self:get_children_by_id("index_icon")[1].bg = beautiful.xcolor0
-                    self:get_children_by_id("index_icon")[1].shape = function(cr, _)
-                        gears.shape.rounded_bar(cr, dpi(12), dpi(8))
-                    end
-                else
-                    self:get_children_by_id("index_icon")[1].bg = beautiful.xcolor8
-                    self:get_children_by_id("index_icon")[1].shape = function(cr, _)
-                        gears.shape.rounded_bar(cr, dpi(15), dpi(8))
-                    end
-                end
-            end,
-            update_callback = function(self, c3, _)
-                if c3.selected then
-                    self:get_children_by_id("index_icon")[1].bg = beautiful.xcolor4
-                    self:get_children_by_id("index_icon")[1].shape = function(cr, _)
-                        gears.shape.rounded_bar(cr, dpi(20), dpi(8))
-                    end
-                elseif #c3:clients() == 0 then
-                    self:get_children_by_id("index_icon")[1].bg = beautiful.xcolor0
-                    self:get_children_by_id("index_icon")[1].shape = function(cr, _)
-                        gears.shape.rounded_bar(cr, dpi(12), dpi(8))
-                    end
-                else
-                    self:get_children_by_id("index_icon")[1].bg = beautiful.xcolor8
-                    self:get_children_by_id("index_icon")[1].shape = function(cr, _)
-                        gears.shape.rounded_bar(cr, dpi(15), dpi(8))
-                    end
-                end
-            end,
+            create_callback = cool_tags,
+            update_callback = cool_tags,
             layout = wibox.container.background
         },
         buttons = taglist_buttons
@@ -196,7 +179,6 @@ local clock = wibox.widget {
             image           = recolor(res_path .. "clock.png", beautiful.xcolor2),
             valign          = "center",
             align           = "center",
-            forced_height   = dpi(15),
             widget          = wibox.widget.imagebox
         },
         margins = { right = dpi(5) },
@@ -212,7 +194,7 @@ local clock = wibox.widget {
     {
         format  = "%R",
         font    = beautiful.font_bold,
-        align   = "center",
+        halign  = "center",
         valign  = "center",
         widget  = wibox.widget.textclock
     },
@@ -223,96 +205,55 @@ local clock = wibox.widget {
 }
 
 
--- Volume Widget
-local volume = wibox.widget {
-    {
+-- Tray Widgets
+local function sys_tray(icon, color)
+    return wibox.widget {
         {
-            id              = "icon",
-            image           = recolor(res_path .. "volume.png", beautiful.xcolor3),
-            align           = "center",
-            valign          = "center",
-            forced_height   = dpi(15),
-            widget          = wibox.widget.imagebox
+            {
+                id      = "icon",
+                image   = recolor(res_path .. icon, color),
+                halign  = "center",
+                valign  = "center",
+                widget  = wibox.widget.imagebox
+            },
+            margins = { right =  dpi(4) },
+            layout  = wibox.container.margin
         },
-        margins = { right =  dpi(5) },
-        layout  = wibox.container.margin
-    },
-    {
-        id      = "text",
-        text    = "100%",
-        font    = beautiful.font,
-        align   = "center",
-        valign  = "center",
-        widget  = wibox.widget.textbox
-    },
-    layout = wibox.layout.fixed.horizontal,
-}
+        {
+            id          = "text",
+            text        = "100%",
+            font        = beautiful.font,
+            halign      = "center",
+            valign      = "center",
+            widget      = wibox.widget.textbox
+        },
+        layout = wibox.layout.fixed.horizontal
+    }
+end
+
+-- Volume Widget
+local volume = sys_tray("volume.png", beautiful.xcolor3)
 
 awesome.connect_signal("volume::value", function(value, icon)
-    volume:get_children_by_id("text")[1]:set_text(value .. "%")
     volume:get_children_by_id("icon")[1]:set_image(icon)
-    awesome.emit_signal("widget::redraw_needed")
+    volume:get_children_by_id("text")[1]:set_text(value .. "%")
 end)
 
 
 -- Backlight Widget
-local backlight = wibox.widget {
-    {
-        {
-            image           = recolor(res_path .. "lamp.png", beautiful.xcolor2),
-            align           = "center",
-            valign          = "center",
-            forced_height   = dpi(15),
-            widget          = wibox.widget.imagebox
-        },
-        margins = { right =  dpi(5) },
-        layout  = wibox.container.margin
-    },
-    {
-        id      = "text",
-        text    = "100%",
-        align   = "center",
-        valign  = "center",
-        font    = beautiful.font,
-        widget  = wibox.widget.textbox
-    },
-    layout = wibox.layout.fixed.horizontal,
-}
+local backlight = sys_tray("lamp.png", beautiful.xcolor2)
 
 awesome.connect_signal("brightness::value", function(value)
     backlight:get_children_by_id("text")[1]:set_text(value .. "%")
-    awesome.emit_signal("widget::redraw_needed")
 end)
 
 
 -- Bluetooth Widget
-local bluetooth = wibox.widget {
-    {
-        {
-            id              = "icon",
-            markup          = recolor(res_path .. "blue-on.png", beautiful.xcolor4),
-            align           = "center",
-            valign          = "center",
-            forced_height   = dpi(15),
-            widget          = wibox.widget.imagebox
-        },
-        margins = { right = dpi(5) },
-        layout  = wibox.container.margin
-    },
-    {
-        id      = "text",
-        text    = "On",
-        align   = "center",
-        valign  = "center",
-        font    = beautiful.font,
-        widget  = wibox.widget.textbox
-    },
-    layout = wibox.layout.fixed.horizontal,
-}
+local bluetooth = sys_tray("blue-on.png", beautiful.xcolor4)
 
 awesome.connect_signal("bluetooth::status", function(is_powerd, _, icon)
-    bluetooth:get_children_by_id("text")[1]:set_text(is_powerd)
     bluetooth:get_children_by_id("icon")[1]:set_image(icon)
+    bluetooth:get_children_by_id("text")[1]:set_text(is_powerd)
 end)
 
 gears.timer({
@@ -327,34 +268,11 @@ gears.timer({
 
 
 -- Battery Widget
-local battery = wibox.widget {
-    {
-        {
-            id              = "icon",
-            image           = recolor(res_path .. "bat-nor.png", beautiful.xcolor5),
-            align           = "center",
-            valign          = "center",
-            forced_height   = dpi(15),
-            widget          = wibox.widget.imagebox
-        },
-        margins = { right = dpi(5) },
-        layout  = wibox.container.margin
-    },
-    {
-        id      = "text",
-        text    = "100%",
-        align   = "center",
-        valign  = "center",
-        font    = beautiful.font,
-        widget  = wibox.widget.textbox
-    },
-    layout = wibox.layout.fixed.horizontal,
-}
+local battery = sys_tray("bat-nor.png", beautiful.xcolor5)
 
 awesome.connect_signal("battery::info", function(value, icon)
-    battery:get_children_by_id("text")[1]:set_text(value .. "%")
     battery:get_children_by_id("icon")[1]:set_image(icon)
-    awesome.emit_signal("widget::redraw_needed")
+    battery:get_children_by_id("text")[1]:set_text(value .. "%")
 end)
 
 gears.timer({
@@ -385,18 +303,18 @@ local function init_bar(s)
                 -- Left Widgets
                 {
                     layoutbox,
-                    margins = { left = dpi(10), right = dpi(9), top = dpi(9), bottom = dpi(9) },
-                    widget = wibox.container.margin
+                    margins = { left = dpi(10), right = dpi(10), top = dpi(10), bottom = dpi(8) },
+                    widget  = wibox.container.margin
                 },
                 {
                     taglist(s),
-                    margins = { left = dpi(8), right = dpi(8), top = dpi(12), bottom = dpi(10) },
-                    layout = wibox.container.margin
+                    margins = { left = dpi(10), right = dpi(10), top = dpi(12), bottom = dpi(9) },
+                    layout  = wibox.container.margin
                 },
                 {
                     tasklist(s),
-                    margins = { left = dpi(9), right = dpi(9), top = dpi(4), bottom = dpi(0) },
-                    layout = wibox.container.margin
+                    margins = { top = dpi(4) },
+                    layout  = wibox.container.margin
                 },
                 layout = wibox.layout.fixed.horizontal
             },
@@ -405,31 +323,24 @@ local function init_bar(s)
                 -- Right Widgets
                 {
                     volume,
-                    margins = dpi(8),
-                    layout = wibox.container.margin
-                },
-                {
                     backlight,
-                    margins = dpi(8),
-                    layout = wibox.container.margin
-                },
-                {
                     bluetooth,
-                    margins = dpi(8),
-                    layout = wibox.container.margin
-                },
-                {
                     battery,
-                    margins = { left = dpi(8), right = dpi(10), top = dpi(8), bottom = dpi(8) },
-                    layout = wibox.container.margin
+                    spacing = dpi(10),
+                    layout  = wibox.layout.fixed.horizontal
                 },
-                layout = wibox.layout.fixed.horizontal
+                margins = { left = dpi(0), right = dpi(10), top = dpi(8), bottom = dpi(7) },
+                layout  = wibox.container.margin
             },
             layout = wibox.layout.align.horizontal
         },
         {
             -- Middle Widget
-            clock,
+            {
+                clock,
+                margins = { left = dpi(0), right = dpi(0), top = dpi(8), bottom = dpi(7) },
+                layout  = wibox.container.margin
+            },
             haligh = "center",
             valign = "center",
             layout = wibox.container.place
