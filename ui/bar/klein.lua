@@ -2,6 +2,7 @@ local awful             = require("awful")
 local gears             = require "gears"
 local wibox             = require("wibox")
 local beautiful         = require("beautiful")
+local rubato            = require("mods.rubato")
 
 local dpi               = beautiful.xresources.apply_dpi
 local recolor           = gears.color.recolor_image
@@ -15,7 +16,7 @@ local bluetooth_stuff   = require("signal.bluetooth")
 
 -- Taglist Widget
 local taglist = function(s)
-    local taglist_buttons = awful.util.table.join(
+    local buttons = awful.util.table.join(
         awful.button({}, awful.button.names.LEFT, function(t) t:view_only() end),
         awful.button({ modkey }, awful.button.names.LEFT, function(t)
             if client.focus then
@@ -32,53 +33,45 @@ local taglist = function(s)
         awful.button({}, awful.button.names.SCROLL_DOWN, function(t) awful.tag.viewnext(t.screen) end)
     )
 
-    local cool_tags = function(self, c3, _)
-        if c3.selected then
-            self:get_children_by_id("index_icon")[1].bg = beautiful.xcolor4
-            self:get_children_by_id("index_icon")[1].shape = function(cr, _, h)
-                gears.shape.rounded_bar(cr, dpi(20), h)
-            end
-        elseif #c3:clients() == 0 then
-            self:get_children_by_id("index_icon")[1].bg = beautiful.xcolor0
-            self:get_children_by_id("index_icon")[1].shape = function(cr, _, h)
-                gears.shape.rounded_bar(cr, dpi(10), h)
-            end
-        else
-            self:get_children_by_id("index_icon")[1].bg = beautiful.xcolor8
-            self:get_children_by_id("index_icon")[1].shape = function(cr, _, h)
-                gears.shape.rounded_bar(cr, dpi(15), h)
-            end
-        end
-    end
-
     return awful.widget.taglist {
         screen = s,
         filter = awful.widget.taglist.filter.all,
+        style = {
+            shape = gears.shape.rounded_bar
+        },
         layout = {
-            spacing = dpi(6),
+            spacing = dpi(7),
             layout = wibox.layout.fixed.horizontal
         },
         widget_template = {
-            {
-                {
-                    {
-                        id     = "index_role",
-                        widget = wibox.widget.textbox
-                    },
-                    margins = dpi(10),
-                    widget  = wibox.container.margin
-                },
-                id      = "index_icon",
-                shape   = function(cr, w, h)
-                    gears.shape.circle(cr, w, h)
-                end,
-                widget  = wibox.container.background
-            },
-            create_callback = cool_tags,
-            update_callback = cool_tags,
-            layout = wibox.container.background
+            id      = "background_role",
+            shape   = gears.shape.rounded_bar,
+            widget  = wibox.container.background,
+            create_callback = function(self, t, _)
+                self.animator   = rubato.timed {
+                    duration    = 0.2,
+                    subscribed  = function(pos)
+                        self:get_children_by_id("background_role")[1].forced_width = pos
+                    end
+                }
+
+                self.update = function()
+                    if t.selected then
+                        self.animator.target = dpi(20)
+                    elseif #t:clients() == 0 then
+                        self.animator.target = dpi(10)
+                    else
+                        self.animator.target = dpi(15)
+                    end
+                end
+
+                self.update()
+            end,
+            update_callback = function(self)
+                self.update()
+            end
         },
-        buttons = taglist_buttons
+        buttons = buttons
     }
 end
 
@@ -127,22 +120,26 @@ local tasklist = function(s)
         widget_template = {
             {
                 {
+                    id      = "background_role",
+                    widget  = wibox.container.background
+                },
+                shape = function(cr, w, h)
+                    gears.shape.squircle(cr, w, h, 2)
+                end,
+                widget = wibox.container.background
+            },
+            {
+                {
                     id      = "icon_role",
                     halign  = "center",
                     valign  = "center",
                     widget  = wibox.widget.imagebox
                 },
-                forced_height   = dpi(24),
-                margins         = { left = dpi(6), right = dpi(6), top = dpi(6), bottom = dpi(4) },
+                forced_height   = dpi(20),
+                margins         = dpi(2),
                 widget          = wibox.container.margin
             },
-            {
-                wibox.widget.base.make_widget(),
-                id            = "background_role",
-                forced_height = dpi(2),
-                forced_width  = dpi(8),
-                widget        = wibox.container.background
-            },
+            layout = wibox.layout.stack,
             create_callback = function(self, c)
                 if c.name == "st" then
                     self:get_children_by_id("icon_role")[1]:set_image(recolor(res_path .. "terminal.png", beautiful.xcolor4))
@@ -152,8 +149,7 @@ local tasklist = function(s)
                 if c.name == "st" then
                     self:get_children_by_id("icon_role")[1].image = recolor(res_path .. "terminal.png", beautiful.xcolor4)
                 end
-            end,
-            layout = wibox.layout.fixed.vertical
+            end
         }
     }
 end
@@ -291,7 +287,6 @@ local function init_bar(s)
         screen      = s,
         position    = "bottom",
         type        = "dock",
-        visible     = true,
         ontop       = false,
         height      = dpi(30),
         width       = s.geometry.width
@@ -300,28 +295,21 @@ local function init_bar(s)
     bar:setup {
         {
             {
-                -- Left Widgets
                 {
+                    -- Left Widgets
                     layoutbox,
-                    margins = { left = dpi(10), right = dpi(10), top = dpi(10), bottom = dpi(8) },
-                    widget  = wibox.container.margin
-                },
-                {
-                    taglist(s),
-                    margins = { left = dpi(10), right = dpi(10), top = dpi(12), bottom = dpi(9) },
-                    layout  = wibox.container.margin
-                },
-                {
+                    {
+                        taglist(s),
+                        margins = { top = dpi(3), bottom = dpi(3) },
+                        layout  = wibox.container.margin
+                    },
                     tasklist(s),
-                    margins = { top = dpi(4) },
-                    layout  = wibox.container.margin
+                    spacing = dpi(10),
+                    layout  = wibox.layout.fixed.horizontal
                 },
-                layout = wibox.layout.fixed.horizontal
-            },
-            nil,
-            {
-                -- Right Widgets
+                nil,
                 {
+                    -- Right Widgets
                     volume,
                     backlight,
                     bluetooth,
@@ -329,16 +317,17 @@ local function init_bar(s)
                     spacing = dpi(10),
                     layout  = wibox.layout.fixed.horizontal
                 },
-                margins = { left = dpi(0), right = dpi(10), top = dpi(8), bottom = dpi(7) },
-                layout  = wibox.container.margin
+                layout = wibox.layout.align.horizontal
             },
-            layout = wibox.layout.align.horizontal
+            forced_height   = bar.height,
+            margins         = { left = dpi(10), right = dpi(10), top = dpi(9), bottom = dpi(7) },
+            layout          = wibox.container.margin
         },
         {
             -- Middle Widget
             {
                 clock,
-                margins = { left = dpi(0), right = dpi(0), top = dpi(8), bottom = dpi(7) },
+                margins = { top = dpi(9), bottom = dpi(7) },
                 layout  = wibox.container.margin
             },
             haligh = "center",
@@ -347,8 +336,20 @@ local function init_bar(s)
         },
         layout = wibox.layout.stack
     }
+
+    local function handle_bar(c)
+        if c.fullscreen or c.maximized then
+            bar.visible = false
+        else
+            bar.visible = true
+        end
+    end
+
+    client.connect_signal("property::fullscreen", handle_bar)
+    client.connect_signal("property::maximized", handle_bar)
 end
 
 awful.screen.connect_for_each_screen(function(s)
     init_bar(s)
 end)
+

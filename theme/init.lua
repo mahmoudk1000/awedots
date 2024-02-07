@@ -13,67 +13,66 @@ local theme = dofile(themes_path .. "default/theme.lua")
 
 
 -- Colors
-theme.xbackground     = xrdb.background
-theme.xforeground     = xrdb.foreground
-theme.xcolor0         = xrdb.color0
-theme.xcolor1         = xrdb.color1
-theme.xcolor2         = xrdb.color2
-theme.xcolor3         = xrdb.color3
-theme.xcolor4         = xrdb.color4
-theme.xcolor5         = xrdb.color5
-theme.xcolor6         = xrdb.color6
-theme.xcolor7         = xrdb.color7
-theme.xcolor8         = xrdb.color8
-theme.xcolor9         = xrdb.color9
-theme.xcolor10        = xrdb.color10
-theme.xcolor11        = xrdb.color11
-theme.xcolor12        = xrdb.color12
-theme.xcolor13        = xrdb.color13
-theme.xcolor14        = xrdb.color14
-theme.xcolor15        = xrdb.color15
+theme.xbackground   = xrdb.background
+theme.xforeground   = xrdb.foreground
+theme.xcolor0       = xrdb.color0
+theme.xcolor1       = xrdb.color1
+theme.xcolor2       = xrdb.color2
+theme.xcolor3       = xrdb.color3
+theme.xcolor4       = xrdb.color4
+theme.xcolor5       = xrdb.color5
+theme.xcolor6       = xrdb.color6
+theme.xcolor7       = xrdb.color7
+theme.xcolor8       = xrdb.color8
+theme.xcolor9       = xrdb.color9
+theme.xcolor10      = xrdb.color10
+theme.xcolor11      = xrdb.color11
+theme.xcolor12      = xrdb.color12
+theme.xcolor13      = xrdb.color13
+theme.xcolor14      = xrdb.color14
+theme.xcolor15      = xrdb.color15
 
 
 -- General
-theme.vont              = "Iosevka "
-theme.font              = "Iosevka 9"
-theme.font_bold         = "Iosevka Bold 9"
-theme.font_boit         = "Iosevka Bold Italic 9"
-theme.iconfont          = "IosevkaTerm Nerd Font 11"
+theme.vont      = "Iosevka "
+theme.font      = "Iosevka 9"
+theme.font_bold = "Iosevka Bold 9"
+theme.font_boit = "Iosevka Bold Italic 9"
+theme.iconfont  = "IosevkaTerm Nerd Font 11"
 
-theme.fg_focus          = theme.xforeground
-theme.fg_normal         = theme.xforeground
-theme.fg_urgent         = theme.color1
+theme.fg_focus  = theme.xforeground
+theme.fg_normal = theme.xforeground
+theme.fg_urgent = theme.color1
 
-theme.bg_focus          = theme.xcolor0
-theme.bg_normal         = theme.xbackground
-theme.bg_urgent         = theme.xcolor1
+theme.bg_focus  = theme.xcolor8
+theme.bg_normal = theme.xbackground
+theme.bg_urgent = theme.xcolor1
 
-theme.useless_gap       = dpi(4)
-theme.border_radius     = dpi(0)
+theme.useless_gap   = dpi(4)
+theme.border_radius = dpi(0)
 
 theme.wallpaper         = config_path .. "theme/wall.jpg"
 
 
 -- Borders
 theme.border_width  = dpi(4)
-theme.border_focus  = theme.xcolor8
+theme.border_focus  = theme.bg_focus
 theme.border_normal = theme.xcolor0
-theme.border_marked = theme.xcolor5
+theme.border_marked = theme.bg_urgent
 
 
 -- Taglist
 theme.taglist_font          = theme.font_bold
-theme.taglist_bg            = theme.bg_normal
-theme.taglist_fg_focus      = theme.xcolor4
-theme.taglist_bg_focus      = theme.bg_normal
-theme.taglist_fg_occupied   = theme.xcolor8
-theme.taglist_bg_occupied   = theme.background
-theme.taglist_fg_empty      = theme.xcolor0
-theme.taglist_bg_empty      = theme.xbackground
-theme.taglist_fg_urgent     = theme.xcolor1
-theme.taglist_bg_urgent     = theme.xbackground
-theme.taglist_fg_volatile   = theme.xcolor3
-theme.taglist_bg_volatile   = theme.xforeground
+theme.taglist_fg_focus      = theme.bg_normal
+theme.taglist_bg_focus      = theme.xcolor4
+theme.taglist_fg_occupied   = theme.background
+theme.taglist_bg_occupied   = theme.xcolor8
+theme.taglist_fg_empty      = theme.xbackground
+theme.taglist_bg_empty      = theme.xcolor0
+theme.taglist_fg_urgent     = theme.xbackground
+theme.taglist_bg_urgent     = theme.xcolor1
+theme.taglist_fg_volatile   = theme.xforeground
+theme.taglist_bg_volatile   = theme.xcolor3
 
 theme.taglist_squares_sel   = nil
 theme.taglist_squares_unsel = nil
@@ -83,7 +82,7 @@ theme.taglist_disable_icon  = true
 -- Tsasklist
 theme.tasklist_bg_focus     = theme.bg_focus
 theme.tasklist_bg_urgent    = theme.bg_urgent
-theme.tasklist_bg_minimize  = theme.xcolor4
+theme.tasklist_bg_minimize  = theme.xcolor0
 
 
 -- Notifications:
