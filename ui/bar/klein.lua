@@ -291,7 +291,9 @@ local function init_bar(s)
         height      = dpi(30),
         width       = s.geometry.width
     }
-    bar:struts { left = dpi(0), right = dpi(0), top = dpi(0), bottom = dpi(30) }
+
+    bar:struts { left = dpi(0), right = dpi(0), top = dpi(0), bottom = bar.height }
+
     bar:setup {
         {
             {
@@ -319,22 +321,18 @@ local function init_bar(s)
                 },
                 layout = wibox.layout.align.horizontal
             },
-            forced_height   = bar.height,
-            margins         = { left = dpi(10), right = dpi(10), top = dpi(9), bottom = dpi(7) },
-            layout          = wibox.container.margin
-        },
-        {
-            -- Middle Widget
             {
+                -- Middle Widget
                 clock,
-                margins = { top = dpi(9), bottom = dpi(7) },
-                layout  = wibox.container.margin
+                haligh = "center",
+                valign = "center",
+                layout = wibox.container.place
             },
-            haligh = "center",
-            valign = "center",
-            layout = wibox.container.place
+            layout = wibox.layout.stack
         },
-        layout = wibox.layout.stack
+        forced_height   = bar.height,
+        margins         = { left = dpi(10), right = dpi(10), top = dpi(9), bottom = dpi(7) },
+        layout          = wibox.container.margin
     }
 
     local function handle_bar(c)
@@ -352,4 +350,3 @@ end
 awful.screen.connect_for_each_screen(function(s)
     init_bar(s)
 end)
-

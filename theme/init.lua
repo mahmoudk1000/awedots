@@ -51,6 +51,8 @@ theme.bg_urgent = theme.xcolor1
 theme.useless_gap   = dpi(4)
 theme.border_radius = dpi(0)
 
+
+-- Wallpaper
 theme.wallpaper         = config_path .. "theme/wall.jpg"
 
 
