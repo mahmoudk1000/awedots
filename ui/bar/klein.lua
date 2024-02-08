@@ -124,7 +124,7 @@ local tasklist = function(s)
                     widget  = wibox.container.background
                 },
                 shape = function(cr, w, h)
-                    gears.shape.squircle(cr, w, h, 2)
+                    gears.shape.squircle(cr, w, h, dpi(2))
                 end,
                 widget = wibox.container.background
             },
@@ -135,20 +135,21 @@ local tasklist = function(s)
                     valign  = "center",
                     widget  = wibox.widget.imagebox
                 },
-                forced_height   = dpi(20),
-                margins         = dpi(2),
-                widget          = wibox.container.margin
+                margins = dpi(2),
+                widget  = wibox.container.margin
             },
             layout = wibox.layout.stack,
             create_callback = function(self, c)
-                if c.name == "st" then
-                    self:get_children_by_id("icon_role")[1]:set_image(recolor(res_path .. "terminal.png", beautiful.xcolor4))
+                self.fixes = function()
+                    if c.name == "st" then
+                        self:get_children_by_id("icon_role")[1]:set_image(recolor(res_path .. "terminal.png", beautiful.xcolor4))
+                    end
                 end
+
+                self.fixes()
             end,
-            update_callback = function(self, c)
-                if c.name == "st" then
-                    self:get_children_by_id("icon_role")[1].image = recolor(res_path .. "terminal.png", beautiful.xcolor4)
-                end
+            update_callback = function(self)
+                self.fixes()
             end
         }
     }
