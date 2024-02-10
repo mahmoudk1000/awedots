@@ -2,6 +2,8 @@ local awful     = require("awful")
 local json      = require("dkjson")
 local gears     = require("gears")
 
+local helpers = require("helpers")
+
 
 local weather_stuff = {}
 
@@ -22,7 +24,7 @@ function weather_stuff:emit_weather_info()
 
                 if data then
                     temp = data.main.temp
-                    desc = data.weather[1].description:gsub("%S+", function(word) return word:sub(1,1):upper()..word:sub(2) end)
+                    desc = helpers:uppercase_first_letter(data.weather[1].description)
                     land = data.name .. ", " .. data.sys.country
                 end
 
