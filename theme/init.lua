@@ -107,6 +107,17 @@ theme.menu_border_color = theme.xcolor0
 theme.menu_border_width = theme.border_width
 
 
+-- Bling
+theme.tag_preview_widget_border_radius = theme.border_radius
+theme.tag_preview_client_border_radius = theme.border_radius
+theme.tag_preview_client_bg = theme.xbackground
+theme.tag_preview_client_border_color = theme.xcolor0
+theme.tag_preview_client_border_width = theme.border_width
+theme.tag_preview_widget_border_color = theme.xcolor8
+theme.tag_preview_widget_border_width = theme.border_width
+theme.tag_preview_widget_margin = dpi(7)
+
+
 -- Generate Awesome icon:
 theme.awesome_icon = theme_assets.awesome_icon(
     theme.menu_height, theme.bg_focus, theme.fg_focus

@@ -20,6 +20,7 @@ require("config.keys")
 require("config.menu")
 require("config.notification")
 require("config.window")
+require("config.bling")
 
 -- Other Stuff
 require("awful.autofocus")

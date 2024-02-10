@@ -45,7 +45,6 @@ local taglist = function(s)
         },
         widget_template = {
             id      = "background_role",
-            shape   = gears.shape.rounded_bar,
             widget  = wibox.container.background,
             create_callback = function(self, t, _)
                 self.animator   = rubato.timed {
@@ -66,6 +65,17 @@ local taglist = function(s)
                 end
 
                 self.update()
+
+                self:connect_signal('mouse::enter', function()
+                    if #t:clients() > 0 then
+                        awesome.emit_signal("bling::tag_preview::update", t)
+                        awesome.emit_signal("bling::tag_preview::visibility", s, true)
+                    end
+                end)
+                self:connect_signal('mouse::leave', function()
+                    awesome.emit_signal("bling::tag_preview::visibility", s, false)
+                    if self.has_backup then self.bg = self.backup end
+                end)
             end,
             update_callback = function(self)
                 self.update()
