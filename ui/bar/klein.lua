@@ -167,16 +167,17 @@ end
 
 
 -- LayoutBox Widget
-local layoutbox = awful.widget.layoutbox {
-    screen = s,
-    -- Add buttons, allowing you to change the layout
-    buttons = {
-        awful.button({ }, awful.button.names.LEFT, function () awful.layout.inc( 1) end),
-        awful.button({ }, awful.button.names.RIGHT, function () awful.layout.inc(-1) end),
-        awful.button({ }, awful.button.names.SCROLL_UP, function () awful.layout.inc( 1) end),
-        awful.button({ }, awful.button.names.SCROLL_DOWN, function () awful.layout.inc(-1) end),
+local layoutbox = function(s)
+    return awful.widget.layoutbox {
+        screen = s,
+        buttons = {
+            awful.button({ }, awful.button.names.LEFT, function () awful.layout.inc( 1) end),
+            awful.button({ }, awful.button.names.RIGHT, function () awful.layout.inc(-1) end),
+            awful.button({ }, awful.button.names.SCROLL_UP, function () awful.layout.inc( 1) end),
+            awful.button({ }, awful.button.names.SCROLL_DOWN, function () awful.layout.inc(-1) end),
+        }
     }
-}
+end
 
 
 -- Clock Widget
@@ -310,7 +311,7 @@ local function init_bar(s)
             {
                 {
                     -- Left Widgets
-                    layoutbox,
+                    layoutbox(s),
                     {
                         taglist(s),
                         margins = { top = dpi(3), bottom = dpi(3) },

@@ -6,10 +6,11 @@ local dpi               = beautiful.xresources.apply_dpi
 local res_path          = gears.filesystem.get_configuration_dir() .. "theme/res/"
 local recolor           = gears.color.recolor_image
 
-local wifi_stuff        = require("signal.wifi")
+local backlight_stuff   = require("signal.backlight")
 local bluetooth_stuff   = require("signal.bluetooth")
 local redshift_stuff    = require("signal.redshift")
 local volume_stuff      = require("signal.volume")
+local wifi_stuff        = require("signal.wifi")
 
 local make_button = function(text, icon)
     return wibox.widget {
@@ -176,7 +177,7 @@ local make_slider = function(icon)
             layout = wibox.container.margin
         },
         {
-            id                  = "text",
+            id                  = "slider",
             value               = 100,
             handle_border_color = beautiful.xcolor8,
             handle_border_width = dpi(1),
@@ -199,16 +200,28 @@ end
 -- Backlight Progress
 local backlight_progress = make_slider("lamp.png")
 
+backlight_progress.children[2]:connect_signal("property::value", function(_, new_value)
+    awful.spawn.easy_async("brightnessctl set " .. new_value .. "%", function()
+        backlight_stuff:emit_backlight_info()
+    end)
+end)
+
 awesome.connect_signal("brightness::value", function(value)
-    backlight_progress:get_children_by_id("text")[1]:set_value(value)
+    backlight_progress:get_children_by_id("slider")[1]:set_value(value)
 end)
 
 
 -- Volume Progress
 local volume_progress = make_slider("sound.png")
 
+volume_progress.children[2]:connect_signal("property::value", function(_, new_value)
+    awful.spawn.easy_async("pamixer --set-volume " .. new_value, function()
+        volume_stuff:emit_volume_state()
+    end)
+end)
+
 awesome.connect_signal("volume::value", function(value)
-    volume_progress:get_children_by_id("text")[1]:set_value(value)
+    volume_progress:get_children_by_id("slider")[1]:set_value(value)
 end)
 
 local options = wibox.widget {

@@ -110,7 +110,7 @@ end)
 
 awesome.connect_signal("mpd::cover", function(isDefault, cover)
     if not isDefault then
-        album_cover:set_image(cover)
+        album_cover:set_image(gears.surface.load_uncached(cover))
     else
         album_cover:set_image(recolor(res_path .. "cover.png", beautiful.xcolor8))
     end
