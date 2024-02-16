@@ -82,26 +82,26 @@ awful.keyboard.append_global_keybindings({
     -- Volume
     awful.key({}, "XF86AudioRaiseVolume",
             function()
-                awful.spawn({"pamixer", "-i", "5"})
-                volume_stuff:emit_volume_state()
+                awful.spawn.easy_async({"pamixer", "-i", "5"},
+                function() volume_stuff:emit_volume_state() end)
             end,
         { description = "Increase Volume", group = "System" }),
     awful.key({ ctrl }, "XF86AudioRaiseVolume",
             function()
-                awful.spawn({"pamixer", "--allow-boost", "-i", "10"})
-                volume_stuff:emit_volume_state()
+                awful.spawn.easy_async({"pamixer", "--allow-boost", "-i", "10"},
+                function() volume_stuff:emit_volume_state() end)
             end,
         { description = "Boost Volume", group = "System" }),
     awful.key({}, "XF86AudioLowerVolume",
             function()
-                awful.spawn({"pamixer", "-d", "5"})
-                volume_stuff:emit_volume_state()
+                awful.spawn.easy_async({"pamixer", "-d", "5"},
+                function() volume_stuff:emit_volume_state() end)
             end,
         { description = "Decrease Volume", group = "System" }),
     awful.key({}, "XF86AudioMute",
             function()
-                awful.spawn({"pamixer", "--toggle-mute"})
-                volume_stuff:emit_volume_state()
+                awful.spawn.easy_async({"pamixer", "--toggle-mute"},
+                function() volume_stuff:emit_volume_state() end)
             end,
         { description = "Toggle Mute", group = "System" }),
     -- Brightness
@@ -178,11 +178,8 @@ awful.keyboard.append_global_keybindings({
             function() awful.tag.incmwfact(-0.05) end,
         { description = "Decrease window factor of a client", group = "Layout" }),
     awful.key({ modkey }, "Tab",
-            function() awful.client.focus.byidx(1) end,
-        { description = "Focus Next by Index", group = "Client" }),
-    awful.key({ modkey, shift }, "Tab",
-            function() awful.client.focus.byidx(-1) end,
-        { description = "Focus Previous by Index", group = "Client" }),
+            function()  awesome.emit_signal("bling::window_switcher::turn_on") end,
+        { description = "Spawn Client Switcher", group = "Client" }),
     awful.key {
         modifiers   = { modkey },
         keygroup    = "numrow",

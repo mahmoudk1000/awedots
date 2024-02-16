@@ -53,7 +53,7 @@ theme.border_radius = dpi(0)
 
 
 -- Wallpaper
-theme.wallpaper         = config_path .. "theme/wall.jpg"
+theme.wallpaper = config_path .. "theme/wall.jpg"
 
 
 -- Borders
@@ -108,14 +108,34 @@ theme.menu_border_width = theme.border_width
 
 
 -- Bling
-theme.tag_preview_widget_border_radius = theme.border_radius
-theme.tag_preview_client_border_radius = theme.border_radius
-theme.tag_preview_client_bg = theme.xbackground
-theme.tag_preview_client_border_color = theme.xcolor0
-theme.tag_preview_client_border_width = theme.border_width
-theme.tag_preview_widget_border_color = theme.xcolor8
-theme.tag_preview_widget_border_width = theme.border_width
-theme.tag_preview_widget_margin = dpi(7)
+theme.tag_preview_client_bg             = theme.xbackground
+theme.tag_preview_client_border_color   = theme.xcolor0
+theme.tag_preview_client_border_radius  = theme.border_radius
+theme.tag_preview_client_border_width   = theme.border_width
+theme.tag_preview_widget_margin         = dpi(10)
+theme.tag_preview_widget_border_color   = theme.xcolor8
+theme.tag_preview_widget_border_radius  = theme.border_radius
+theme.tag_preview_widget_border_width   = theme.border_width
+
+theme.window_switcher_widget_bg                         = theme.xcolor0
+theme.window_switcher_widget_border_width               = theme.border_width
+theme.window_switcher_widget_border_radius              = theme.border_radius
+theme.window_switcher_widget_border_color               = theme.xcolor8
+theme.window_switcher_clients_spacing                   = dpi(10)
+theme.window_switcher_client_icon_horizontal_spacing    = dpi(5)
+theme.window_switcher_client_width                      = dpi(100)
+theme.window_switcher_client_height                     = dpi(120)
+theme.window_switcher_client_margins                    = dpi(10)
+theme.window_switcher_thumbnail_margins                 = dpi(5)
+theme.thumbnail_scale                                   = false
+theme.window_switcher_name_margins                      = dpi(3)
+theme.window_switcher_name_valign                       = "center"
+theme.window_switcher_name_forced_width                 = theme.window_switcher_client_width
+theme.window_switcher_name_font                         = theme.vont .. "7"
+theme.window_switcher_name_normal_color                 = theme.xforeground
+theme.window_switcher_name_focus_color                  = theme.xcolor4
+theme.window_switcher_icon_valign                       = "center"
+theme.window_switcher_icon_width                        = dpi(15)
 
 
 -- Generate Awesome icon:
