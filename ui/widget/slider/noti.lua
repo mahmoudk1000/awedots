@@ -13,7 +13,7 @@ local notifications = {}
 local function notification_widget(n)
     local n_title = wibox.widget {
         markup  = n.title,
-        font    = beautiful.vont .. "Bold 11",
+        font    = beautiful.vont .. "Bold 10",
         align   = "left",
         valign  = "center",
         widget  = wibox.widget.textbox

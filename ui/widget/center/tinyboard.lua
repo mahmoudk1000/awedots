@@ -55,12 +55,10 @@ wifi_button.buttons = {
         awful.spawn.easy_async_with_shell(
             "iwctl device list | awk '/on/{print $4}'",
             function(stdout)
-                if stdout:match("on") then
-                    awful.spawn({"rfkill", "block", "wlan"})
-                else
-                    awful.spawn({"rfkill", "unblock", "wlan"})
-                end
-                wifi_stuff:emit_wifi_info()
+                local toggle_command = (stdout:match("on")) and "rfkill block wlan" or "rfkill unblock wlan"
+                awful.spawn.easy_async(toggle_command, function()
+                    wifi_stuff:emit_wifi_info()
+                end)
             end)
     end)
 }
