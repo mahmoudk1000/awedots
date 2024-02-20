@@ -152,7 +152,7 @@ local tasklist = function(s)
             create_callback = function(self, c)
                 self.fixes = function()
                     if c.icon == nil then
-                        self:get_children_by_id("icon_role")[1]:set_image(recolor(res_path .. "noicon.png", beautiful.xcolor4))
+                        self:get_children_by_id("icon_role")[1]:set_image(recolor(res_path .. "noicon.png", beautiful.xcolor1))
                     end
                     if c.name == "st" then
                         self:get_children_by_id("icon_role")[1]:set_image(recolor(res_path .. "terminal.png", beautiful.xcolor4))
