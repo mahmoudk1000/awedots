@@ -151,11 +151,14 @@ local tasklist = function(s)
             layout = wibox.layout.stack,
             create_callback = function(self, c)
                 self.fixes = function()
-                    if c.icon == nil then
+                    local class_icons = {
+                        ["St"] = { icon = "terminal.png", color = beautiful.xcolor4 },
+                        ["FreeTube"] = { icon = "youtube.png", color = beautiful.xcolor1 }
+                    }
+                    if class_icons[c.class] then
+                        self:get_children_by_id("icon_role")[1]:set_image(recolor(res_path .. class_icons[c.class].icon, class_icons[c.class].color))
+                    elseif c.icon == nil then
                         self:get_children_by_id("icon_role")[1]:set_image(recolor(res_path .. "noicon.png", beautiful.xcolor1))
-                    end
-                    if c.name == "st" then
-                        self:get_children_by_id("icon_role")[1]:set_image(recolor(res_path .. "terminal.png", beautiful.xcolor4))
                     end
                 end
 
