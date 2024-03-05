@@ -83,7 +83,7 @@ return wibox.widget {
         fn_embed        = decorate_cell,
         flex_height     = true,
         start_sunday    = true,
-        widget          = wibox.widget.calendar.month,
+        widget          = wibox.widget.calendar.month
     },
     margins = dpi(10),
     layout = wibox.container.margin

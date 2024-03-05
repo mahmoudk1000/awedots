@@ -25,6 +25,14 @@ function mpd_stuff:emit_mpd_info()
         end)
 end
 
+function mpd_stuff:progress()
+    awful.spawn.easy_async_with_shell(
+        "mpc | awk 'NR==2{gsub(/[%()]/,\"\",$4); print $4}'",
+        function(stdout)
+            awesome.emit_signal("mpd::progress", stdout)
+        end)
+end
+
 function mpd_stuff:update_cover()
     local timestamp = os.time()
     awful.spawn.with_shell("rm -f " .. res_path .. "cover_*.jpg")
@@ -63,5 +71,6 @@ end
 mpd_stuff:start_idleloop()
 mpd_stuff:emit_mpd_info()
 mpd_stuff:update_cover()
+-- mpd_stuff:progress()
 
 return mpd_stuff

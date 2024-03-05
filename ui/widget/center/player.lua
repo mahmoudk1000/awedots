@@ -75,13 +75,17 @@ local next_button = wibox.widget {
 local player = wibox.widget {
     {
         album_cover,
-        margins = { top = dpi(0), left = dpi(15), right = dpi(15), bottom = dpi(0) },
+        margins = { top = dpi(0), left = dpi(15), right = dpi(15), bottom = dpi(5) },
         layout = wibox.container.margin
     },
     {
-        song_name,
-        song_artist,
-        layout = wibox.layout.flex.vertical
+        {
+            song_name,
+            song_artist,
+            layout = wibox.layout.flex.vertical
+        },
+        margins = { bottom = dpi(5) },
+        layout = wibox.container.margin
     },
     {
         {
@@ -121,7 +125,7 @@ return wibox.widget {
     {
         {
             player,
-            margins = dpi(15),
+            margins = dpi(10),
             layout = wibox.container.margin
         },
         bg = beautiful.xbackground,
