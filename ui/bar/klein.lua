@@ -153,7 +153,8 @@ local tasklist = function(s)
                 self.fixes = function()
                     local class_icons = {
                         ["St"] = { icon = "terminal.png", color = beautiful.xcolor4 },
-                        ["FreeTube"] = { icon = "youtube.png", color = beautiful.xcolor1 }
+                        ["FreeTube"] = { icon = "youtube.png", color = beautiful.xcolor1 },
+                        ["obsidian"] = { icon = "obsidian.png", color = beautiful.xcolor5  }
                     }
                     if class_icons[c.class] then
                         self:get_children_by_id("icon_role")[1]:set_image(recolor(res_path .. class_icons[c.class].icon, class_icons[c.class].color))
