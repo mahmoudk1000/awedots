@@ -37,7 +37,7 @@ end
 local lock      = create_option(1, res_path .. "lock.png", "betterlockscreen -l")
 local reboot    = create_option(2, res_path .. "reboot.png", "systemctl reboot")
 local shutdown  = create_option(3, res_path .. "shutdown.png", "systemctl poweroff")
-local logout    = create_option(4, res_path .. "logout.png", "killall -u $USER")
+local logout    = create_option(4, res_path .. "logout.png", "loginctl kill-user $USER")
 local suspend   = create_option(5, res_path .. "suspend.png", "systemctl suspend")
 
 local power_menu = wibox.widget {
