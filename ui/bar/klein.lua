@@ -354,16 +354,13 @@ local function init_bar(s)
         layout          = wibox.container.margin
     }
 
-    local function handle_bar(c)
+    client.connect_signal("focus", function(c)
         if c.fullscreen or c.maximized then
             bar.visible = false
         else
             bar.visible = true
         end
-    end
-
-    client.connect_signal("property::fullscreen", handle_bar)
-    client.connect_signal("property::maximized", handle_bar)
+    end)
 end
 
 awful.screen.connect_for_each_screen(function(s)
