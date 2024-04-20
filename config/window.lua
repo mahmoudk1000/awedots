@@ -7,7 +7,10 @@ local ruled = require("ruled")
 
 -- Wallpaper
 local function set_wallpaper(s)
-	if gfs.file_readable(gfs.get_configuration_dir() .. "theme/wall.jpg") then
+	if
+		gfs.file_readable(gfs.get_configuration_dir() .. "theme/wall.jpg")
+		or gfs.file_readable(gfs.get_configuration_dir() .. "theme/wall.png")
+	then
 		local wallpaper = beautiful.wallpaper
 		-- If wallpaper is a function, call it with the screen
 		if type(wallpaper) == "function" then
