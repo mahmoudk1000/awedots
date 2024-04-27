@@ -6,8 +6,9 @@ local rubato = require("mods.rubato")
 
 local dpi = beautiful.xresources.apply_dpi
 local recolor = gears.color.recolor_image
-
 local res_path = gears.filesystem.get_configuration_dir() .. "theme/res/"
+
+local helpers = require("helpers")
 
 local volume_stuff = require("signal.volume")
 local battery_stuff = require("signal.battery")
@@ -70,19 +71,6 @@ local taglist = function(s)
 				end
 
 				self.update()
-
-				self:connect_signal("mouse::enter", function()
-					if #t:clients() > 0 then
-						awesome.emit_signal("bling::tag_preview::update", t)
-						awesome.emit_signal("bling::tag_preview::visibility", s, true)
-					end
-				end)
-				self:connect_signal("mouse::leave", function()
-					awesome.emit_signal("bling::tag_preview::visibility", s, false)
-					if self.has_backup then
-						self.bg = self.backup
-					end
-				end)
 			end,
 			update_callback = function(self)
 				self.update()

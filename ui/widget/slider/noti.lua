@@ -3,6 +3,7 @@ local wibox = require("wibox")
 local beautiful = require("beautiful")
 local naughty = require("naughty")
 local gears = require("gears")
+
 local dpi = beautiful.xresources.apply_dpi
 
 local helpers = require("helpers")
@@ -42,9 +43,7 @@ local function notification_widget(n)
 					margins = dpi(10),
 					widget = wibox.container.margin,
 				},
-				shape = function(cr, w, h)
-					gears.shape.rounded_rect(cr, w, h, dpi(2))
-				end,
+				shape = helpers:rrect(),
 				bg = beautiful.xbackground,
 				widget = wibox.container.background,
 			},
@@ -67,9 +66,7 @@ local function create_notification_container(noties)
 				valign = "center",
 				widget = wibox.widget.textbox,
 			},
-			shape = function(cr, w, h)
-				gears.shape.rounded_rect(cr, w, h, dpi(4))
-			end,
+			shape = helpers:rrect(),
 			bg = beautiful.xcolor0,
 			layout = wibox.container.background,
 		})
@@ -86,9 +83,7 @@ local function create_notification_container(noties)
 			notification_layout,
 			layout = wibox.layout.align.vertical,
 		},
-		shape = function(cr, w, h)
-			gears.shape.rounded_rect(cr, w, h, dpi(4))
-		end,
+		shape = helpers:rrect(),
 		bg = beautiful.xcolor0,
 		layout = wibox.container.background,
 	})
@@ -130,9 +125,7 @@ return wibox.widget({
 			},
 			layout = wibox.layout.align.vertical,
 		},
-		shape = function(cr, w, h)
-			gears.shape.rounded_rect(cr, w, h, dpi(4))
-		end,
+		shape = helpers:rrect(),
 		bg = beautiful.xcolor0,
 		layout = wibox.container.background,
 	},

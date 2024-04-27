@@ -31,8 +31,8 @@ local function set_wallpaper(s)
 				fg = beautiful.xbackground,
 				bg = {
 					type = "linear",
-					from = { 1920, 0 },
-					to = { 0, 1920 },
+					from = { 0, 0, 0 },
+					to = { 200, 1200, 0 },
 					stops = {
 						{ 0, beautiful.xcolor4 },
 						{ 1, beautiful.xcolor8 },
@@ -52,7 +52,8 @@ awful.screen.connect_for_each_screen(function(s)
 	set_wallpaper(s)
 	tag.connect_signal("request::default_layouts", function()
 		awful.layout.append_default_layouts({
-			awful.layout.suit.tile,
+			awful.layout.suit.spiral.dwindle,
+			-- awful.layout.suit.tile,
 			awful.layout.suit.floating,
 			-- awful.layout.suit.tile.left,
 			-- awful.layout.suit.tile.bottom,
@@ -60,7 +61,6 @@ awful.screen.connect_for_each_screen(function(s)
 			-- awful.layout.suit.fair,
 			-- awful.layout.suit.fair.horizontal,
 			-- awful.layout.suit.spiral,
-			-- awful.layout.suit.spiral.dwindle,
 			-- awful.layout.suit.max,
 			-- awful.layout.suit.max.fullscreen,
 			-- awful.layout.suit.magnifier,

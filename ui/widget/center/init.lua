@@ -2,12 +2,15 @@ local awful = require("awful")
 local wibox = require("wibox")
 local gears = require("gears")
 local beautiful = require("beautiful")
+
 local dpi = beautiful.xresources.apply_dpi
 local s = awful.screen.focused().geometry
 
-local calendar = require("ui.widget.center.calendar")
-local tinyboard = require("ui.widget.center.tinyboard")
-local player = require("ui.widget.center.player")
+local helpers = require("helpers")
+
+local calendar = require(... .. ".calendar")
+local tinyboard = require(... .. ".tinyboard")
+local player = require(... .. ".player")
 
 local weather_stuff = require("signal.weather")
 local wifi_stuff = require("signal.wifi")
@@ -48,42 +51,54 @@ awesome.connect_signal("weather::info", function(temp, desc)
 	weather:get_children_by_id("desc")[1]:set_markup(desc)
 end)
 
+local center_controls = wibox.widget({
+	{
+		tinyboard.toggles,
+		{
+			tinyboard.sliders,
+			player,
+			layout = wibox.layout.flex.horizontal,
+		},
+		layout = wibox.layout.align.vertical,
+	},
+	calendar(),
+	forced_width = s.width / 2.5,
+	forced_height = s.height / 4,
+	layout = wibox.layout.ratio.horizontal,
+})
+
+center_controls:adjust_ratio(2, 2 / 3, 1 / 3, 0)
+
 -- Create Center Widget
 local center_popup = awful.popup({
 	widget = {
 		{
 			{
-				time,
-				nil,
-				weather,
-				layout = wibox.layout.align.horizontal,
+				{
+					time,
+					nil,
+					weather,
+					layout = wibox.layout.align.horizontal,
+				},
+				margins = dpi(5),
+				layout = wibox.container.margin,
 			},
-			margins = { top = dpi(20), left = dpi(20), right = dpi(20) },
-			layout = wibox.container.margin,
+			center_controls,
+			layout = wibox.layout.align.vertical,
 		},
-		{
-			{
-				tinyboard,
-				player,
-				calendar,
-				forced_width = s.width / 2.5,
-				forced_height = s.height / 3.5,
-				layout = wibox.layout.flex.horizontal,
-			},
-			margins = dpi(10),
-			layout = wibox.container.margin,
-		},
-		layout = wibox.layout.align.vertical,
+		margins = dpi(10),
+		layout = wibox.container.margin,
 	},
 	ontop = true,
 	visible = false,
 	border_color = beautiful.border_normal,
 	border_width = beautiful.border_width,
+	shape = helpers:rrect(),
 	placement = function(c)
-		awful.placement.bottom(c, { margins = { bottom = dpi(40) }, parent = awful.screen.focused() })
-	end,
-	shape = function(cr, w, h)
-		gears.shape.rounded_rect(cr, w, h, beautiful.border_radius)
+		awful.placement.bottom(
+			c,
+			{ margins = { bottom = dpi(30) + (beautiful.useless_gap * 2) }, parent = awful.screen.focused() }
+		)
 	end,
 })
 

@@ -2,13 +2,14 @@ local awful = require("awful")
 local wibox = require("wibox")
 local gears = require("gears")
 local beautiful = require("beautiful")
+
 local dpi = beautiful.xresources.apply_dpi
 
 local helpers = require("helpers")
 local sys_stuff = require("signal.sys")
 
-local noti = require("ui.widget.slider.noti")
-local info = require("ui.widget.slider.info")
+local noti = require(... .. ".noti")
+local info = require(... .. ".info")
 
 local weather_temp = wibox.widget({
 	markup = "1" .. "<span>&#176;</span>",
@@ -40,6 +41,7 @@ awesome.connect_signal("weather::info", function(temp, desc, land)
 	weather_land:set_markup(helpers:color_markup(land, beautiful.xforeground))
 end)
 
+local slider_popup
 local tiktak = gears.timer({
 	timeout = 3,
 	autostart = true,
@@ -50,8 +52,6 @@ local tiktak = gears.timer({
 })
 
 local function show_slider(s, x)
-	local slider_popup
-
 	if (s.width - x) <= dpi(10) then
 		slider_popup = awful.popup({
 			widget = {
@@ -71,9 +71,7 @@ local function show_slider(s, x)
 							margins = dpi(10),
 							layout = wibox.container.margin,
 						},
-						shape = function(cr, w, h)
-							gears.shape.rounded_rect(cr, w, h, dpi(4))
-						end,
+						shape = helpers:rrect(),
 						bg = beautiful.xcolor0,
 						layout = wibox.container.background,
 					},
@@ -88,21 +86,25 @@ local function show_slider(s, x)
 			visible = true,
 			minimum_width = (20 / 100) * s.width,
 			maximum_width = (20 / 100) * s.width,
-			minimum_height = s.height - dpi(40),
-			maximum_height = s.height - dpi(40),
+			minimum_height = s.height - dpi(43),
+			maximum_height = s.height - dpi(43),
 			border_color = beautiful.border_normal,
 			border_width = beautiful.border_width,
+			shape = helpers:rrect(),
 			placement = function(c)
-				awful.placement.top_right(c)
-			end,
-			shape = function(cr, w, h)
-				gears.shape.rounded_rect(cr, w, h, beautiful.border_radius)
+				awful.placement.top_right(c, {
+					margins = {
+						right = beautiful.useless_gap * 2,
+						top = beautiful.useless_gap * 2.5,
+						parent = awful.screen.focused(),
+					},
+				})
 			end,
 		})
 
 		slider_popup:connect_signal("mouse::leave", function()
-			tiktak:stop()
 			slider_popup.visible = false
+			tiktak:stop()
 		end)
 	end
 end
@@ -113,7 +115,12 @@ root.buttons(gears.table.join(
 		local screen = awful.screen.focused()
 		local mouse = mouse.coords()
 
-		show_slider(screen.geometry, mouse.x)
-		tiktak:start()
+		if slider_popup and slider_popup.visible then
+			slider_popup.visible = false
+			tiktak:stop()
+		else
+			show_slider(screen.geometry, mouse.x)
+			tiktak:start()
+		end
 	end)
 ))

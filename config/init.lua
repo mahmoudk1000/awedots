@@ -16,11 +16,11 @@ filemanager = "thunar"
 obsidian = "obsidian"
 
 -- Set Keys and window
-require("config.keys")
-require("config.menu")
-require("config.notification")
-require("config.window")
-require("config.bling")
+require(... .. ".keys")
+require(... .. ".menu")
+require(... .. ".notification")
+require(... .. ".window")
+require(... .. ".bling")
 
 -- Other Stuff
 require("awful.autofocus")

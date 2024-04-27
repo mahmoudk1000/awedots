@@ -1,1 +1,1 @@
-require("ui.bar.klein")
+require(... .. ".klein")

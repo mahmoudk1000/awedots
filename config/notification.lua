@@ -2,15 +2,16 @@ local wibox = require("wibox")
 local naughty = require("naughty")
 local ruled = require("ruled")
 local beautiful = require("beautiful")
+
 local dpi = beautiful.xresources.apply_dpi
 
--- Notification Config
+-- Notification Default Config
 naughty.config.defaults = {
 	position = "top_right",
 	title = "Notification",
 	margin = beautiful.notification_margin,
-	border_color = beautiful.notification_border_color,
 	border_width = beautiful.notification_border_width,
+	border_color = beautiful.notification_border_color,
 }
 
 -- Notification Types
@@ -48,11 +49,10 @@ naughty.connect_signal("request::display", function(n)
 							{
 								{
 									naughty.widget.title,
-									forced_height = dpi(40),
+									forced_height = dpi(30),
 									layout = wibox.layout.align.horizontal,
 								},
-								left = dpi(15),
-								right = dpi(15),
+								margin = { left = dpi(15), right = dpi(15) },
 								widget = wibox.container.margin,
 							},
 							bg = beautiful.bg_focus,

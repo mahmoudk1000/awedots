@@ -5,6 +5,8 @@ local rubato = require("mods.rubato")
 
 local dpi = beautiful.xresources.apply_dpi
 
+local helper = require("helpers")
+
 local function widget_template(name, value, color)
 	local pie = wibox.widget({
 		value = value,
@@ -14,10 +16,10 @@ local function widget_template(name, value, color)
 		color = color,
 		margins = dpi(10),
 		shape = function(cr, w, h)
-			gears.shape.arc(cr, w, h, nil, 0, 2 * math.pi)
+			gears.shape.arc(cr, w, h, dpi(20), 0, 2 * math.pi)
 		end,
 		bar_shape = function(cr, w, h)
-			gears.shape.arc(cr, w, h, nil, 0, math.rad(value * 3.6))
+			gears.shape.arc(cr, w, h, dpi(20), 0, math.rad(value * 3.6))
 		end,
 		widget = wibox.widget.progressbar,
 	})
@@ -57,9 +59,7 @@ local function widget_template(name, value, color)
 			layout = wibox.layout.fixed.vertical,
 		},
 		bg = beautiful.xcolor0,
-		shape = function(cr, w, h)
-			gears.shape.rounded_rect(cr, w, h, dpi(4))
-		end,
+		shape = helper:rrect(),
 		layout = wibox.container.background,
 	})
 
@@ -71,7 +71,7 @@ local function widget_template(name, value, color)
 				pos = math.rad(pie.value * 3.6) / math.rad(new_value * 3.6),
 				subscribed = function(pos)
 					pie.bar_shape = function(cr, w, h)
-						gears.shape.arc(cr, w, h, nil, 0, math.rad(new_value * 3.6 * pos))
+						gears.shape.arc(cr, w, h, dpi(20), 0, math.rad(new_value * 3.6 * pos))
 					end
 					percent.markup = math.floor(new_value * pos) .. "%"
 				end,
@@ -101,9 +101,7 @@ return wibox.widget({
 			layout = wibox.layout.ratio.horizontal,
 		},
 		bg = beautiful.xcolor0,
-		shape = function(cr, w, h)
-			gears.shape.rounded_rect(cr, w, h, dpi(4))
-		end,
+		shape = helper:rrect(),
 		layout = wibox.container.background,
 	},
 	margins = dpi(10),

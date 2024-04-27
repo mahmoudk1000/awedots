@@ -2,10 +2,12 @@ local awful = require("awful")
 local wibox = require("wibox")
 local gears = require("gears")
 local beautiful = require("beautiful")
+
 local dpi = beautiful.xresources.apply_dpi
 local recolor = gears.color.recolor_image
-
 local res_path = gears.filesystem.get_configuration_dir() .. "theme/res/"
+
+local helpers = require("helpers")
 
 local function create_option(index, icon, command)
 	return wibox.widget({
@@ -24,9 +26,7 @@ local function create_option(index, icon, command)
 			layout = wibox.container.margin,
 		},
 		bg = beautiful.xcolor0,
-		shape = function(cr, w, h)
-			gears.shape.rounded_rect(cr, w, h, dpi(4))
-		end,
+		shape = helpers:rrect(),
 		buttons = awful.button({}, awful.button.names.LEFT, function()
 			awful.spawn.with_shell(command)
 		end),
@@ -41,27 +41,25 @@ local logout = create_option(4, res_path .. "logout.png", "loginctl kill-user $U
 local suspend = create_option(5, res_path .. "suspend.png", "systemctl suspend")
 
 local power_menu = wibox.widget({
-	{
-		lock,
-		reboot,
-		shutdown,
-		logout,
-		suspend,
-		spacing = dpi(10),
-		layout = wibox.layout.fixed.horizontal,
-	},
-	margins = dpi(15),
-	layout = wibox.container.margin,
+	lock,
+	reboot,
+	shutdown,
+	logout,
+	suspend,
+	spacing = dpi(10),
+	layout = wibox.layout.fixed.horizontal,
 })
 
 Bye = awful.popup({
-	widget = power_menu,
+	widget = {
+		power_menu,
+		margins = dpi(15),
+		layout = wibox.container.margin,
+	},
 	ontop = true,
 	visible = false,
 	placement = awful.placement.centered,
-	shape = function(cr, w, h)
-		gears.shape.rounded_rect(cr, w, h, dpi(4))
-	end,
+	shape = helpers:rrect(),
 })
 
 local function sel_option_by_index(index)
@@ -95,7 +93,7 @@ Bye:connect_signal("property::visible", function()
 					sel_option_by_index(index)
 				elseif key == "Return" then
 					Bye.visible = false
-					power_menu.children[1].children[index].buttons[1]:trigger()
+					power_menu.children[1].buttons[1]:trigger()
 				else
 					Bye.visible = false
 				end

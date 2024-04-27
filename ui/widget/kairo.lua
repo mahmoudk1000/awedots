@@ -2,6 +2,7 @@ local awful = require("awful")
 local wibox = require("wibox")
 local gears = require("gears")
 local beautiful = require("beautiful")
+
 local dpi = beautiful.xresources.apply_dpi
 
 local helpers = require("helpers")
@@ -106,9 +107,7 @@ return awful.popup({
 						layout = wibox.container.margin,
 					},
 					bg = beautiful.xforeground,
-					shape = function(cr, w, h)
-						gears.shape.rounded_rect(cr, w, h, dpi(3))
-					end,
+					shape = helpers:rrect(3),
 					layout = wibox.container.background,
 				},
 				layout = wibox.layout.fixed.horizontal,

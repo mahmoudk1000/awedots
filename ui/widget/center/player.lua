@@ -2,35 +2,37 @@ local awful = require("awful")
 local wibox = require("wibox")
 local gears = require("gears")
 local beautiful = require("beautiful")
+
 local dpi = beautiful.xresources.apply_dpi
-local res_path = gears.filesystem.get_configuration_dir() .. "theme/res/"
 local recolor = gears.color.recolor_image
+local res_path = gears.filesystem.get_configuration_dir() .. "theme/res/"
 
 local helpers = require("helpers")
+
 local mpd_stuff = require("signal.mpd")
 
 local album_cover = wibox.widget({
 	image = recolor(res_path .. "cover.png", beautiful.xcolor8),
 	valign = "center",
 	halign = "center",
-	clip_shape = function(cr, w, h)
-		gears.shape.rounded_rect(cr, w, h, dpi(4))
-	end,
+	opacity = 0.20,
+	horizontal_fit_policy = "fit",
+	clip_shape = helpers:rrect(),
 	widget = wibox.widget.imagebox,
 })
 
 local song_name = wibox.widget({
 	markup = "<b>Song</b>",
 	font = beautiful.font_bold,
-	align = "center",
+	align = "left",
 	valign = "center",
 	widget = wibox.widget.textbox,
 })
 
 local song_artist = wibox.widget({
-	markup = helpers:color_markup("artist", beautiful.xcolor3),
-	font = beautiful.font,
-	align = "center",
+	markup = helpers:color_markup("artist", beautiful.xcolor0),
+	font = beautiful.font_bold,
+	align = "left",
 	valign = "center",
 	widget = wibox.widget.textbox,
 })
@@ -72,37 +74,67 @@ local next_button = wibox.widget({
 })
 
 local player = wibox.widget({
+	album_cover,
 	{
-		album_cover,
-		margins = { top = dpi(0), left = dpi(15), right = dpi(15), bottom = dpi(5) },
-		layout = wibox.container.margin,
+		widget = wibox.widget.base.make_widget,
+		bg = {
+			type = "linear",
+			from = { 0, 0, 0 },
+			to = { 50, 150, 0 },
+			stops = {
+				{ 0, beautiful.xcolor4 },
+				{ 1, "#00000000" },
+			},
+		},
+		layout = wibox.container.background,
 	},
 	{
 		{
-			song_name,
-			song_artist,
-			layout = wibox.layout.flex.vertical,
+			{
+				{
+					markup = helpers:color_markup("Now Playing", beautiful.xcolor0),
+					font = beautiful.font,
+					align = "left",
+					widget = wibox.widget.textbox,
+				},
+				song_name,
+				song_artist,
+				layout = wibox.layout.fixed.vertical,
+			},
+			nil,
+			{
+				nil,
+				nil,
+				{
+					{
+						{
+							prev_botton,
+							toggle_button,
+							next_button,
+							layout = wibox.layout.flex.horizontal,
+						},
+						margins = dpi(5),
+						layout = wibox.container.margin,
+					},
+					forced_height = dpi(30),
+					forced_width = dpi(90),
+					bg = beautiful.xcolor0,
+					shape = helpers:rrect(),
+					layout = wibox.container.background,
+				},
+				layout = wibox.layout.align.horizontal,
+			},
+			layout = wibox.layout.align.vertical,
 		},
-		margins = { bottom = dpi(5) },
+		margins = dpi(10),
 		layout = wibox.container.margin,
 	},
-	{
-		{
-			prev_botton,
-			toggle_button,
-			next_button,
-			layout = wibox.layout.flex.horizontal,
-		},
-		margins = { left = dpi(6), right = dpi(6), top = dpi(2), bottom = dpi(2) },
-		layout = wibox.container.margin,
-	},
-	layout = wibox.layout.ratio.vertical,
+	layout = wibox.layout.stack,
 })
-player:adjust_ratio(2, 0.75, 0.15, 0.10)
 
 awesome.connect_signal("mpd::info", function(song, artist, state)
 	song_name:set_markup(song)
-	song_artist:set_markup(helpers:color_markup(artist, beautiful.xcolor3))
+	song_artist:set_markup(helpers:color_markup(artist, beautiful.xcolor4))
 
 	if state:match("playing") then
 		toggle_button.image = recolor(res_path .. "pause.png", beautiful.xcolor4)
@@ -121,19 +153,13 @@ end)
 
 return wibox.widget({
 	{
-		{
-			player,
-			margins = dpi(10),
-			layout = wibox.container.margin,
-		},
+		player,
 		bg = beautiful.xbackground,
-		border_width = beautiful.border_width,
+		border_width = dpi(1),
 		border_color = beautiful.border_normal,
-		shape = function(cr, w, h)
-			gears.shape.rounded_rect(cr, w, h, beautiful.border_radius)
-		end,
+		shape = helpers:rrect(),
 		layout = wibox.container.background,
 	},
-	margins = dpi(10),
+	margins = dpi(5),
 	layout = wibox.container.margin,
 })
