@@ -36,6 +36,10 @@ theme.font_bold = "Iosevka Bold 9"
 theme.font_boit = "Iosevka Bold Italic 9"
 theme.iconfont = "IosevkaTerm Nerd Font 11"
 
+-- Gaps
+theme.useless_gap = dpi(2)
+
+-- Titlebars
 theme.fg_focus = theme.xforeground
 theme.fg_normal = theme.xforeground
 theme.fg_urgent = theme.color1
@@ -43,8 +47,6 @@ theme.fg_urgent = theme.color1
 theme.bg_focus = theme.xcolor8
 theme.bg_normal = theme.xbackground
 theme.bg_urgent = theme.xcolor1
-
-theme.useless_gap = dpi(2)
 
 -- Wallpaper
 theme.wallpaper = res .. "theme/wall.png"

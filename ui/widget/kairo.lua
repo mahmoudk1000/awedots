@@ -115,7 +115,7 @@ return awful.popup({
 			margins = { top = dpi(3) },
 			layout = wibox.container.margin,
 		},
-		layout = wibox.layout.align.vertical,
+		layout = wibox.layout.fixed.vertical,
 	},
 	bg = "#00000000",
 	shape = nil,

@@ -5,24 +5,21 @@ local res_path = gfs.get_configuration_dir() .. "theme/res/"
 local M = {}
 
 function M:emit_mpd_info()
-	awful.spawn.easy_async_with_shell(
-		"mpc current -f '%title%_%artist%_';mpc status | awk '/playing/{print \"playing\"}'",
-		function(stdout)
-			local song = stdout:match("^(.-)_")
-			local artist = stdout:match("_(.-)_")
-			local is_playing = stdout:match("playing")
+	awful.spawn.easy_async_with_shell("mpc current -f %title%_%artist%;mpc status %state%", function(stdout)
+		local song = stdout:match("^(.*)_")
+		local artist = stdout:match("_(.-)\n")
+		local is_playing = stdout:match("playing") and true or false
 
-			if song == " " or song == nil then
-				song = "Unknown"
-			end
-
-			if artist == "" or artist == nil then
-				artist = "Unknown"
-			end
-
-			awesome.emit_signal("mpd::info", tostring(song), tostring(artist), tostring(is_playing))
+		if not song or song == "" then
+			song = "Unknown"
 		end
-	)
+
+		if not artist or artist == "" then
+			artist = "Unknown"
+		end
+
+		awesome.emit_signal("mpd::info", tostring(song), tostring(artist), is_playing)
+	end)
 end
 
 function M:progress()

@@ -6,6 +6,7 @@ local beautiful = require("beautiful")
 local dpi = beautiful.xresources.apply_dpi
 
 local helpers = require("helpers")
+
 local sys_stuff = require("signal.sys")
 
 local noti = require(... .. ".noti")
@@ -42,6 +43,7 @@ awesome.connect_signal("weather::info", function(temp, desc, land)
 end)
 
 local slider_popup
+
 local tiktak = gears.timer({
 	timeout = 3,
 	autostart = true,
@@ -52,7 +54,7 @@ local tiktak = gears.timer({
 })
 
 local function show_slider(s, x)
-	if (s.width - x) <= dpi(10) then
+	if (s.geometry.width - x) <= dpi(10) then
 		slider_popup = awful.popup({
 			widget = {
 				{
@@ -83,20 +85,17 @@ local function show_slider(s, x)
 				layout = wibox.layout.align.vertical,
 			},
 			ontop = true,
-			visible = true,
-			minimum_width = (20 / 100) * s.width,
-			maximum_width = (20 / 100) * s.width,
-			minimum_height = s.height - dpi(43),
-			maximum_height = s.height - dpi(43),
-			border_color = beautiful.border_normal,
+			minimum_width = (20 / 100) * s.geometry.width,
+			minimum_height = s.tiling_area.height - ((beautiful.useless_gap + beautiful.border_width) * 2) - dpi(5),
 			border_width = beautiful.border_width,
+			border_color = beautiful.border_normal,
 			shape = helpers:rrect(),
 			placement = function(c)
 				awful.placement.top_right(c, {
 					margins = {
-						right = beautiful.useless_gap * 2,
-						top = beautiful.useless_gap * 2.5,
-						parent = awful.screen.focused(),
+						right = beautiful.border_width + beautiful.useless_gap,
+						top = beautiful.border_width + beautiful.useless_gap + dpi(1),
+						parent = s,
 					},
 				})
 			end,
@@ -112,14 +111,11 @@ end
 root.buttons(gears.table.join(
 	root.buttons(),
 	awful.button({}, awful.button.names.LEFT, function()
-		local screen = awful.screen.focused()
-		local mouse = mouse.coords()
-
 		if slider_popup and slider_popup.visible then
 			slider_popup.visible = false
 			tiktak:stop()
 		else
-			show_slider(screen.geometry, mouse.x)
+			show_slider(awful.screen.focused(), mouse.coords().x)
 			tiktak:start()
 		end
 	end)

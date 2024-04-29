@@ -136,7 +136,7 @@ awesome.connect_signal("mpd::info", function(song, artist, state)
 	song_name:set_markup(song)
 	song_artist:set_markup(helpers:color_markup(artist, beautiful.xcolor4))
 
-	if state:match("playing") then
+	if state then
 		toggle_button.image = recolor(res_path .. "pause.png", beautiful.xcolor4)
 	else
 		toggle_button.image = recolor(res_path .. "play.png", beautiful.xcolor4)

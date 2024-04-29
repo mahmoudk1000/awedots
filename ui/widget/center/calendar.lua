@@ -96,7 +96,7 @@ local updateCalendar = function(date)
 	end
 
 	for day = 1, lastDate.day do
-		if day == date.day and date.month == os.date("%b", os.time(os.date("*t"))) and date.year == current.year then
+		if day == date.day then
 			theGrid:add_widget_at(todayWidget(day), row, col)
 		elseif col == 1 or col == 7 then
 			theGrid:add_widget_at(dateWidget(day, true, false), row, col)

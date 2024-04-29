@@ -307,7 +307,7 @@ local function init_bar(s)
 		width = s.geometry.width,
 	})
 
-	bar:struts({ left = dpi(0), right = dpi(0), top = dpi(0), bottom = bar.height })
+	bar:struts({ bottom = bar.height })
 
 	bar:setup({
 		{
@@ -360,5 +360,5 @@ local function init_bar(s)
 end
 
 awful.screen.connect_for_each_screen(function(s)
-	init_bar(s)
+	s.init_bar = init_bar(s)
 end)

@@ -37,7 +37,7 @@ end
 local lock = create_option(1, res_path .. "lock.png", "betterlockscreen -l")
 local reboot = create_option(2, res_path .. "reboot.png", "systemctl reboot")
 local shutdown = create_option(3, res_path .. "shutdown.png", "systemctl poweroff")
-local logout = create_option(4, res_path .. "logout.png", "loginctl kill-user $USER")
+local logout = create_option(4, res_path .. "logout.png", "pkill -KILL -u $USER")
 local suspend = create_option(5, res_path .. "suspend.png", "systemctl suspend")
 
 local power_menu = wibox.widget({
@@ -63,7 +63,7 @@ Bye = awful.popup({
 })
 
 local function sel_option_by_index(index)
-	local options = power_menu.children[1].children
+	local options = power_menu.children
 
 	for i, option in ipairs(options) do
 		if i == index then
@@ -78,7 +78,7 @@ local keygrabber
 
 Bye:connect_signal("property::visible", function()
 	if Bye.visible then
-		local options = power_menu.children[1].children
+		local options = power_menu.children
 		local index = 3
 
 		sel_option_by_index(index)
@@ -93,7 +93,7 @@ Bye:connect_signal("property::visible", function()
 					sel_option_by_index(index)
 				elseif key == "Return" then
 					Bye.visible = false
-					power_menu.children[1].buttons[1]:trigger()
+					power_menu.children[index].buttons[1]:trigger()
 				else
 					Bye.visible = false
 				end
