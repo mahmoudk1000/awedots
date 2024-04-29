@@ -222,7 +222,7 @@ end
 -- Backlight Progress
 local backlight_progress = make_slider("Brightness", "lamp.png")
 
-backlight_progress.children[2]:connect_signal("property::value", function(_, new_value)
+backlight_progress:get_children_by_id("slider")[1]:connect_signal("property::value", function(_, new_value)
 	awful.spawn.easy_async("brightnessctl set " .. new_value .. "%", function()
 		backlight_stuff:emit_backlight_info()
 	end)
@@ -235,7 +235,7 @@ end)
 -- Volume Progress
 local volume_progress = make_slider("Volume", "sound.png")
 
-volume_progress.children[2]:connect_signal("property::value", function(_, new_value)
+volume_progress:get_children_by_id("slider")[1]:connect_signal("property::value", function(_, new_value)
 	awful.spawn.easy_async("pamixer --set-volume " .. new_value, function()
 		volume_stuff:emit_volume_state()
 	end)
