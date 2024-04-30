@@ -22,15 +22,15 @@ function M:emit_weather_info()
 			local data = json.decode(stdout)
 			local temp = 69
 			local desc = "Hot"
-			local land = "Reality, Sucks"
+			local country = "Reality, Sucks"
 
 			if data then
 				temp = data.main.temp
 				desc = helpers:uppercase_first_letter(data.weather[1].description)
-				land = data.name .. ", " .. data.sys.country
+				country = data.name .. ", " .. data.sys.country
 			end
 
-			awesome.emit_signal("weather::info", temp, desc, land)
+			awesome.emit_signal("weather::info", temp, desc, country)
 		end)
 	end)
 end

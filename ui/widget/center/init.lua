@@ -1,12 +1,18 @@
 local awful = require("awful")
 local wibox = require("wibox")
 local gears = require("gears")
+local gfs = gears.filesystem
 local beautiful = require("beautiful")
 
 local dpi = beautiful.xresources.apply_dpi
 local s = awful.screen.focused().geometry
+local recolor = gears.color.recolor_image
+
+local res_path = gfs.get_configuration_dir() .. "theme/res/"
 
 local helpers = require("helpers")
+
+local sys_stuff = require("signal.sys")
 
 local calendar = require(... .. ".calendar")
 local tinyboard = require(... .. ".tinyboard")
@@ -15,40 +21,106 @@ local player = require(... .. ".player")
 local weather_stuff = require("signal.weather")
 local wifi_stuff = require("signal.wifi")
 
--- Clock Widget
-local time = wibox.widget({
-	font = beautiful.font_bold,
-	format = "%H.%M",
-	valign = "center",
-	align = "center",
-	widget = wibox.widget.textclock,
-})
+local function powerOptions(icon, color, command)
+	return wibox.widget({
+		{
+			{
+				image = recolor(res_path .. icon, color),
+				resize = true,
+				forced_height = dpi(25),
+				forced_width = dpi(25),
+				widget = wibox.widget.imagebox,
+			},
+			buttons = gears.table.join(awful.button({}, awful.button.names.LEFT, function()
+				require("naughty").notification({
+					urgency = "critical",
+					title = "Oops, an error happened",
+					message = command,
+				})
+				awful.spawn.with_shell(command)
+			end)),
+			margins = dpi(5),
+			layout = wibox.container.margin,
+		},
+		bg = color .. "50",
+		shape = helpers:rrect(0),
+		layout = wibox.container.background,
+	})
+end
 
--- Weather Widget
-local weather = wibox.widget({
+local poweroff = powerOptions("shutdown.png", beautiful.xcolor1, "systemctl poweroff")
+local extraOptions = {
+	logout = powerOptions("logout.png", beautiful.xcolor6, "pkill -KILL -u $USER"),
+	suspend = powerOptions("suspend.png", beautiful.xcolor5, "systemctl suspend"),
+	reboot = powerOptions("reboot.png", beautiful.xcolor2, "systemctl reboot"),
+}
+local expanded = false
+
+local power_widget = wibox.widget({
 	{
-		id = "desc",
-		markup = "Hot",
-		font = beautiful.font,
-		widget = wibox.widget.textbox,
+		{
+			{
+				id = "arrow",
+				markup = helpers:color_markup("", beautiful.xcolor4),
+				widget = wibox.widget.textbox,
+			},
+			margins = dpi(5),
+			layout = wibox.container.margin,
+		},
+		bg = beautiful.xcolor4 .. "50",
+		shape = helpers:rrect(0),
+		widget = wibox.container.background,
 	},
-	{
-		text = " • ",
-		font = beautiful.font,
-		widget = wibox.widget.textbox,
-	},
-	{
-		id = "temp",
-		markup = "69" .. "<span>&#176;</span>",
-		font = beautiful.font,
-		widget = wibox.widget.textbox,
-	},
+	poweroff,
 	layout = wibox.layout.fixed.horizontal,
 })
 
-awesome.connect_signal("weather::info", function(temp, desc)
-	weather:get_children_by_id("temp")[1]:set_markup(temp .. "<span>&#176;</span>")
-	weather:get_children_by_id("desc")[1]:set_markup(desc)
+power_widget.children[1].buttons = gears.table.join(awful.button({}, awful.button.names.LEFT, function()
+	if expanded then
+		for i = #power_widget.children - 1, 2, -1 do
+			power_widget:remove(i)
+		end
+		expanded = false
+		power_widget:get_children_by_id("arrow")[1]:set_markup(helpers:color_markup("", beautiful.xcolor4))
+	else
+		for _, option in pairs(extraOptions) do
+			table.insert(power_widget.children, 2, option)
+		end
+		expanded = true
+		power_widget:get_children_by_id("arrow")[1]:set_markup(helpers:color_markup("", beautiful.xcolor4))
+	end
+end))
+
+local avatar = wibox.widget({
+	image = res_path .. "me.png",
+	resize = true,
+	forced_height = dpi(25),
+	forced_width = dpi(25),
+	clip_shape = function(cr, w, h)
+		gears.shape.circle(cr, w, h)
+	end,
+	widget = wibox.widget.imagebox,
+})
+
+local uptime = wibox.widget({
+	markup = "3H 12M",
+	widget = wibox.widget.textbox,
+})
+
+local uptime_updater = gears.timer({
+	timeout = 30,
+	call_now = true,
+	callback = function()
+		sys_stuff:emit_uptime()
+	end,
+})
+
+awesome.connect_signal("uptime::info", function(hours, minutes)
+	if hours == 0 then
+		uptime:set_markup(string.format("%02dM", minutes))
+	else
+		uptime:set_markup(string.format("%02dH %02dM", hours, minutes))
+	end
 end)
 
 local center_controls = wibox.widget({
@@ -75,9 +147,40 @@ local center_popup = awful.popup({
 		{
 			{
 				{
-					time,
+					{
+						{
+							{
+								avatar,
+								{
+									{
+										text = "Mahmoud",
+										font = beautiful.font_bold,
+										widget = wibox.widget.textbox,
+									},
+									uptime,
+									layout = wibox.layout.flex.vertical,
+								},
+								spacing = dpi(10),
+								forced_height = dpi(20),
+								layout = wibox.layout.fixed.horizontal,
+							},
+							margins = dpi(5),
+							layout = wibox.container.margin,
+						},
+						bg = beautiful.xcolor0,
+						shape = helpers:rrect(),
+						layout = wibox.container.background,
+					},
 					nil,
-					weather,
+					{
+						{
+							power_widget,
+							shape = helpers:rrect(),
+							layout = wibox.container.background,
+						},
+						spacing = dpi(10),
+						layout = wibox.layout.fixed.horizontal,
+					},
 					layout = wibox.layout.align.horizontal,
 				},
 				margins = dpi(5),
@@ -105,9 +208,12 @@ local center_popup = awful.popup({
 -- Toggle the visibility of the calendar popup when clicking on the clock widget
 awesome.connect_signal("clock::clicked", function()
 	wifi_stuff:emit_wifi_info()
+	expanded = false
+	uptime_updater:start()
 	center_popup.visible = not center_popup.visible
 end)
 
 center_popup:connect_signal("mouse::leave", function()
 	center_popup.visible = false
+	uptime_updater:stop()
 end)

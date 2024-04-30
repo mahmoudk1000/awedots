@@ -36,10 +36,10 @@ local weather_land = wibox.widget({
 	widget = wibox.widget.textbox,
 })
 
-awesome.connect_signal("weather::info", function(temp, desc, land)
+awesome.connect_signal("weather::info", function(temp, desc, country)
 	weather_temp:set_markup(helpers:color_markup(temp .. "<span>&#176;</span>", beautiful.xforeground))
 	weather_desc:set_markup(helpers:color_markup(desc, beautiful.xforeground))
-	weather_land:set_markup(helpers:color_markup(land, beautiful.xforeground))
+	weather_land:set_markup(helpers:color_markup(country, beautiful.xforeground))
 end)
 
 local slider_popup

@@ -15,6 +15,15 @@ function M:emit_sys_info()
 	)
 end
 
+function M:emit_uptime()
+	awful.spawn.easy_async_with_shell("uptime | awk '{gsub(/,$/,\"\",$3); print $3}'", function(stdout)
+		local hours, minutes = stdout:match("(%d+):(%d+)")
+
+		awesome.emit_signal("uptime::info", tonumber(hours), tonumber(minutes))
+	end)
+end
+
 M:emit_sys_info()
+M:emit_uptime()
 
 return M
