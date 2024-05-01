@@ -32,11 +32,6 @@ local function powerOptions(icon, color, command)
 				widget = wibox.widget.imagebox,
 			},
 			buttons = gears.table.join(awful.button({}, awful.button.names.LEFT, function()
-				require("naughty").notification({
-					urgency = "critical",
-					title = "Oops, an error happened",
-					message = command,
-				})
 				awful.spawn.with_shell(command)
 			end)),
 			margins = dpi(5),
