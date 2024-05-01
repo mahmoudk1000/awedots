@@ -7,11 +7,9 @@ local beautiful = require("beautiful")
 local dpi = beautiful.xresources.apply_dpi
 local s = awful.screen.focused().geometry
 local recolor = gears.color.recolor_image
-
 local res_path = gfs.get_configuration_dir() .. "theme/res/"
 
 local helpers = require("helpers")
-
 local sys_stuff = require("signal.sys")
 
 local calendar = require(... .. ".calendar")
@@ -200,16 +198,19 @@ local center_popup = awful.popup({
 	end,
 })
 
--- Toggle the visibility of the calendar popup when clicking on the clock widget
 awesome.connect_signal("clock::clicked", function()
-	wifi_stuff:emit_wifi_info()
-	sys_stuff:emit_uptime()
-	expanded = false
-	uptime_updater:start()
-	center_popup.visible = not center_popup.visible
+	if center_popup.visible then
+		uptime_updater:stop()
+		center_popup.visible = false
+	else
+		wifi_stuff:emit_wifi_info()
+		sys_stuff:emit_uptime()
+		center_popup.visible = true
+		uptime_updater:start()
+	end
 end)
 
 center_popup:connect_signal("mouse::leave", function()
-	center_popup.visible = false
 	uptime_updater:stop()
+	center_popup.visible = false
 end)
