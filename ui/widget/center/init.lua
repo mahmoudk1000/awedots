@@ -50,9 +50,9 @@ end
 
 local poweroff = powerOptions("shutdown.png", beautiful.xcolor1, "systemctl poweroff")
 local extraOptions = {
-	logout = powerOptions("logout.png", beautiful.xcolor6, "pkill -KILL -u $USER"),
-	suspend = powerOptions("suspend.png", beautiful.xcolor5, "systemctl suspend"),
-	reboot = powerOptions("reboot.png", beautiful.xcolor2, "systemctl reboot"),
+	powerOptions("reboot.png", beautiful.xcolor2, "systemctl reboot"),
+	powerOptions("suspend.png", beautiful.xcolor5, "systemctl suspend"),
+	powerOptions("logout.png", beautiful.xcolor6, "pkill -KILL -u $USER"),
 }
 local expanded = false
 
@@ -83,7 +83,7 @@ power_widget.children[1].buttons = gears.table.join(awful.button({}, awful.butto
 		expanded = false
 		power_widget:get_children_by_id("arrow")[1]:set_markup(helpers:color_markup("", beautiful.xcolor4))
 	else
-		for _, option in pairs(extraOptions) do
+		for _, option in ipairs(extraOptions) do
 			table.insert(power_widget.children, 2, option)
 		end
 		expanded = true
