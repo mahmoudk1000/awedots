@@ -208,6 +208,7 @@ local center_popup = awful.popup({
 -- Toggle the visibility of the calendar popup when clicking on the clock widget
 awesome.connect_signal("clock::clicked", function()
 	wifi_stuff:emit_wifi_info()
+	sys_stuff:emit_uptime()
 	expanded = false
 	uptime_updater:start()
 	center_popup.visible = not center_popup.visible
