@@ -56,7 +56,7 @@ local header = wibox.widget({
 	widget = wibox.widget.textbox,
 })
 
-local theGrid = wibox.widget({
+local monthView = wibox.widget({
 	column_count = 7,
 	row_count = 7,
 	vertical_spacing = dpi(4),
@@ -72,13 +72,13 @@ local current
 
 local updateCalendar = function(date)
 	header.text = os.date("%B, %Y", os.time(date))
-	theGrid:reset()
+	monthView:reset()
 
 	for _, w in ipairs({ "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" }) do
 		if w == "Fri" or w == "Sat" then
-			theGrid:add(dayWidget(w, true))
+			monthView:add(dayWidget(w, true))
 		else
-			theGrid:add(dayWidget(w, false))
+			monthView:add(dayWidget(w, false))
 		end
 	end
 
@@ -92,16 +92,18 @@ local updateCalendar = function(date)
 	local col = firstDate.wday
 
 	for day = previous_month_last_day - days_to_add_at_month_start, previous_month_last_day - 1, 1 do
-		theGrid:add(dateWidget(day, false, true))
+		monthView:add(dateWidget(day, false, true))
 	end
 
+	local actualDate = os.date("*t")
+
 	for day = 1, lastDate.day do
-		if day == date.day then
-			theGrid:add_widget_at(todayWidget(day), row, col)
+		if day == date.day and date.month == actualDate.month and date.year == actualDate.year then
+			monthView:add_widget_at(todayWidget(day), row, col)
 		elseif col == 1 or col == 7 then
-			theGrid:add_widget_at(dateWidget(day, true, false), row, col)
+			monthView:add_widget_at(dateWidget(day, true, false), row, col)
 		else
-			theGrid:add_widget_at(dateWidget(day, false, false), row, col)
+			monthView:add_widget_at(dateWidget(day, false, false), row, col)
 		end
 
 		if col == 7 then
@@ -113,7 +115,7 @@ local updateCalendar = function(date)
 	end
 
 	for day = 1, days_to_add_at_month_end do
-		theGrid:add(dateWidget(day, false, true))
+		monthView:add(dateWidget(day, false, true))
 	end
 end
 
@@ -188,7 +190,7 @@ return function()
 						},
 						layout = wibox.layout.align.horizontal,
 					},
-					theGrid,
+					monthView,
 					spacing = dpi(10),
 					layout = wibox.layout.fixed.vertical,
 				},
