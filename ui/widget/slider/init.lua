@@ -86,7 +86,9 @@ local function show_slider(s, x)
 			},
 			ontop = true,
 			minimum_width = (20 / 100) * s.geometry.width,
+			maximum_width = (20 / 100) * s.geometry.width,
 			minimum_height = s.tiling_area.height - ((beautiful.useless_gap + beautiful.border_width) * 2) - dpi(5),
+			maximum_height = s.tiling_area.height - ((beautiful.useless_gap + beautiful.border_width) * 2) - dpi(5),
 			border_width = beautiful.border_width,
 			border_color = beautiful.border_normal,
 			shape = helpers:rrect(),
@@ -112,8 +114,8 @@ root.buttons(gears.table.join(
 	root.buttons(),
 	awful.button({}, awful.button.names.LEFT, function()
 		if slider_popup and slider_popup.visible then
-			slider_popup.visible = false
 			tiktak:stop()
+			slider_popup.visible = false
 		else
 			show_slider(awful.screen.focused(), mouse.coords().x)
 			tiktak:start()
