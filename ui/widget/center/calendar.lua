@@ -115,9 +115,15 @@ local updateCalendar = function(date)
 	end
 end
 
+header.buttons = awful.button({}, awful.button.names.LEFT, function()
+	current = os.date("*t")
+	updateCalendar(current)
+end)
+
 return function()
 	current = os.date("*t")
 	updateCalendar(current)
+
 	gears.timer({
 		timeout = 60,
 		call_now = true,
