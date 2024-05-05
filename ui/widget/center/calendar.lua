@@ -43,7 +43,7 @@ local todayWidget = function(day)
 			halign = "center",
 			widget = wibox.widget.textbox,
 		},
-		bg = beautiful.xcolor8,
+		bg = beautiful.xcolor4 .. "50",
 		shape = helpers:rrect(),
 		layout = wibox.container.background,
 	})
