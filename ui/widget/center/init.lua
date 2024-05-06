@@ -19,7 +19,7 @@ local player = require(... .. ".player")
 local weather_stuff = require("signal.weather")
 local wifi_stuff = require("signal.wifi")
 
-local function powerOptions(icon, color, command)
+local function makePowerOption(icon, color, command)
 	return wibox.widget({
 		{
 			{
@@ -41,11 +41,11 @@ local function powerOptions(icon, color, command)
 	})
 end
 
-local poweroff = powerOptions("shutdown.png", beautiful.xcolor1, "systemctl poweroff")
-local extraOptions = {
-	powerOptions("reboot.png", beautiful.xcolor2, "systemctl reboot"),
-	powerOptions("suspend.png", beautiful.xcolor5, "systemctl suspend"),
-	powerOptions("logout.png", beautiful.xcolor6, "pkill -KILL -u $USER"),
+local powerOptions = {
+	makePowerOption("shutdown.png", beautiful.xcolor1, "systemctl poweroff"),
+	makePowerOption("reboot.png", beautiful.xcolor2, "systemctl reboot"),
+	makePowerOption("suspend.png", beautiful.xcolor5, "systemctl suspend"),
+	makePowerOption("logout.png", beautiful.xcolor6, "pkill -KILL -u $USER"),
 }
 local expanded = false
 
@@ -64,7 +64,7 @@ local power_widget = wibox.widget({
 		shape = helpers:rrect(0),
 		widget = wibox.container.background,
 	},
-	poweroff,
+	powerOptions[1],
 	layout = wibox.layout.fixed.horizontal,
 })
 
@@ -76,8 +76,8 @@ power_widget.children[1].buttons = gears.table.join(awful.button({}, awful.butto
 		expanded = false
 		power_widget:get_children_by_id("arrow")[1]:set_markup(helpers:color_markup("", beautiful.xcolor4))
 	else
-		for _, option in ipairs(extraOptions) do
-			table.insert(power_widget.children, 2, option)
+		for i = 2, #powerOptions do
+			table.insert(power_widget.children, 2, powerOptions[i])
 		end
 		expanded = true
 		power_widget:get_children_by_id("arrow")[1]:set_markup(helpers:color_markup("", beautiful.xcolor4))
