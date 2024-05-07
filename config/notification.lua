@@ -7,6 +7,7 @@ local dpi = beautiful.xresources.apply_dpi
 
 -- Notification Default Config
 naughty.config.defaults = {
+	ontop = true,
 	position = "top_right",
 	title = "Notification",
 	margin = beautiful.notification_margin,
@@ -18,20 +19,36 @@ naughty.config.defaults = {
 ruled.notification.connect_signal("request::rules", function()
 	-- Critical
 	ruled.notification.append_rule({
-		rule = { urgency = "critical" },
-		properties = { bg = beautiful.bg_normal, fg = beautiful.fg_urgent, timeout = 0 },
+		rule = {
+			urgency = "critical",
+		},
+		properties = {
+			bg = beautiful.bg_normal,
+			fg = beautiful.fg_urgent,
+			timeout = 0,
+		},
 	})
 
 	-- Normal
 	ruled.notification.append_rule({
 		rule = { urgency = "normal" },
-		properties = { bg = beautiful.bg_normal, fg = beautiful.fg_normal, timeout = 5 },
+		properties = {
+			bg = beautiful.bg_normal,
+			fg = beautiful.fg_normal,
+			timeout = 5,
+		},
 	})
 
 	-- Low
 	ruled.notification.append_rule({
-		rule = { urgency = "low" },
-		properties = { bg = beautiful.bg_normal, fg = beautiful.fg_normal, timeout = 3 },
+		rule = {
+			urgency = "low",
+		},
+		properties = {
+			bg = beautiful.bg_normal,
+			fg = beautiful.fg_normal,
+			timeout = 3,
+		},
 	})
 end)
 
@@ -47,16 +64,27 @@ naughty.connect_signal("request::display", function(n)
 					{
 						{
 							{
-								{
-									naughty.widget.title,
-									forced_height = dpi(30),
-									layout = wibox.layout.align.horizontal,
-								},
-								margins = { left = dpi(15), right = dpi(15) },
-								widget = wibox.container.margin,
+								color = (n.urgency == "critical") and beautiful.xcolor1
+									or ((n.urgency == "normal") and beautiful.xcolor4 or beautiful.xcolor2),
+								thickness = dpi(4),
+								forced_height = dpi(30),
+								forced_width = dpi(4),
+								widget = wibox.widget.separator,
 							},
-							bg = beautiful.bg_focus,
-							widget = wibox.container.background,
+							{
+								{
+									{
+										naughty.widget.title,
+										forced_height = dpi(30),
+										layout = wibox.layout.align.horizontal,
+									},
+									margins = { left = dpi(15), right = dpi(15) },
+									widget = wibox.container.margin,
+								},
+								bg = beautiful.bg_focus,
+								widget = wibox.container.background,
+							},
+							layout = wibox.layout.align.horizontal,
 						},
 						strategy = "min",
 						width = dpi(300),
