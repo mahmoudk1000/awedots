@@ -185,6 +185,10 @@ ruled.client.connect_signal("request::rules", function()
 		properties = { screen = 1, tag = "5" },
 	})
 	ruled.client.append_rule({
+		rule = { class = "vesktop" },
+		properties = { screen = 1, tag = "5" },
+	})
+	ruled.client.append_rule({
 		rule = { class = "thunderbird" },
 		properties = { screen = 1, tag = "6" },
 	})
