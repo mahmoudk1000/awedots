@@ -87,16 +87,16 @@ local function show_slider(s, x)
 			ontop = true,
 			minimum_width = (20 / 100) * s.geometry.width,
 			maximum_width = (20 / 100) * s.geometry.width,
-			minimum_height = s.tiling_area.height - ((beautiful.useless_gap + beautiful.border_width) * 2) - dpi(5),
-			maximum_height = s.tiling_area.height - ((beautiful.useless_gap + beautiful.border_width) * 2) - dpi(5),
+			minimum_height = s.tiling_area.height - ((beautiful.useless_gap + beautiful.border_width) * 3.6),
+			maximum_height = s.tiling_area.height - ((beautiful.useless_gap + beautiful.border_width) * 3.6),
 			border_width = beautiful.border_width,
 			border_color = beautiful.border_normal,
 			shape = helpers:rrect(),
 			placement = function(c)
 				awful.placement.top_right(c, {
 					margins = {
-						right = beautiful.border_width + beautiful.useless_gap,
-						top = beautiful.border_width + beautiful.useless_gap + dpi(1),
+						right = beautiful.useless_gap * 2,
+						top = beautiful.useless_gap * 2.2,
 						parent = s,
 					},
 				})
