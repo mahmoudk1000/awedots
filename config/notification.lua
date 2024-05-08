@@ -1,3 +1,4 @@
+local awful = require("awful")
 local wibox = require("wibox")
 local naughty = require("naughty")
 local ruled = require("ruled")
@@ -7,16 +8,21 @@ local dpi = beautiful.xresources.apply_dpi
 
 -- Notification Default Config
 naughty.config.defaults = {
-	ontop = true,
-	position = "top_right",
 	title = "Notification",
-	margin = beautiful.notification_margin,
+	position = "top_right",
 	border_width = beautiful.notification_border_width,
-	border_color = beautiful.notification_border_color,
 }
 
--- Notification Types
+-- Ruled Notification Types
 ruled.notification.connect_signal("request::rules", function()
+	-- Global
+	ruled.notification.append_rule({
+		rule = {},
+		properties = {
+			screen = awful.screen.preferred,
+			implicit_timeout = 6,
+		},
+	})
 	-- Critical
 	ruled.notification.append_rule({
 		rule = {

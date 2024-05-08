@@ -1,11 +1,12 @@
 local theme_assets = require("beautiful.theme_assets")
 local xresources = require("beautiful.xresources")
-local dpi = xresources.apply_dpi
-local xrdb = xresources.get_current_theme()
 local gears = require("gears")
 local gfs = require("gears.filesystem")
 
+local dpi = xresources.apply_dpi
+local xrdb = xresources.get_current_theme()
 local res = gfs.get_configuration_dir() .. "/"
+--
 -- Define Theme based on the default theme
 local theme = dofile(gfs.get_themes_dir() .. "default/theme.lua")
 
@@ -29,15 +30,16 @@ theme.xcolor13 = xrdb.color13
 theme.xcolor14 = xrdb.color14
 theme.xcolor15 = xrdb.color15
 
--- General
+-- Fonts
 theme.vont = "Iosevka "
 theme.font = "Iosevka 9"
 theme.font_bold = "Iosevka Bold 9"
-theme.font_boit = "Iosevka Bold Italic 9"
-theme.iconfont = "IosevkaTerm Nerd Font 11"
 
 -- Gaps
-theme.useless_gap = dpi(2)
+theme.useless_gap = dpi(3)
+
+-- Wallpaper
+theme.wallpaper = res .. "theme/wall.png"
 
 -- Titlebars
 theme.fg_focus = theme.xforeground
@@ -47,9 +49,6 @@ theme.fg_urgent = theme.color1
 theme.bg_focus = theme.xcolor8
 theme.bg_normal = theme.xbackground
 theme.bg_urgent = theme.xcolor1
-
--- Wallpaper
-theme.wallpaper = res .. "theme/wall.png"
 
 -- Borders
 theme.border_width = dpi(2)
@@ -82,9 +81,9 @@ theme.tasklist_bg_minimize = theme.xcolor0
 
 -- Notifications:
 theme.notification_font = theme.font
-theme.notification_margin = theme.useless_gap
+theme.notification_spacing = dpi(theme.useless_gap * 2.2)
 theme.notification_border_width = dpi(0)
-theme.notification_border_color = theme.xcolor1
+theme.notification_border_color = theme.xcolor0
 
 -- Menu
 theme.menu_font = theme.font
@@ -94,7 +93,7 @@ theme.menu_fg_focus = theme.xbackground
 theme.menu_bg_normal = theme.xbackground
 theme.menu_fg_normal = theme.xforeground
 theme.menu_height = dpi(20)
-theme.menu_width = dpi(110)
+theme.menu_width = dpi(140)
 theme.menu_border_color = theme.xcolor0
 theme.menu_border_width = theme.border_width
 
