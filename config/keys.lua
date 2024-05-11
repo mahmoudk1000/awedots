@@ -40,7 +40,7 @@ awful.keyboard.append_global_keybindings({
 		awful.spawn.with_shell("betterlockscreen -l")
 	end, { description = "Lock Screen", group = "Awesome" }),
 	awful.key({ modkey }, "p", function()
-		Bye.visible = not Bye.visible
+		bye.visible = not bye.visible
 	end, { description = "Toggle Power Menu", group = "Awesome" }),
 	-- Tags Bindings
 	awful.key({ modkey }, "c", awful.tag.viewprev, { description = "Move Previous", group = "Tag" }),

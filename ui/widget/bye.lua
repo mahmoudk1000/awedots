@@ -50,7 +50,7 @@ local power_menu = wibox.widget({
 	layout = wibox.layout.fixed.horizontal,
 })
 
-Bye = awful.popup({
+_G.bye = awful.popup({
 	widget = {
 		power_menu,
 		margins = dpi(15),
@@ -76,8 +76,8 @@ end
 
 local keygrabber
 
-Bye:connect_signal("property::visible", function()
-	if Bye.visible then
+bye:connect_signal("property::visible", function()
+	if bye.visible then
 		local options = power_menu.children
 		local index = 3
 
@@ -92,10 +92,10 @@ Bye:connect_signal("property::visible", function()
 					index = ((index - 2 + #options) % #options) + 1
 					sel_option_by_index(index)
 				elseif key == "Return" then
-					Bye.visible = false
+					bye.visible = false
 					power_menu.children[index].buttons[1]:trigger()
 				else
-					Bye.visible = false
+					bye.visible = false
 				end
 			end
 		end)
@@ -106,6 +106,6 @@ Bye:connect_signal("property::visible", function()
 	end
 end)
 
-Bye:connect_signal("mouse::leave", function()
-	Bye.visible = false
+bye:connect_signal("mouse::leave", function()
+	bye.visible = false
 end)
