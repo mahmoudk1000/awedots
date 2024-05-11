@@ -41,14 +41,13 @@ theme.useless_gap = dpi(3)
 -- Wallpaper
 theme.wallpaper = res .. "theme/wall.png"
 
--- Titlebars
+-- Interface
 theme.fg_focus = theme.xforeground
-theme.fg_normal = theme.xforeground
-theme.fg_urgent = theme.color1
-
 theme.bg_focus = theme.xcolor8
+theme.fg_normal = theme.xforeground
 theme.bg_normal = theme.xbackground
-theme.bg_urgent = theme.xcolor1
+theme.fg_urgent = theme.color1
+theme.bg_urgent = theme.xcolor0
 
 -- Borders
 theme.border_width = dpi(2)
@@ -96,6 +95,16 @@ theme.menu_height = dpi(20)
 theme.menu_width = dpi(140)
 theme.menu_border_color = theme.xcolor0
 theme.menu_border_width = theme.border_width
+
+-- Titlebar
+theme.titlebar_fg = theme.xforeground
+theme.titlebar_bg = theme.xbackground
+theme.titlebar_fg_focus = theme.fg_focus
+theme.titlebar_bg_focus = theme.xcolor0
+theme.titlebar_fg_normal = theme.fg_normal
+theme.titlebar_bg_normal = theme.bg_normal
+theme.titlebar_fg_urgent = theme.fg_urgent
+theme.titlebar_bg_urgent = theme.bg_urgent
 
 -- Bling
 theme.window_switcher_widget_bg = theme.xcolor0

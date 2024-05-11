@@ -108,6 +108,38 @@ ruled.client.connect_signal("request::rules", function()
 	})
 
 	ruled.client.append_rule({
+		id = "floating",
+		rule_any = {
+			class = {
+				"Nsxiv",
+				"Arandr",
+			},
+			type = {
+				"dialog",
+			},
+		},
+		properties = {
+			focus = true,
+			ontop = true,
+			floating = true,
+			titlebars_enabled = true,
+			placement = awful.placement.centered,
+		},
+	})
+
+	-- awful.rules.rules = {
+	-- 	{
+	-- 		rule = {},
+	-- 		properties = {
+	-- 			floating = function(c)
+	-- 				return awful.layout.get(c.screen) == awful.layout.suit.floating
+	-- 			end,
+	-- 			titlebars_enabled = true,
+	-- 		},
+	-- 	},
+	-- }
+
+	ruled.client.append_rule({
 		id = "multimedia",
 		rule_any = {
 			class = {
@@ -126,24 +158,7 @@ ruled.client.connect_signal("request::rules", function()
 	})
 
 	ruled.client.append_rule({
-		id = "events",
-		rule_any = {
-			class = {
-				"Nsxiv",
-			},
-			type = {
-				"dialog",
-			},
-		},
-		properties = {
-			focus = true,
-			ontop = true,
-			floating = true,
-			placement = awful.placement.centered,
-		},
-	})
-
-	ruled.client.append_rule({
+		id = "zoom",
 		rule_any = {
 			class = {
 				"zoom",
@@ -197,4 +212,13 @@ end)
 -- Enable sloppy focus, so that focus follows mouse.
 client.connect_signal("mouse::enter", function(c)
 	c:activate({ context = "mouse_enter", raise = false })
+end)
+
+client.connect_signal("focus", function(c)
+	if awful.layout.get(c.screen) == awful.layout.suit.floating then
+		c.titlebars_enabled = true
+		awful.titlebar.show(c)
+	else
+		awful.titlebar.hide(c)
+	end
 end)

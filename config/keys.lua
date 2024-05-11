@@ -210,12 +210,11 @@ client.connect_signal("request::default_keybindings", function()
 		awful.key({ modkey }, "q", function(c)
 			c:kill()
 		end, { description = "close", group = "Client" }),
-		awful.key(
-			{ modkey, shift },
-			"t",
-			awful.client.floating.toggle,
-			{ description = "Toggle Floating", group = "Client" }
-		),
+		awful.key({ modkey, shift }, "t", function(c)
+			c.floating = not c.floating
+			c.raise = true
+			awful.titlebar.toggle(c)
+		end, { description = "Toggle Floating", group = "Client" }),
 		awful.key({ modkey, ctrl }, "Return", function(c)
 			c:swap(awful.client.getmaster())
 		end, { description = "Move to Master", group = "Client" }),
