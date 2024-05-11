@@ -103,6 +103,7 @@ ruled.client.connect_signal("request::rules", function()
 			raise = true,
 			screen = awful.screen.preferred,
 			size_hints_honor = false,
+			titlebars_enabled = false,
 			placement = awful.placement.centered + awful.placement.no_overlap + awful.placement.no_offscreen,
 		},
 	})
@@ -214,11 +215,19 @@ client.connect_signal("mouse::enter", function(c)
 	c:activate({ context = "mouse_enter", raise = false })
 end)
 
-client.connect_signal("focus", function(c)
+-- Titlebars Signals
+client.connect_signal("request::manage", function(c)
 	if awful.layout.get(c.screen) == awful.layout.suit.floating then
-		c.titlebars_enabled = true
 		awful.titlebar.show(c)
-	else
-		awful.titlebar.hide(c)
+	end
+end)
+
+tag.connect_signal("property::layout", function(t)
+	for _, c in ipairs(t:clients()) do
+		if awful.layout.get(t.screen) == awful.layout.suit.floating then
+			awful.titlebar.show(c)
+		else
+			awful.titlebar.hide(c)
+		end
 	end
 end)
