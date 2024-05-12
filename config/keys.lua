@@ -8,7 +8,7 @@ local backlight_stuff = require("signal.backlight")
 awful.mouse.append_global_mousebindings({
 	awful.button({}, awful.button.names.LEFT, function()
 		TheMenu:hide()
-		Bye.visible = false
+		bye.visible = false
 	end),
 	awful.button({}, awful.button.names.RIGHT, function()
 		TheMenu:toggle()
@@ -211,7 +211,7 @@ client.connect_signal("request::default_keybindings", function()
 			c:kill()
 		end, { description = "close", group = "Client" }),
 		awful.key({ modkey, shift }, "t", function(c)
-			awful.client.floating.toggle()
+			c.floating = not c.floating
 			c:raise()
 			awful.titlebar.toggle(c)
 		end, { description = "Toggle Floating", group = "Client" }),
