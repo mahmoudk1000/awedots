@@ -30,6 +30,15 @@ client.connect_signal("request::titlebars", function(c)
 		size = dpi(25),
 	})
 
+	local buttons = {
+		awful.button({}, awful.button.names.LEFT, function()
+			c:activate({ context = "titlebar", action = "mouse_move" })
+		end),
+		awful.button({}, awful.button.names.RIGHT, function()
+			c:activate({ context = "titlebar", action = "mouse_resize" })
+		end),
+	}
+
 	local close = makeButton("close.png", beautiful.xcolor1, function()
 		c:kill()
 	end)
@@ -60,8 +69,16 @@ client.connect_signal("request::titlebars", function(c)
 		nil,
 		{
 			{
-				awful.titlebar.widget.titlewidget(c),
-				nil,
+				{
+					awful.titlebar.widget.titlewidget(c),
+					buttons = buttons,
+					layout = wibox.layout.fixed.horizontal,
+				},
+				{
+					nil,
+					buttons = buttons,
+					layout = wibox.layout.flex.horizontal,
+				},
 				{
 					minimize,
 					maximize,
