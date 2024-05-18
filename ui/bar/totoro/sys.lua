@@ -89,7 +89,7 @@ local bluetooth = sys_tray("blue-on.png", beautiful.xcolor4)
 
 awesome.connect_signal("bluetooth::status", function(is_powerd, _, icon)
 	bluetooth:get_children_by_id("icon")[1]:set_image(icon)
-	bluetooth:get_children_by_id("text")[1]:set_text(is_powerd)
+	bluetooth:get_children_by_id("text")[1]:set_text(is_powerd and "On" or "Off")
 end)
 
 gears.timer({

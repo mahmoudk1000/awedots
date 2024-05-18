@@ -111,8 +111,8 @@ bluetooth_button.buttons = {
 	end),
 }
 
-awesome.connect_signal("bluetooth::status", function(status, _, icon)
-	if status == "On" then
+awesome.connect_signal("bluetooth::status", function(is_powerd, _, icon)
+	if is_powerd then
 		bluetooth_button.bg = beautiful.xcolor8
 		bluetooth_button:get_children_by_id("circle")[1].bg = beautiful.xcolor4
 		bluetooth_button:get_children_by_id("icon")[1]:set_image(recolor(icon, beautiful.xcolor0))
