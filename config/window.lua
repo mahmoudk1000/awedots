@@ -222,6 +222,14 @@ client.connect_signal("request::manage", function(c)
 	end
 end)
 
+client.connect_signal("property::floating", function(c)
+	if c.floating then
+		awful.titlebar.show(c)
+	else
+		awful.titlebar.hide(c)
+	end
+end)
+
 tag.connect_signal("property::layout", function(t)
 	for _, c in ipairs(t:clients()) do
 		if awful.layout.get(t.screen) == awful.layout.suit.floating then
