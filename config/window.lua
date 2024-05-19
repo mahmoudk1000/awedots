@@ -7,10 +7,7 @@ local ruled = require("ruled")
 
 -- Wallpaper
 local function set_wallpaper(s)
-	if
-		gfs.file_readable(gfs.get_configuration_dir() .. "theme/wall.jpg")
-		or gfs.file_readable(gfs.get_configuration_dir() .. "theme/wall.png")
-	then
+	if gfs.file_readable(beautiful.wallpaper) then
 		local wallpaper = beautiful.wallpaper
 		-- If wallpaper is a function, call it with the screen
 		if type(wallpaper) == "function" then
@@ -52,15 +49,15 @@ awful.screen.connect_for_each_screen(function(s)
 	set_wallpaper(s)
 	tag.connect_signal("request::default_layouts", function()
 		awful.layout.append_default_layouts({
-			awful.layout.suit.spiral.dwindle,
-			-- awful.layout.suit.tile,
 			awful.layout.suit.floating,
+			-- awful.layout.suit.tile,
 			-- awful.layout.suit.tile.left,
 			-- awful.layout.suit.tile.bottom,
 			-- awful.layout.suit.tile.top,
 			-- awful.layout.suit.fair,
 			-- awful.layout.suit.fair.horizontal,
 			-- awful.layout.suit.spiral,
+			awful.layout.suit.spiral.dwindle,
 			-- awful.layout.suit.max,
 			-- awful.layout.suit.max.fullscreen,
 			-- awful.layout.suit.magnifier,
@@ -71,7 +68,7 @@ awful.screen.connect_for_each_screen(function(s)
 		})
 	end)
 
-	awful.tag({ "1", "2", "3", "4", "5", "6" }, s, awful.layout.layouts[1])
+	awful.tag({ "1", "2", "3", "4", "5", "6" }, s, awful.layout.layouts[2])
 end)
 
 -- Window Bordering
@@ -127,18 +124,6 @@ ruled.client.connect_signal("request::rules", function()
 			placement = awful.placement.centered,
 		},
 	})
-
-	-- awful.rules.rules = {
-	-- 	{
-	-- 		rule = {},
-	-- 		properties = {
-	-- 			floating = function(c)
-	-- 				return awful.layout.get(c.screen) == awful.layout.suit.floating
-	-- 			end,
-	-- 			titlebars_enabled = true,
-	-- 		},
-	-- 	},
-	-- }
 
 	ruled.client.append_rule({
 		id = "multimedia",
@@ -225,8 +210,6 @@ end)
 client.connect_signal("property::floating", function(c)
 	if c.floating then
 		awful.titlebar.show(c)
-	else
-		awful.titlebar.hide(c)
 	end
 end)
 
