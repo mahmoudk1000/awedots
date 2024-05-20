@@ -146,7 +146,7 @@ local center_popup = awful.popup({
 								avatar,
 								{
 									{
-										text = "Mahmoud",
+										text = helpers:uppercase_first_letter(os.getenv("USER")) or "M",
 										font = beautiful.font_bold,
 										widget = wibox.widget.textbox,
 									},
