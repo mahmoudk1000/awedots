@@ -14,17 +14,19 @@ local icon_scrots = helpers:recolor("scrots.png")
 local icon_power = helpers:recolor("shutdown.png", beautiful.xcolor1)
 local icon_reboot = helpers:recolor("reboot.png", beautiful.xcolor3)
 local icon_suspend = helpers:recolor("suspend.png", beautiful.xcolor2)
+local icon_logout = helpers:recolor("logout.png", beautiful.xcolor1)
 
 _G.menu = {}
 local section = {}
 
 section.awesome = {
-	{ "Restart", awesome.restart },
+	{ "Restart", awesome.restart, icon_reboot },
 	{
 		"Quit",
 		function()
 			awesome.quit()
 		end,
+		icon_logout,
 	},
 }
 
@@ -73,7 +75,7 @@ function awful.menu.new(...)
 				submenu.wibox.widget,
 				layout = wibox.container.background,
 			},
-			margins = dpi(12),
+			margins = dpi(10),
 			layout = wibox.container.margin,
 		},
 		bg = beautiful.menu_bg_normal,

@@ -4,15 +4,13 @@ local gears = require("gears")
 local beautiful = require("beautiful")
 
 local dpi = beautiful.xresources.apply_dpi
-local recolor = gears.color.recolor_image
-local res_path = gears.filesystem.get_configuration_dir() .. "theme/res/"
 
 local helpers = require("helpers")
 
 local mpd_stuff = require("signal.mpd")
 
 local album_cover = wibox.widget({
-	image = recolor(res_path .. "cover.png", beautiful.xcolor8),
+	image = helpers:recolor("cover.png", beautiful.xcolor8),
 	valign = "center",
 	halign = "center",
 	opacity = 0.20,
@@ -39,7 +37,7 @@ local song_artist = wibox.widget({
 })
 
 local prev_botton = wibox.widget({
-	image = recolor(res_path .. "prev.png", beautiful.xforeground),
+	image = helpers:recolor("prev.png", beautiful.xforeground),
 	valign = "center",
 	halign = "center",
 	forced_height = dpi(10),
@@ -51,7 +49,7 @@ local prev_botton = wibox.widget({
 })
 
 local toggle_button = wibox.widget({
-	image = recolor(res_path .. "play.png", beautiful.xcolor4),
+	image = helpers:recolor("play.png"),
 	valign = "center",
 	halign = "center",
 	forced_height = dpi(10),
@@ -63,7 +61,7 @@ local toggle_button = wibox.widget({
 })
 
 local next_button = wibox.widget({
-	image = recolor(res_path .. "next.png", beautiful.xforeground),
+	image = helpers:recolor("next.png", beautiful.xforeground),
 	valign = "center",
 	halign = "center",
 	forced_height = dpi(10),
@@ -138,9 +136,9 @@ awesome.connect_signal("mpd::info", function(song, artist, state)
 	song_artist:set_markup(helpers:color_markup(artist, beautiful.xcolor4))
 
 	if state then
-		toggle_button.image = recolor(res_path .. "pause.png", beautiful.xcolor4)
+		toggle_button.image = helpers:recolor("pause.png", beautiful.xcolor4)
 	else
-		toggle_button.image = recolor(res_path .. "play.png", beautiful.xcolor4)
+		toggle_button.image = helpers:recolor("play.png", beautiful.xcolor4)
 	end
 end)
 
@@ -148,7 +146,7 @@ awesome.connect_signal("mpd::cover", function(isDefault, cover)
 	if not isDefault then
 		album_cover:set_image(gears.surface.load_uncached(cover))
 	else
-		album_cover:set_image(recolor(res_path .. "cover.png", beautiful.xcolor8))
+		album_cover:set_image(helpers:recolor("cover.png", beautiful.xcolor8))
 	end
 end)
 

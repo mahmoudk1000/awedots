@@ -4,15 +4,14 @@ local wibox = require("wibox")
 local beautiful = require("beautiful")
 
 local dpi = beautiful.xresources.apply_dpi
-local recolor = gears.color.recolor_image
-local res_path = gears.filesystem.get_configuration_dir() .. "theme/res/"
+local helpers = require("helpers")
 
 local makeButton = function(icon, color, action)
 	return wibox.widget({
 		{
 			{
 				id = "icon",
-				image = recolor(res_path .. icon, color),
+				image = helpers:recolor(icon, color),
 				resize = true,
 				widget = wibox.widget.imagebox,
 			},
@@ -50,7 +49,7 @@ client.connect_signal("request::titlebars", function(c)
 
 	c:connect_signal("property::maximized", function()
 		local icon = c.maximized and "unmax.png" or "max.png"
-		maximize:get_children_by_id("icon")[1].image = recolor(res_path .. icon, beautiful.xcolor2)
+		maximize:get_children_by_id("icon")[1].image = helpers:recolor(icon, beautiful.xcolor2)
 	end)
 
 	local minimize = makeButton("min.png", beautiful.xcolor3, function()

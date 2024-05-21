@@ -4,8 +4,6 @@ local gears = require("gears")
 local beautiful = require("beautiful")
 
 local dpi = beautiful.xresources.apply_dpi
-local res_path = gears.filesystem.get_configuration_dir() .. "theme/res/"
-local recolor = gears.color.recolor_image
 
 local helpers = require("helpers")
 
@@ -31,7 +29,7 @@ local make_button = function(text, icon)
 							{
 								{
 									id = "icon",
-									image = recolor(res_path .. icon, beautiful.xcolor4),
+									image = helpers:recolor(icon),
 									valign = "center",
 									halign = "center",
 									forced_height = dpi(20),
@@ -88,12 +86,12 @@ awesome.connect_signal("wifi::info", function(is_powerd, is_connected, wifi_name
 		wifi_button.bg = beautiful.xcolor8
 		wifi_button:get_children_by_id("circle")[1].bg = beautiful.xcolor4
 		wifi_button:get_children_by_id("text")[1]:set_text(wifi_name)
-		wifi_button:get_children_by_id("icon")[1]:set_image(recolor(res_path .. "wifi.png", beautiful.xcolor0))
+		wifi_button:get_children_by_id("icon")[1]:set_image(helpers:recolor("wifi.png", beautiful.xcolor0))
 	else
 		wifi_button.bg = beautiful.xcolor0
 		wifi_button:get_children_by_id("circle")[1].bg = beautiful.xcolor8
 		wifi_button:get_children_by_id("text")[1]:set_text(wifi_name)
-		wifi_button:get_children_by_id("icon")[1]:set_image(recolor(res_path .. "wifi.png", beautiful.xcolor4))
+		wifi_button:get_children_by_id("icon")[1]:set_image(helpers:recolor("wifi.png"))
 	end
 end)
 
@@ -115,7 +113,7 @@ awesome.connect_signal("bluetooth::status", function(is_powerd, _, icon)
 	if is_powerd then
 		bluetooth_button.bg = beautiful.xcolor8
 		bluetooth_button:get_children_by_id("circle")[1].bg = beautiful.xcolor4
-		bluetooth_button:get_children_by_id("icon")[1]:set_image(recolor(icon, beautiful.xcolor0))
+		bluetooth_button:get_children_by_id("icon")[1]:set_image(helpers:recolor(icon, beautiful.xcolor0))
 	else
 		bluetooth_button.bg = beautiful.xcolor0
 		bluetooth_button:get_children_by_id("circle")[1].bg = beautiful.xcolor8
@@ -142,11 +140,11 @@ awesome.connect_signal("redshift::state", function(state)
 	if state == "On" then
 		redshift_button.bg = beautiful.xcolor8
 		redshift_button:get_children_by_id("circle")[1].bg = beautiful.xcolor4
-		redshift_button:get_children_by_id("icon")[1]:set_image(recolor(res_path .. "redshift.png", beautiful.xcolor0))
+		redshift_button:get_children_by_id("icon")[1]:set_image(helpers:recolor("redshift.png", beautiful.xcolor0))
 	else
 		redshift_button.bg = beautiful.xcolor0
 		redshift_button:get_children_by_id("circle")[1].bg = beautiful.xcolor8
-		redshift_button:get_children_by_id("icon")[1]:set_image(recolor(res_path .. "redshift.png", beautiful.xcolor4))
+		redshift_button:get_children_by_id("icon")[1]:set_image(helpers:recolor("redshift.png"))
 	end
 end)
 
@@ -167,15 +165,15 @@ mic_button.buttons = {
 	end),
 }
 
-awesome.connect_signal("mic::status", function(status)
-	if status == "On" then
-		mic_button.bg = beautiful.xcolor8
-		mic_button:get_children_by_id("circle")[1].bg = beautiful.xcolor4
-		mic_button:get_children_by_id("icon")[1]:set_image(recolor(res_path .. "mic.png", beautiful.xcolor0))
-	else
+awesome.connect_signal("mic::status", function(is_muted)
+	if is_muted then
 		mic_button.bg = beautiful.xcolor0
 		mic_button:get_children_by_id("circle")[1].bg = beautiful.xcolor8
-		mic_button:get_children_by_id("icon")[1]:set_image(recolor(res_path .. "mic.png", beautiful.xcolor4))
+		mic_button:get_children_by_id("icon")[1]:set_image(helpers:recolor("mic.png"))
+	else
+		mic_button.bg = beautiful.xcolor8
+		mic_button:get_children_by_id("circle")[1].bg = beautiful.xcolor4
+		mic_button:get_children_by_id("icon")[1]:set_image(helpers:recolor("mic.png", beautiful.xcolor0))
 	end
 end)
 
@@ -183,7 +181,7 @@ local make_slider = function(text, icon)
 	return wibox.widget({
 		{
 			{
-				image = recolor(res_path .. icon, beautiful.xcolor4),
+				image = helpers:recolor(icon),
 				valign = "center",
 				halign = "cneter",
 				forced_width = dpi(30),

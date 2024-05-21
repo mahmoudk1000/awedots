@@ -4,8 +4,7 @@ local wibox = require("wibox")
 local beautiful = require("beautiful")
 
 local dpi = beautiful.xresources.apply_dpi
-local recolor = gears.color.recolor_image
-local res_path = gears.filesystem.get_configuration_dir() .. "theme/res/"
+local helpers = require("helpers")
 --
 -- Signals
 local volume_stuff = require("signal.volume")
@@ -16,7 +15,7 @@ local bluetooth_stuff = require("signal.bluetooth")
 local clock = wibox.widget({
 	{
 		{
-			image = recolor(res_path .. "clock.png", beautiful.xcolor2),
+			image = helpers:recolor("clock.png", beautiful.xcolor2),
 			valign = "center",
 			align = "center",
 			widget = wibox.widget.imagebox,
@@ -49,7 +48,7 @@ local function sys_tray(icon, color)
 		{
 			{
 				id = "icon",
-				image = recolor(res_path .. icon, color),
+				image = helpers:recolor(icon, color),
 				halign = "center",
 				valign = "center",
 				widget = wibox.widget.imagebox,

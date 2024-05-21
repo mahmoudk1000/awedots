@@ -1,16 +1,13 @@
 local awful = require("awful")
-local beautiful = require("beautiful")
-local gears = require("gears")
 
-local res_path = gears.filesystem.get_configuration_dir()
-local recolor = gears.color.recolor_image
+local helpers = require("helpers")
 
 local M = {}
 
 local icons = {
-	res_path .. "theme/res/blue-con.png",
-	res_path .. "theme/res/blue-on.png",
-	res_path .. "theme/res/blue-off.png",
+	"blue-con.png",
+	"blue-on.png",
+	"blue-off.png",
 }
 
 function M:emit_bluetooth_info()
@@ -25,12 +22,12 @@ function M:emit_bluetooth_info()
 			if status then
 				is_powerd = true
 				if is_connected then
-					icon = recolor(icons[1], beautiful.xcolor4)
+					icon = helpers:recolor(icons[1])
 				else
-					icon = recolor(icons[2], beautiful.xcolor4)
+					icon = helpers:recolor(icons[2])
 				end
 			else
-				icon = recolor(icons[3], beautiful.xcolor4)
+				icon = helpers:recolor(icons[3])
 			end
 
 			awesome.emit_signal("bluetooth::status", is_powerd, is_connected, icon)

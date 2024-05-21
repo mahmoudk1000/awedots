@@ -6,8 +6,6 @@ local beautiful = require("beautiful")
 
 local dpi = beautiful.xresources.apply_dpi
 local s = awful.screen.focused().geometry
-local recolor = gears.color.recolor_image
-local res_path = gfs.get_configuration_dir() .. "theme/res/"
 
 local helpers = require("helpers")
 local sys_stuff = require("signal.sys")
@@ -23,7 +21,7 @@ local function makePowerOption(icon, color, command)
 	return wibox.widget({
 		{
 			{
-				image = recolor(res_path .. icon, color),
+				image = helpers:recolor(icon, color),
 				resize = true,
 				forced_height = dpi(25),
 				forced_width = dpi(25),
@@ -85,7 +83,7 @@ power_widget.children[1].buttons = gears.table.join(awful.button({}, awful.butto
 end))
 
 local avatar = wibox.widget({
-	image = res_path .. "me.png",
+	image = gfs.get_configuration_dir() .. "theme/res/me.png",
 	resize = true,
 	forced_height = dpi(25),
 	forced_width = dpi(25),

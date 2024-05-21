@@ -4,8 +4,7 @@ local wibox = require("wibox")
 local beautiful = require("beautiful")
 
 local dpi = beautiful.xresources.apply_dpi
-local recolor = gears.color.recolor_image
-local res_path = gears.filesystem.get_configuration_dir() .. "theme/res/"
+local helpers = require("helpers")
 
 local tasklist = function(s)
 	local tasklist_buttons = awful.util.table.join(
@@ -77,10 +76,10 @@ local tasklist = function(s)
 					}
 					if class_icons[c.class] then
 						self:get_children_by_id("icon_role")[1]
-							:set_image(recolor(res_path .. class_icons[c.class].icon, class_icons[c.class].color))
+							:set_image(helpers:recolor(class_icons[c.class].icon, class_icons[c.class].color))
 					elseif c.icon == nil then
 						self:get_children_by_id("icon_role")[1]
-							:set_image(recolor(res_path .. "noicon.png", beautiful.xcolor1))
+							:set_image(helpers:recolor("noicon.png", beautiful.xcolor1))
 					end
 				end
 

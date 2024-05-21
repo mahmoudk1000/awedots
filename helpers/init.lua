@@ -1,5 +1,6 @@
 local beautiful = require("beautiful")
 local gears = require("gears")
+
 local dpi = beautiful.xresources.apply_dpi
 local res_path = gears.filesystem.get_configuration_dir() .. "theme/res/"
 
@@ -24,7 +25,7 @@ end
 
 function M:recolor(icon, color)
 	local col = color or beautiful.xcolor4
-	return gears.color.recolor_image(res_path .. icon, col)
+	return gears.color.recolor_image(res_path .. tostring(icon), col)
 end
 
 return M
