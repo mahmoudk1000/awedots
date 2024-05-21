@@ -91,8 +91,8 @@ theme.menu_bg_focus = theme.xcolor4
 theme.menu_fg_focus = theme.xbackground
 theme.menu_bg_normal = theme.xbackground
 theme.menu_fg_normal = theme.xforeground
-theme.menu_height = dpi(20)
-theme.menu_width = dpi(140)
+theme.menu_height = dpi(25)
+theme.menu_width = dpi(150)
 theme.menu_border_color = theme.xcolor0
 theme.menu_border_width = theme.border_width
 

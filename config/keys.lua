@@ -7,11 +7,11 @@ local backlight_stuff = require("signal.backlight")
 -- Mouse Bindings
 awful.mouse.append_global_mousebindings({
 	awful.button({}, awful.button.names.LEFT, function()
-		TheMenu:hide()
+		menu.main:hide()
 		bye.visible = false
 	end),
 	awful.button({}, awful.button.names.RIGHT, function()
-		TheMenu:toggle()
+		menu.main:toggle()
 	end),
 	awful.button({}, awful.button.names.SCROLL_UP, awful.tag.viewprev),
 	awful.button({}, awful.button.names.SCROLL_DOWN, awful.tag.viewnext),
