@@ -117,7 +117,7 @@ awesome.connect_signal("bluetooth::status", function(is_powerd, _, icon)
 	else
 		bluetooth_button.bg = beautiful.xcolor0
 		bluetooth_button:get_children_by_id("circle")[1].bg = beautiful.xcolor8
-		bluetooth_button:get_children_by_id("icon")[1]:set_image(icon)
+		bluetooth_button:get_children_by_id("icon")[1]:set_image(helpers:recolor(icon))
 	end
 end)
 

@@ -1,7 +1,5 @@
 local awful = require("awful")
 
-local helpers = require("helpers")
-
 local M = {}
 
 local icons = {
@@ -22,12 +20,12 @@ function M:emit_bluetooth_info()
 			if status then
 				is_powerd = true
 				if is_connected then
-					icon = helpers:recolor(icons[1])
+					icon = icons[1]
 				else
-					icon = helpers:recolor(icons[2])
+					icon = icons[2]
 				end
 			else
-				icon = helpers:recolor(icons[3])
+				icon = icons[3]
 			end
 
 			awesome.emit_signal("bluetooth::status", is_powerd, is_connected, icon)
