@@ -1,15 +1,15 @@
 local awful = require("awful")
 local beautiful = require("beautiful")
 local gears = require("gears")
-local res_path = gears.filesystem.get_configuration_dir() .. "theme/res/"
-local recolor = gears.color.recolor_image
+
+local helpers = require("helpers")
 
 local M = {}
 
 local icon = {
-	res_path .. "bat-char.png",
-	res_path .. "bat-full.png",
-	res_path .. "bat-nor.png",
+	"bat-char.png",
+	"bat-full.png",
+	"bat-nor.png",
 }
 
 function M:emit_battery_info()
@@ -20,11 +20,11 @@ function M:emit_battery_info()
 			local battery_icon
 
 			if stdout:match("Charging") then
-				battery_icon = recolor(icon[1], beautiful.xcolor1)
+				battery_icon = helpers:recolor(icon[1], beautiful.xcolor1)
 			elseif stdout:match("Full") then
-				battery_icon = recolor(icon[2], beautiful.xcolor2)
+				battery_icon = helpers:recolor(icon[2], beautiful.xcolor2)
 			elseif stdout:match("Not charging") or stdout:match("Discharging") then
-				battery_icon = recolor(icon[3], beautiful.xcolor5)
+				battery_icon = helpers:recolor(icon[3], beautiful.xcolor5)
 			end
 
 			awesome.emit_signal("battery::info", battery_capacity, battery_icon)

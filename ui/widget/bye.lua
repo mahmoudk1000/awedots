@@ -5,7 +5,7 @@ local beautiful = require("beautiful")
 
 local dpi = beautiful.xresources.apply_dpi
 local recolor = gears.color.recolor_image
-local res_path = gears.filesystem.get_configuration_dir() .. "theme/res/"
+local res_path = gears.filesystem.get_configuration_dir() .. "theme/icons/"
 
 local helpers = require("helpers")
 

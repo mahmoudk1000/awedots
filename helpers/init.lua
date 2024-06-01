@@ -2,7 +2,7 @@ local beautiful = require("beautiful")
 local gears = require("gears")
 
 local dpi = beautiful.xresources.apply_dpi
-local res_path = gears.filesystem.get_configuration_dir() .. "theme/res/"
+local res_path = gears.filesystem.get_configuration_dir() .. "theme/icons/"
 
 local M = {}
 

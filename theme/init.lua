@@ -39,7 +39,7 @@ theme.font_bold = "Iosevka Bold 9"
 theme.useless_gap = dpi(3)
 
 -- Wallpaper
-theme.wallpaper = res .. "theme/wall.png"
+theme.wallpaper = res .. "theme/walls/wall.png"
 
 -- Interface
 theme.fg_focus = theme.xforeground

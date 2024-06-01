@@ -83,7 +83,7 @@ power_widget.children[1].buttons = gears.table.join(awful.button({}, awful.butto
 end))
 
 local avatar = wibox.widget({
-	image = gfs.get_configuration_dir() .. "theme/res/me.png",
+	image = gfs.get_configuration_dir() .. "theme/icons/me.png",
 	resize = true,
 	forced_height = dpi(25),
 	forced_width = dpi(25),
