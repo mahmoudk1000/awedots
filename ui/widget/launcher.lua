@@ -32,7 +32,12 @@ function AppLauncher:new()
 	})
 
 	self.app_list = wibox.widget({
-		layout = wibox.layout.fixed.vertical,
+		forced_num_cols = 1,
+		spacing = dpi(1),
+		homogeneous = true,
+		expand = false,
+		horizontal_expand = true,
+		layout = wibox.layout.grid,
 	})
 
 	self.popup = awful.popup({
@@ -44,14 +49,11 @@ function AppLauncher:new()
 				layout = wibox.container.background,
 			},
 			{
-				{
-					self.app_list,
-					forced_width = dpi(300),
-					layout = wibox.layout.fixed.vertical,
-				},
+				self.app_list,
 				margins = dpi(5),
 				widget = wibox.container.margin,
 			},
+			forced_width = dpi(300),
 			layout = wibox.layout.fixed.vertical,
 		},
 		ontop = true,
@@ -75,7 +77,7 @@ function AppLauncher:new()
 		stop_key = "Escape",
 		keypressed_callback = function(_, _, key)
 			if key == "Return" then
-				self:run_application()
+				self:run()
 			elseif key == "BackSpace" then
 				self:remove_last_char()
 			elseif key == "Up" then
@@ -178,7 +180,7 @@ function AppLauncher:highlight_focused_entry()
 	end
 end
 
-function AppLauncher:run_application()
+function AppLauncher:run()
 	if self.focus_index > 0 then
 		local app = self.filtered_apps[self.focus_index]
 		if app then
