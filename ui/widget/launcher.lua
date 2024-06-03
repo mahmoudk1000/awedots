@@ -33,8 +33,8 @@ function AppLauncher:new()
 
 	self.app_list = wibox.widget({
 		forced_num_cols = 1,
-		spacing = dpi(1),
-		homogeneous = true,
+		spacing = dpi(2),
+		homogeneous = false,
 		expand = false,
 		horizontal_expand = true,
 		layout = wibox.layout.grid,
@@ -102,7 +102,7 @@ end
 
 function AppLauncher:show()
 	self.textbox.input.text = ""
-	self.focus_index = 0
+	self.focus_index = 1
 	self:filter_apps("")
 	self.popup.visible = true
 	self.keygrabber:start()
@@ -138,14 +138,14 @@ end
 
 function AppLauncher:add_char(char)
 	self.textbox.input.text = self.textbox.input.text .. char
-	self.focus_index = 0
+	self.focus_index = 1
 	self:filter_apps(self.textbox.input.text)
 end
 
 function AppLauncher:remove_last_char()
 	local text = self.textbox.input.text
 	self.textbox.input.text = text:sub(1, -2)
-	self.focus_index = 0
+	self.focus_index = 1
 	self:filter_apps(self.textbox.input.text)
 end
 
