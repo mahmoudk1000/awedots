@@ -1,4 +1,5 @@
 require(... .. ".center")
-require(... .. ".kairo")
 require(... .. ".slider")
 require(... .. ".bye")
+require(... .. ".kairo")
+require(... .. ".launcher")

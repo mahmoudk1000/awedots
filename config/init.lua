@@ -11,7 +11,6 @@ ctrl = "Control"
 -- This is used later as the default terminal and editor to run.
 terminal = "st"
 browser = "firefox"
-rofi = "rofi -show drun"
 filemanager = "thunar"
 obsidian = "obsidian"
 

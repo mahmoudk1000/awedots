@@ -57,8 +57,8 @@ awful.keyboard.append_global_keybindings({
 		awful.spawn(terminal)
 	end, { description = "Open Terminal", group = "Launcher" }),
 	awful.key({ modkey }, "d", function()
-		awful.spawn(rofi)
-	end, { description = "Spawn Rofi", group = "Launcher" }),
+		show_app_launcher()
+	end, { description = "Applications Launcher", group = "Launcher" }),
 	awful.key({ modkey }, "w", function()
 		awful.spawn(browser)
 	end, { description = "Launch Browser", group = "Launcher" }),

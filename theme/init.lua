@@ -86,7 +86,7 @@ theme.notification_border_color = theme.xcolor0
 
 -- Menu
 theme.menu_font = theme.font
-theme.menu_submenu_icon = gears.color.recolor_image(res .. "theme/submenu.png", theme.xcolor8)
+theme.menu_submenu_icon = gears.color.recolor_image(res .. "theme/icons/submenu.png", theme.xcolor8)
 theme.menu_bg_focus = theme.xcolor4
 theme.menu_fg_focus = theme.xbackground
 theme.menu_bg_normal = theme.xbackground
