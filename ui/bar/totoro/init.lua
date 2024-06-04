@@ -64,7 +64,7 @@ local function init_bar(s)
 		layout = wibox.container.margin,
 	})
 
-	client.connect_signal("focus", function(c)
+	client.connect_signal("swapped", function(c)
 		if c.fullscreen or c.maximized then
 			bar.visible = false
 		else

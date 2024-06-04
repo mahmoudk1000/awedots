@@ -40,8 +40,8 @@ local function makePowerOption(icon, color, command)
 end
 
 local powerOptions = {
-	makePowerOption("shutdown.png", beautiful.xcolor1, "systemctl poweroff"),
-	makePowerOption("reboot.png", beautiful.xcolor2, "systemctl reboot"),
+	makePowerOption("shutdown.png", beautiful.xcolor1, "poweroff now"),
+	makePowerOption("reboot.png", beautiful.xcolor2, "reboot"),
 	makePowerOption("suspend.png", beautiful.xcolor5, "systemctl suspend"),
 	makePowerOption("logout.png", beautiful.xcolor6, "pkill -KILL -u $USER"),
 }

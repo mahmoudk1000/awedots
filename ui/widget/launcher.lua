@@ -34,8 +34,7 @@ function AppLauncher:new()
 	self.app_list = wibox.widget({
 		forced_num_cols = 1,
 		spacing = dpi(2),
-		homogeneous = true,
-		expand = false,
+		horizontal_homogeneousa = true,
 		horizontal_expand = true,
 		layout = wibox.layout.grid,
 	})
@@ -119,7 +118,7 @@ function AppLauncher:filter_apps(query)
 	local entries = {}
 	for _, app in ipairs(self.apps) do
 		local app_name = app:get_name():lower()
-		if app_name:match(query:lower()) and not entries[app_name] then
+		if app_name:match(query:lower()) and not entries[app_name] and app_name ~= "hh" then
 			local app_widget = wibox.widget({
 				{
 					text = app:get_name(),
