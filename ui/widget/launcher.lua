@@ -34,7 +34,7 @@ function AppLauncher:new()
 	self.app_list = wibox.widget({
 		forced_num_cols = 1,
 		spacing = dpi(2),
-		homogeneous = false,
+		homogeneous = true,
 		expand = false,
 		horizontal_expand = true,
 		layout = wibox.layout.grid,
