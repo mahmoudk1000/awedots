@@ -120,7 +120,7 @@ function AppLauncher:filter_apps(query)
 	local entries = {}
 	for _, app in ipairs(self.apps) do
 		local app_name = app:get_name():lower()
-		if app_name:match(query:lower()) and not entries[app_name] and app_name ~= "hh" then
+		if app_name:match(query:lower()) and not entries[app_name] then
 			table.insert(self.filtered_apps, app)
 			entries[app_name] = true
 		end
@@ -185,15 +185,19 @@ end
 function AppLauncher:check_scroll_up()
 	if self.focus_index < self.display_start then
 		self.display_start = self.focus_index
-		self:update_displayed_apps()
+	elseif self.focus_index > self.display_start + self.display_count - 1 then
+		self.display_start = math.max(1, self.focus_index - self.display_count + 1)
 	end
+	self:update_displayed_apps()
 end
 
 function AppLauncher:check_scroll_down()
-	if self.focus_index >= self.display_start + self.display_count then
+	if self.focus_index > self.display_start + self.display_count - 1 then
 		self.display_start = self.focus_index - self.display_count + 1
-		self:update_displayed_apps()
+	elseif self.focus_index < self.display_start then
+		self.display_start = math.max(1, self.focus_index)
 	end
+	self:update_displayed_apps()
 end
 
 function AppLauncher:highlight_focused_entry()
