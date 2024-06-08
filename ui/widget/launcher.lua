@@ -34,7 +34,7 @@ function AppLauncher:new()
 	self.app_list = wibox.widget({
 		forced_num_cols = 1,
 		spacing = dpi(2),
-		horizontal_homogeneousa = true,
+		horizontal_homogeneous = true,
 		horizontal_expand = true,
 		layout = wibox.layout.grid,
 	})
@@ -57,7 +57,6 @@ function AppLauncher:new()
 		},
 		ontop = true,
 		visible = false,
-		maximum_height = dpi(350),
 		shape = helpers:rrect(),
 		border_width = beautiful.border_width,
 		border_color = beautiful.border_focus,
@@ -67,6 +66,8 @@ function AppLauncher:new()
 	self.apps = {}
 	self.filtered_apps = {}
 	self.focus_index = 0
+	self.display_start = 1
+	self.display_count = 20
 
 	self:fetch_applications()
 
@@ -102,6 +103,7 @@ end
 function AppLauncher:show()
 	self.textbox.input.text = ""
 	self.focus_index = 1
+	self.display_start = 1
 	self:filter_apps("")
 	self.popup.visible = true
 	self.keygrabber:start()
@@ -119,25 +121,34 @@ function AppLauncher:filter_apps(query)
 	for _, app in ipairs(self.apps) do
 		local app_name = app:get_name():lower()
 		if app_name:match(query:lower()) and not entries[app_name] and app_name ~= "hh" then
-			local app_widget = wibox.widget({
-				{
-					text = app:get_name(),
-					widget = wibox.widget.textbox,
-				},
-				bg = beautiful.xbackground,
-				widget = wibox.container.background,
-			})
 			table.insert(self.filtered_apps, app)
-			self.app_list:add(app_widget)
 			entries[app_name] = true
 		end
 	end
+	self:update_displayed_apps()
 	self:highlight_focused_entry()
+end
+
+function AppLauncher:update_displayed_apps()
+	self.app_list:reset()
+	for i = self.display_start, math.min(self.display_start + self.display_count - 1, #self.filtered_apps) do
+		local app = self.filtered_apps[i]
+		local app_widget = wibox.widget({
+			{
+				text = app:get_name(),
+				widget = wibox.widget.textbox,
+			},
+			bg = beautiful.xbackground,
+			widget = wibox.container.background,
+		})
+		self.app_list:add(app_widget)
+	end
 end
 
 function AppLauncher:add_char(char)
 	self.textbox.input.text = self.textbox.input.text .. char
 	self.focus_index = 1
+	self.display_start = 1
 	self:filter_apps(self.textbox.input.text)
 end
 
@@ -145,6 +156,7 @@ function AppLauncher:remove_last_char()
 	local text = self.textbox.input.text
 	self.textbox.input.text = text:sub(1, -2)
 	self.focus_index = 1
+	self.display_start = 1
 	self:filter_apps(self.textbox.input.text)
 end
 
@@ -153,7 +165,9 @@ function AppLauncher:move_focus_up()
 		self.focus_index = self.focus_index - 1
 	else
 		self.focus_index = #self.filtered_apps
+		self.display_start = math.max(1, self.focus_index - self.display_count + 1)
 	end
+	self:check_scroll_up()
 	self:highlight_focused_entry()
 end
 
@@ -162,13 +176,29 @@ function AppLauncher:move_focus_down()
 		self.focus_index = self.focus_index + 1
 	else
 		self.focus_index = 1
+		self.display_start = 1
 	end
+	self:check_scroll_down()
 	self:highlight_focused_entry()
+end
+
+function AppLauncher:check_scroll_up()
+	if self.focus_index < self.display_start then
+		self.display_start = self.focus_index
+		self:update_displayed_apps()
+	end
+end
+
+function AppLauncher:check_scroll_down()
+	if self.focus_index >= self.display_start + self.display_count then
+		self.display_start = self.focus_index - self.display_count + 1
+		self:update_displayed_apps()
+	end
 end
 
 function AppLauncher:highlight_focused_entry()
 	for i, widget in ipairs(self.app_list.children) do
-		if i == self.focus_index then
+		if i == self.focus_index - self.display_start + 1 then
 			widget.fg = beautiful.xcolor4
 			widget.bg = beautiful.xcolor8
 			widget.shape = helpers:rrect(2)
