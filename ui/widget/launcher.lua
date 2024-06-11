@@ -19,14 +19,14 @@ function AppLauncher:new()
 				text = "Run: ",
 				widget = wibox.widget.textbox,
 			},
-			margins = { left = dpi(10) },
-			layout = wibox.container.margin,
+			{
+				id = "input",
+				widget = awful.widget.prompt(),
+			},
+			layout = wibox.layout.fixed.horizontal,
 		},
-		{
-			id = "input",
-			widget = wibox.widget.textbox,
-		},
-		layout = wibox.layout.fixed.horizontal,
+		margins = { left = dpi(10) },
+		layout = wibox.container.margin,
 	})
 
 	self.app_list = wibox.widget({
@@ -98,6 +98,7 @@ end
 
 function AppLauncher:fetch_applications()
 	self.apps = Gio.AppInfo.get_all()
+	self.filtered_apps = self.apps
 end
 
 function AppLauncher:create_widgets()
@@ -117,7 +118,7 @@ function AppLauncher:create_widgets()
 end
 
 function AppLauncher:show()
-	self.textbox.input.text = ""
+	self.textbox:get_children_by_id("input")[1].widget:set_text("")
 	self.focus_index = 1
 	self.display_start = 1
 	self:filter_apps("")
@@ -131,16 +132,17 @@ function AppLauncher:hide()
 end
 
 function AppLauncher:filter_apps(query)
-	local seen = {}
-	query = query:lower()
-	self.filtered_apps = {}
-
+	local entries = {}
 	for _, app in ipairs(self.apps) do
 		local app_name = app:get_name():lower()
-		if app_name:find(query) and not seen[app_name] then
-			table.insert(self.filtered_apps, app)
-			seen[app_name] = true
+		if app_name:match(query:lower()) then
+			entries[app_name] = app
 		end
+	end
+
+	self.filtered_apps = {}
+	for _, app in pairs(entries) do
+		table.insert(self.filtered_apps, app)
 	end
 
 	self.focus_index = 1
@@ -165,14 +167,16 @@ function AppLauncher:update_widgets()
 end
 
 function AppLauncher:add_char(char)
-	self.textbox.input.text = self.textbox.input.text .. char
-	self:filter_apps(self.textbox.input.text)
+	self.textbox
+		:get_children_by_id("input")[1].widget
+		:set_text(self.textbox:get_children_by_id("input")[1].widget.text .. char)
+	self:filter_apps(self.textbox:get_children_by_id("input")[1].widget.text)
 end
 
 function AppLauncher:remove_last_char()
-	local text = self.textbox.input.text
-	self.textbox.input.text = text:sub(1, -2)
-	self:filter_apps(self.textbox.input.text)
+	local text = self.textbox:get_children_by_id("input")[1].widget.text
+	self.textbox:get_children_by_id("input")[1].widget:set_text(text:sub(1, -2))
+	self:filter_apps(self.textbox:get_children_by_id("input")[1].widget.text)
 end
 
 function AppLauncher:move_focus_up()
