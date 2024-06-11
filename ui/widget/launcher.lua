@@ -2,9 +2,7 @@ local awful = require("awful")
 local wibox = require("wibox")
 local beautiful = require("beautiful")
 local Gio = require("lgi").Gio
-
 local helpers = require("helpers")
-
 local dpi = beautiful.xresources.apply_dpi
 
 -- Application Launcher class
@@ -65,11 +63,13 @@ function AppLauncher:new()
 
 	self.apps = {}
 	self.filtered_apps = {}
-	self.focus_index = 0
+	self.widgets = {}
+	self.focus_index = 1
 	self.display_start = 1
 	self.display_count = 20
 
 	self:fetch_applications()
+	self:create_widgets()
 
 	self.keygrabber = awful.keygrabber({
 		autostart = true,
@@ -100,6 +100,22 @@ function AppLauncher:fetch_applications()
 	self.apps = Gio.AppInfo.get_all()
 end
 
+function AppLauncher:create_widgets()
+	for i = 1, self.display_count do
+		local widget = wibox.widget({
+			{
+				id = "text_role",
+				text = "",
+				widget = wibox.widget.textbox,
+			},
+			bg = beautiful.xbackground,
+			widget = wibox.container.background,
+		})
+		table.insert(self.widgets, widget)
+		self.app_list:add(widget)
+	end
+end
+
 function AppLauncher:show()
 	self.textbox.input.text = ""
 	self.focus_index = 1
@@ -115,48 +131,47 @@ function AppLauncher:hide()
 end
 
 function AppLauncher:filter_apps(query)
-	self.app_list:reset()
+	local seen = {}
+	query = query:lower()
 	self.filtered_apps = {}
-	local entries = {}
+
 	for _, app in ipairs(self.apps) do
 		local app_name = app:get_name():lower()
-		if app_name:match(query:lower()) and not entries[app_name] then
+		if app_name:find(query) and not seen[app_name] then
 			table.insert(self.filtered_apps, app)
-			entries[app_name] = true
+			seen[app_name] = true
 		end
 	end
-	self:update_displayed_apps()
+
+	self.focus_index = 1
+	self.display_start = 1
+	self:update_widgets()
 	self:highlight_focused_entry()
 end
 
-function AppLauncher:update_displayed_apps()
-	self.app_list:reset()
-	for i = self.display_start, math.min(self.display_start + self.display_count - 1, #self.filtered_apps) do
-		local app = self.filtered_apps[i]
-		local app_widget = wibox.widget({
-			{
-				text = app:get_name(),
-				widget = wibox.widget.textbox,
-			},
-			bg = beautiful.xbackground,
-			widget = wibox.container.background,
-		})
-		self.app_list:add(app_widget)
+function AppLauncher:update_widgets()
+	for i = 1, self.display_count do
+		local index = self.display_start + i - 1
+		local widget = self.widgets[i]
+
+		if index <= #self.filtered_apps then
+			local app = self.filtered_apps[index]
+			widget:get_children_by_id("text_role")[1].text = app:get_name()
+			widget.visible = true
+		else
+			widget.visible = false
+		end
 	end
 end
 
 function AppLauncher:add_char(char)
 	self.textbox.input.text = self.textbox.input.text .. char
-	self.focus_index = 1
-	self.display_start = 1
 	self:filter_apps(self.textbox.input.text)
 end
 
 function AppLauncher:remove_last_char()
 	local text = self.textbox.input.text
 	self.textbox.input.text = text:sub(1, -2)
-	self.focus_index = 1
-	self.display_start = 1
 	self:filter_apps(self.textbox.input.text)
 end
 
@@ -167,7 +182,7 @@ function AppLauncher:move_focus_up()
 		self.focus_index = #self.filtered_apps
 		self.display_start = math.max(1, self.focus_index - self.display_count + 1)
 	end
-	self:check_scroll_up()
+	self:check_scroll()
 	self:highlight_focused_entry()
 end
 
@@ -178,26 +193,17 @@ function AppLauncher:move_focus_down()
 		self.focus_index = 1
 		self.display_start = 1
 	end
-	self:check_scroll_down()
+	self:check_scroll()
 	self:highlight_focused_entry()
 end
 
-function AppLauncher:check_scroll_up()
+function AppLauncher:check_scroll()
 	if self.focus_index < self.display_start then
 		self.display_start = self.focus_index
 	elseif self.focus_index > self.display_start + self.display_count - 1 then
-		self.display_start = math.max(1, self.focus_index - self.display_count + 1)
-	end
-	self:update_displayed_apps()
-end
-
-function AppLauncher:check_scroll_down()
-	if self.focus_index > self.display_start + self.display_count - 1 then
 		self.display_start = self.focus_index - self.display_count + 1
-	elseif self.focus_index < self.display_start then
-		self.display_start = math.max(1, self.focus_index)
 	end
-	self:update_displayed_apps()
+	self:update_widgets()
 end
 
 function AppLauncher:highlight_focused_entry()
