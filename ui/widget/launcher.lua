@@ -2,6 +2,7 @@ local awful = require("awful")
 local wibox = require("wibox")
 local beautiful = require("beautiful")
 local Gio = require("lgi").Gio
+local gears = require("gears")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 
@@ -21,6 +22,7 @@ function AppLauncher:new()
 			},
 			{
 				id = "input",
+				bg = beautiful.xcolor0,
 				widget = awful.widget.prompt(),
 			},
 			layout = wibox.layout.fixed.horizontal,
@@ -66,7 +68,7 @@ function AppLauncher:new()
 	self.widgets = {}
 	self.focus_index = 1
 	self.display_start = 1
-	self.display_count = 20
+	self.display_count = 15
 
 	self:fetch_applications()
 	self:create_widgets()
@@ -107,10 +109,11 @@ function AppLauncher:create_widgets()
 			{
 				id = "text_role",
 				text = "",
+				forced_height = dpi(20),
 				widget = wibox.widget.textbox,
 			},
 			bg = beautiful.xbackground,
-			widget = wibox.container.background,
+			layout = wibox.container.background,
 		})
 		table.insert(self.widgets, widget)
 		self.app_list:add(widget)
