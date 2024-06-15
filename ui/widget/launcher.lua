@@ -2,7 +2,6 @@ local awful = require("awful")
 local wibox = require("wibox")
 local beautiful = require("beautiful")
 local Gio = require("lgi").Gio
-local gears = require("gears")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 
@@ -27,23 +26,19 @@ function AppLauncher:new()
 			},
 			layout = wibox.layout.fixed.horizontal,
 		},
-		margins = { left = dpi(10) },
+		margins = { left = dpi(5) },
 		layout = wibox.container.margin,
 	})
 
 	self.app_list = wibox.widget({
-		forced_num_cols = 1,
 		spacing = dpi(2),
-		horizontal_homogeneous = true,
-		horizontal_expand = true,
-		layout = wibox.layout.grid,
+		layout = wibox.layout.fixed.vertical,
 	})
 
 	self.popup = awful.popup({
 		widget = {
 			{
 				self.textbox,
-				forced_height = dpi(30),
 				bg = beautiful.xcolor0,
 				layout = wibox.container.background,
 			},
@@ -65,13 +60,11 @@ function AppLauncher:new()
 
 	self.apps = {}
 	self.filtered_apps = {}
-	self.widgets = {}
 	self.focus_index = 1
 	self.display_start = 1
 	self.display_count = 15
 
 	self:fetch_applications()
-	self:create_widgets()
 
 	self.keygrabber = awful.keygrabber({
 		autostart = true,
@@ -101,23 +94,9 @@ end
 function AppLauncher:fetch_applications()
 	self.apps = Gio.AppInfo.get_all()
 	self.filtered_apps = self.apps
-end
-
-function AppLauncher:create_widgets()
-	for i = 1, self.display_count do
-		local widget = wibox.widget({
-			{
-				id = "text_role",
-				text = "",
-				forced_height = dpi(20),
-				widget = wibox.widget.textbox,
-			},
-			bg = beautiful.xbackground,
-			layout = wibox.container.background,
-		})
-		table.insert(self.widgets, widget)
-		self.app_list:add(widget)
-	end
+	table.sort(self.filtered_apps, function(a, b)
+		return a:get_name():lower() < b:get_name():lower()
+	end)
 end
 
 function AppLauncher:show()
@@ -135,19 +114,13 @@ function AppLauncher:hide()
 end
 
 function AppLauncher:filter_apps(query)
-	local entries = {}
+	local lower_query = query:lower()
+	self.filtered_apps = {}
 	for _, app in ipairs(self.apps) do
-		local app_name = app:get_name():lower()
-		if app_name:match(query:lower()) then
-			entries[app_name] = app
+		if app:get_name():lower():match(lower_query) then
+			table.insert(self.filtered_apps, app)
 		end
 	end
-
-	self.filtered_apps = {}
-	for _, app in pairs(entries) do
-		table.insert(self.filtered_apps, app)
-	end
-
 	self.focus_index = 1
 	self.display_start = 1
 	self:update_widgets()
@@ -155,31 +128,33 @@ function AppLauncher:filter_apps(query)
 end
 
 function AppLauncher:update_widgets()
-	for i = 1, self.display_count do
-		local index = self.display_start + i - 1
-		local widget = self.widgets[i]
-
-		if index <= #self.filtered_apps then
-			local app = self.filtered_apps[index]
-			widget:get_children_by_id("text_role")[1].text = app:get_name()
-			widget.visible = true
-		else
-			widget.visible = false
-		end
+	self.app_list:reset()
+	for i = self.display_start, math.min(self.display_start + self.display_count - 1, #self.filtered_apps) do
+		local app = self.filtered_apps[i]
+		local widget = wibox.widget({
+			{
+				text = app:get_name(),
+				forced_height = dpi(20),
+				widget = wibox.widget.textbox,
+			},
+			bg = beautiful.xbackground,
+			layout = wibox.container.background,
+		})
+		self.app_list:add(widget)
 	end
 end
 
 function AppLauncher:add_char(char)
-	self.textbox
-		:get_children_by_id("input")[1].widget
-		:set_text(self.textbox:get_children_by_id("input")[1].widget.text .. char)
-	self:filter_apps(self.textbox:get_children_by_id("input")[1].widget.text)
+	local prompt_widget = self.textbox:get_children_by_id("input")[1].widget
+	prompt_widget:set_text(prompt_widget.text .. char)
+	self:filter_apps(prompt_widget.text)
 end
 
 function AppLauncher:remove_last_char()
-	local text = self.textbox:get_children_by_id("input")[1].widget.text
-	self.textbox:get_children_by_id("input")[1].widget:set_text(text:sub(1, -2))
-	self:filter_apps(self.textbox:get_children_by_id("input")[1].widget.text)
+	local prompt_widget = self.textbox:get_children_by_id("input")[1].widget
+	local text = prompt_widget.text
+	prompt_widget:set_text(text:sub(1, -2))
+	self:filter_apps(prompt_widget.text)
 end
 
 function AppLauncher:move_focus_up()
