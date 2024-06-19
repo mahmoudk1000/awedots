@@ -39,6 +39,7 @@ function AppLauncher:new()
 		widget = {
 			{
 				self.textbox,
+				forced_height = dpi(30),
 				bg = beautiful.xcolor0,
 				layout = wibox.container.background,
 			},
