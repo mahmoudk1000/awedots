@@ -88,6 +88,14 @@ function AppLauncher:new()
 		end,
 	})
 
+	self.popup:connect_signal("button::press", function(_, _, _, button)
+		if button == 4 then
+			self:move_focus_up()
+		elseif button == 5 then
+			self:move_focus_down()
+		end
+	end)
+
 	return self
 end
 
