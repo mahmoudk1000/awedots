@@ -5,7 +5,7 @@ local gfs = require("gears.filesystem")
 local beautiful = require("beautiful")
 
 -- Wallpaper
-local function set_wallpaper(s)
+awful.screen.connect_for_each_screen(function(s)
 	if gfs.file_readable(beautiful.wallpaper) then
 		local wallpaper = beautiful.wallpaper
 
@@ -38,14 +38,6 @@ local function set_wallpaper(s)
 			}),
 		})
 	end
-end
-
--- Re-set wallpaper when a screen's geometry changes (e.g. different resolution)
-screen.connect_signal("property::geometry", set_wallpaper)
-
--- Tags, Layouts and Wallpaper
-awful.screen.connect_for_each_screen(function(s)
-	set_wallpaper(s)
 end)
 
 screen.connect_signal("arrange", function(s)
@@ -61,7 +53,6 @@ end)
 
 -- Window Bordering
 client.connect_signal("manage", function(c)
-	c.border_width = beautiful.border_width
 	c.border_color = beautiful.border_focus
 
 	c:connect_signal("focus", function()
@@ -81,11 +72,6 @@ require("awful.autofocus")
 
 client.connect_signal("mouse::enter", function(c)
 	c:emit_signal("request::activate", "mouse_enter", { raise = false })
-end)
-
--- Enable sloppy focus, so that focus follows mouse.
-client.connect_signal("mouse::enter", function(c)
-	c:activate({ context = "mouse_enter", raise = false })
 end)
 
 -- Titlebars Signals
