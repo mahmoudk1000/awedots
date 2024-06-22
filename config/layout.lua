@@ -1,4 +1,5 @@
 local awful = require("awful")
+local bling = require("module.bling")
 
 tag.connect_signal("request::default_layouts", function()
 	awful.layout.append_default_layouts({
@@ -18,5 +19,6 @@ tag.connect_signal("request::default_layouts", function()
 		-- awful.layout.suit.corner.ne,
 		-- awful.layout.suit.corner.sw,
 		-- awful.layout.suit.corner.se,
+		bling.layout.centered,
 	})
 end)
