@@ -1,5 +1,5 @@
 local awful = require("awful")
-local bling = require("mods.bling")
+local bling = require("module.bling")
 
 bling.widget.window_switcher.enable({
 	type = "thumbnail",

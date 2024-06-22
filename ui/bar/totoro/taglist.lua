@@ -2,7 +2,7 @@ local awful = require("awful")
 local gears = require("gears")
 local wibox = require("wibox")
 local beautiful = require("beautiful")
-local rubato = require("mods.rubato")
+local rubato = require("module.rubato")
 
 local dpi = beautiful.xresources.apply_dpi
 

@@ -14,8 +14,8 @@ local album_cover = wibox.widget({
 	valign = "center",
 	halign = "center",
 	opacity = 0.20,
-	horizontal_fit_policy = "fit",
-	vertical_fit_policy = "none",
+	reszie = true,
+	horizontal_fit_policy = "expand",
 	clip_shape = helpers:rrect(),
 	widget = wibox.widget.imagebox,
 })

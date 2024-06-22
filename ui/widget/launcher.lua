@@ -2,7 +2,9 @@ local awful = require("awful")
 local wibox = require("wibox")
 local beautiful = require("beautiful")
 local Gio = require("lgi").Gio
+local gears = require("gears")
 local helpers = require("helpers")
+local fzy = require("module.fzf")
 local dpi = beautiful.xresources.apply_dpi
 
 -- Application Launcher class
@@ -101,11 +103,19 @@ function AppLauncher:new()
 end
 
 function AppLauncher:fetch_applications()
-	self.apps = Gio.AppInfo.get_all()
+	local apps = Gio.AppInfo.get_all()
+	local seen_apps = {}
+	self.apps = {}
+
+	for _, app in ipairs(apps) do
+		local app_name = app:get_name()
+		if not seen_apps[app_name] then
+			table.insert(self.apps, app)
+			seen_apps[app_name] = true
+		end
+	end
+
 	self.filtered_apps = self.apps
-	table.sort(self.filtered_apps, function(a, b)
-		return a:get_name():lower() < b:get_name():lower()
-	end)
 end
 
 function AppLauncher:show()
@@ -123,13 +133,16 @@ function AppLauncher:hide()
 end
 
 function AppLauncher:filter_apps(query)
-	local lower_query = query:lower()
-	self.filtered_apps = {}
-	for _, app in ipairs(self.apps) do
-		if app:get_name():lower():match(lower_query) then
-			table.insert(self.filtered_apps, app)
-		end
-	end
+	local matches = fzy.filter(
+		query,
+		gears.table.map(function(app)
+			return app:get_name()
+		end, self.apps)
+	)
+	self.filtered_apps = gears.table.map(function(match)
+		return self.apps[match[1]]
+	end, matches)
+
 	self.focus_index = 1
 	self.display_start = 1
 	self:update_widgets()
