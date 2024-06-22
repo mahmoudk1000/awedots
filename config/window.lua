@@ -3,17 +3,16 @@ local wibox = require("wibox")
 local gears = require("gears")
 local gfs = require("gears.filesystem")
 local beautiful = require("beautiful")
-local ruled = require("ruled")
 
 -- Wallpaper
 local function set_wallpaper(s)
 	if gfs.file_readable(beautiful.wallpaper) then
 		local wallpaper = beautiful.wallpaper
-		-- If wallpaper is a function, call it with the screen
-		if type(wallpaper) == "function" then
+
+		if type(beautiful.wallpaper) == "function" then
 			wallpaper = wallpaper(s)
 		end
-		gears.wallpaper.maximized(wallpaper, s)
+		gears.wallpaper.maximized(wallpaper, s, false, nil)
 	else
 		awful.wallpaper({
 			screen = s,
@@ -28,8 +27,8 @@ local function set_wallpaper(s)
 				fg = beautiful.xbackground,
 				bg = {
 					type = "linear",
-					from = { 0, 0, 0 },
-					to = { 200, 1200, 0 },
+					from = { 0, 0 },
+					to = { 0, 1080 },
 					stops = {
 						{ 0, beautiful.xcolor4 },
 						{ 1, beautiful.xcolor8 },
@@ -47,28 +46,17 @@ screen.connect_signal("property::geometry", set_wallpaper)
 -- Tags, Layouts and Wallpaper
 awful.screen.connect_for_each_screen(function(s)
 	set_wallpaper(s)
-	tag.connect_signal("request::default_layouts", function()
-		awful.layout.append_default_layouts({
-			awful.layout.suit.floating,
-			-- awful.layout.suit.tile,
-			-- awful.layout.suit.tile.left,
-			-- awful.layout.suit.tile.bottom,
-			-- awful.layout.suit.tile.top,
-			-- awful.layout.suit.fair,
-			-- awful.layout.suit.fair.horizontal,
-			-- awful.layout.suit.spiral,
-			awful.layout.suit.spiral.dwindle,
-			-- awful.layout.suit.max,
-			-- awful.layout.suit.max.fullscreen,
-			-- awful.layout.suit.magnifier,
-			-- awful.layout.suit.corner.nw,
-			-- awful.layout.suit.corner.ne,
-			-- awful.layout.suit.corner.sw,
-			-- awful.layout.suit.corner.se,
-		})
-	end)
+end)
 
-	awful.tag({ "1", "2", "3", "4", "5", "6" }, s, awful.layout.layouts[2])
+screen.connect_signal("arrange", function(s)
+	local only_one = #s.tiled_clients == 1
+	for _, c in pairs(s.clients) do
+		if only_one and not c.floating or c.maximized or c.fullscreen then
+			c.border_width = 0
+		else
+			c.border_width = beautiful.border_width
+		end
+	end
 end)
 
 -- Window Bordering
@@ -89,110 +77,10 @@ client.connect_signal("manage", function(c)
 	end)
 end)
 
---  Rules
-ruled.client.connect_signal("request::rules", function()
-	-- All clients will match this rule.
-	ruled.client.append_rule({
-		id = "global",
-		rule = {},
-		properties = {
-			focus = awful.client.focus.filter,
-			raise = true,
-			screen = awful.screen.preferred,
-			size_hints_honor = false,
-			titlebars_enabled = false,
-			placement = awful.placement.centered + awful.placement.no_overlap + awful.placement.no_offscreen,
-		},
-	})
+require("awful.autofocus")
 
-	ruled.client.append_rule({
-		id = "floating",
-		rule_any = {
-			class = {
-				"Nsxiv",
-				"Arandr",
-			},
-			type = {
-				"dialog",
-			},
-		},
-		properties = {
-			focus = true,
-			ontop = true,
-			floating = true,
-			titlebars_enabled = true,
-			placement = awful.placement.centered,
-		},
-	})
-
-	ruled.client.append_rule({
-		id = "multimedia",
-		rule_any = {
-			class = {
-				"vlc",
-				"mpv",
-			},
-		},
-		properties = {
-			tag = "3",
-			switchtotag = true,
-			raise = true,
-			floating = true,
-			draw_backdrop = false,
-			placement = awful.placement.centered,
-		},
-	})
-
-	ruled.client.append_rule({
-		id = "zoom",
-		rule_any = {
-			class = {
-				"zoom",
-				".zoom",
-			},
-		},
-		except_any = {
-			name = {
-				"Zoom - Free account",
-				"Zoom Cloud Meetings",
-				"zoom",
-			},
-		},
-		properties = {
-			ontop = true,
-			floating = true,
-			placement = awful.placement.centered,
-		},
-	})
-
-	ruled.client.append_rule({
-		rule = { class = "firefox" },
-		properties = { screen = 1, tag = "1" },
-	})
-	ruled.client.append_rule({
-		rule = { class = "Thunar" },
-		properties = { screen = 1, tag = "4" },
-	})
-	ruled.client.append_rule({
-		rule = { class = "obsidian" },
-		properties = { screen = 1, tag = "5" },
-	})
-	ruled.client.append_rule({
-		rule = { class = "TelegramDesktop" },
-		properties = { screen = 1, tag = "5" },
-	})
-	ruled.client.append_rule({
-		rule = { class = "Spotify" },
-		properties = { screen = 1, tag = "5" },
-	})
-	ruled.client.append_rule({
-		rule = { class = "vesktop" },
-		properties = { screen = 1, tag = "5" },
-	})
-	ruled.client.append_rule({
-		rule = { class = "thunderbird" },
-		properties = { screen = 1, tag = "6" },
-	})
+client.connect_signal("mouse::enter", function(c)
+	c:emit_signal("request::activate", "mouse_enter", { raise = false })
 end)
 
 -- Enable sloppy focus, so that focus follows mouse.

@@ -8,19 +8,13 @@ alt = "Mod1"
 shift = "Shift"
 ctrl = "Control"
 
--- This is used later as the default terminal and editor to run.
-terminal = "st"
-browser = "firefox"
-filemanager = "thunar"
-obsidian = "obsidian"
-
 -- Set Keys and window
 require(... .. ".bling")
 require(... .. ".keys")
+require(... .. ".layout")
 require(... .. ".menu")
 require(... .. ".notification")
+require(... .. ".ruled")
+require(... .. ".tag")
 require(... .. ".titlebar")
 require(... .. ".window")
-
--- Other Stuff
-require("awful.autofocus")

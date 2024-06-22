@@ -4,6 +4,8 @@ local hotkeys_popup = require("awful.hotkeys_popup")
 local volume_stuff = require("signal.volume")
 local backlight_stuff = require("signal.backlight")
 
+local apps = require("config.apps")
+
 -- Mouse Bindings
 awful.mouse.append_global_mousebindings({
 	awful.button({}, awful.button.names.LEFT, function()
@@ -54,19 +56,19 @@ awful.keyboard.append_global_keybindings({
 	end, { description = "select previous", group = "Layout" }),
 	-- Applications Bindings
 	awful.key({ modkey }, "Return", function()
-		awful.spawn(terminal)
+		awful.spawn(apps.default.terminal)
 	end, { description = "Open Terminal", group = "Launcher" }),
 	awful.key({ modkey }, "d", function()
 		show_app_launcher()
 	end, { description = "Applications Launcher", group = "Launcher" }),
 	awful.key({ modkey }, "w", function()
-		awful.spawn(browser)
+		awful.spawn(apps.default.browser)
 	end, { description = "Launch Browser", group = "Launcher" }),
 	awful.key({ modkey }, "f", function()
-		awful.spawn(filemanager)
+		awful.spawn(apps.default.filemanager)
 	end, { description = "Launch Filemanager", group = "Launcher" }),
 	awful.key({ modkey }, "o", function()
-		awful.spawn(obsidian)
+		awful.spawn(apps.default.obsidian)
 	end, { description = "Launch Obsidian", group = "Launcher" }),
 	awful.key({ modkey }, "b", function()
 		awful.spawn("blum")
