@@ -10,3 +10,6 @@
 [submodule "mods/layout-machi"]
 	path = module/layout-machi
 	url = git@github.com:xinhaoyuan/layout-machi.git
+[submodule "module/color"]
+	path = module/color
+	url = git@github.com:andOrlando/color.git
