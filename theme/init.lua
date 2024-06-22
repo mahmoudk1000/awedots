@@ -5,7 +5,6 @@ local gfs = require("gears.filesystem")
 
 local dpi = xresources.apply_dpi
 local xrdb = xresources.get_current_theme()
-local res = gfs.get_configuration_dir() .. "/"
 --
 -- Define Theme based on the default theme
 local theme = dofile(gfs.get_themes_dir() .. "default/theme.lua")
@@ -36,10 +35,10 @@ theme.font = "Iosevka 9"
 theme.font_bold = "Iosevka Bold 9"
 
 -- Gaps
-theme.useless_gap = dpi(3)
+theme.useless_gap = dpi(5)
 
 -- Wallpaper
-theme.wallpaper = res .. "theme/walls/wall.png"
+theme.wallpaper = gfs.get_configuration_dir() .. "/theme/walls/wall"
 
 -- Interface
 theme.fg_focus = theme.xforeground
@@ -50,8 +49,8 @@ theme.fg_urgent = theme.color1
 theme.bg_urgent = theme.xcolor0
 
 -- Borders
-theme.border_width = dpi(2)
-theme.border_radius = dpi(4)
+theme.border_width = dpi(3)
+theme.border_radius = dpi(8)
 theme.border_focus = theme.bg_focus
 theme.border_normal = theme.xcolor0
 theme.border_marked = theme.bg_urgent
@@ -86,7 +85,8 @@ theme.notification_border_color = theme.xcolor0
 
 -- Menu
 theme.menu_font = theme.font
-theme.menu_submenu_icon = gears.color.recolor_image(res .. "theme/icons/submenu.png", theme.xcolor8)
+theme.menu_submenu_icon =
+	gears.color.recolor_image(gfs.get_configuration_dir() .. "/theme/icons/submenu.png", theme.xcolor8)
 theme.menu_bg_focus = theme.xcolor4
 theme.menu_fg_focus = theme.xbackground
 theme.menu_bg_normal = theme.xbackground
