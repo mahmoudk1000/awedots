@@ -8,6 +8,9 @@ alt = "Mod1"
 shift = "Shift"
 ctrl = "Control"
 
+-- Focus
+require("awful.autofocus")
+
 -- Set Keys and window
 require(... .. ".bling")
 require(... .. ".keys")

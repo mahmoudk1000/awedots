@@ -68,25 +68,6 @@ client.connect_signal("manage", function(c)
 	end)
 end)
 
-require("awful.autofocus")
-
 client.connect_signal("mouse::enter", function(c)
 	c:emit_signal("request::activate", "mouse_enter", { raise = false })
-end)
-
--- Titlebars Signals
-client.connect_signal("request::manage", function(c)
-	if awful.layout.get(c.screen) == awful.layout.suit.floating then
-		awful.titlebar.show(c)
-	end
-end)
-
-tag.connect_signal("property::layout", function(t)
-	for _, c in ipairs(t:clients()) do
-		if awful.layout.get(t.screen) == awful.layout.suit.floating then
-			awful.titlebar.show(c)
-		else
-			awful.titlebar.hide(c)
-		end
-	end
 end)

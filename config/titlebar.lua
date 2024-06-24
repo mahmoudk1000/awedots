@@ -102,3 +102,19 @@ client.connect_signal("request::titlebars", function(c)
 		separator.color = beautiful.border_normal
 	end)
 end)
+
+client.connect_signal("request::manage", function(c)
+	if awful.layout.get(c.screen) == awful.layout.suit.floating then
+		awful.titlebar.show(c)
+	end
+end)
+
+tag.connect_signal("property::layout", function(t)
+	for _, c in ipairs(t:clients()) do
+		if awful.layout.get(t.screen) == awful.layout.suit.floating then
+			awful.titlebar.show(c)
+		else
+			awful.titlebar.hide(c)
+		end
+	end
+end)
