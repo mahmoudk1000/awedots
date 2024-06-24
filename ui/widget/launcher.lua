@@ -88,6 +88,7 @@ function AppLauncher:new()
 		end,
 		stop_callback = function()
 			self.popup.visible = false
+			collectgarbage("collect")
 		end,
 	})
 
@@ -116,6 +117,7 @@ function AppLauncher:fetch_applications()
 	end
 
 	self.filtered_apps = self.apps
+	collectgarbage("collect")
 end
 
 function AppLauncher:show()
@@ -130,6 +132,7 @@ end
 function AppLauncher:hide()
 	self.popup.visible = false
 	self.keygrabber:stop()
+	collectgarbage("collect")
 end
 
 function AppLauncher:filter_apps(query)
@@ -147,6 +150,7 @@ function AppLauncher:filter_apps(query)
 	self.display_start = 1
 	self:update_widgets()
 	self:highlight_focused_entry()
+	collectgarbage("collect")
 end
 
 function AppLauncher:update_widgets()
@@ -164,6 +168,7 @@ function AppLauncher:update_widgets()
 		})
 		self.app_list:add(widget)
 	end
+	collectgarbage("collect")
 end
 
 function AppLauncher:add_char(char)
@@ -229,6 +234,7 @@ function AppLauncher:run()
 		if app then
 			app:launch()
 			self:hide()
+			collectgarbage("collect")
 		end
 	end
 end
