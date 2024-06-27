@@ -4,6 +4,7 @@ local naughty = require("naughty")
 local ruled = require("ruled")
 local beautiful = require("beautiful")
 
+local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 
 -- Notification Default Config
@@ -70,55 +71,50 @@ naughty.connect_signal("request::display", function(n)
 					{
 						{
 							{
-								color = (n.urgency == "critical") and beautiful.xcolor1
-									or ((n.urgency == "normal") and beautiful.xcolor4 or beautiful.xcolor2),
-								thickness = dpi(4),
-								forced_height = dpi(30),
-								forced_width = dpi(4),
-								widget = wibox.widget.separator,
-							},
-							{
 								{
 									{
 										naughty.widget.title,
 										forced_height = dpi(30),
 										layout = wibox.layout.align.horizontal,
 									},
-									margins = { left = dpi(15), right = dpi(15) },
-									widget = wibox.container.margin,
+									margins = { left = dpi(10), right = dpi(10) },
+									layout = wibox.container.margin,
 								},
+								shape = helpers:rrect(beautiful.border_radius / 2),
 								bg = beautiful.bg_focus,
-								widget = wibox.container.background,
+								layout = wibox.container.background,
 							},
-							layout = wibox.layout.align.horizontal,
+							strategy = "min",
+							width = dpi(300),
+							layout = wibox.container.constraint,
 						},
-						strategy = "min",
-						width = dpi(300),
-						widget = wibox.container.constraint,
+						strategy = "max",
+						width = dpi(400),
+						layout = wibox.container.constraint,
 					},
-					strategy = "max",
-					width = dpi(400),
-					widget = wibox.container.constraint,
-				},
-				{
 					{
 						{
-							naughty.widget.message,
-							margins = dpi(15),
-							widget = wibox.container.margin,
+							{
+								naughty.widget.message,
+								margins = dpi(15),
+								layout = wibox.container.margin,
+							},
+							strategy = "min",
+							height = dpi(60),
+							layout = wibox.container.constraint,
 						},
-						strategy = "min",
-						height = dpi(60),
-						widget = wibox.container.constraint,
+						strategy = "max",
+						width = dpi(400),
+						layout = wibox.container.constraint,
 					},
-					strategy = "max",
-					width = dpi(400),
-					widget = wibox.container.constraint,
+					layout = wibox.layout.align.vertical,
 				},
-				layout = wibox.layout.align.vertical,
+				color = beautiful.xbackground,
+				margins = { left = dpi(10), right = dpi(10), top = dpi(12) },
+				layout = wibox.container.margin,
 			},
 			id = "background_role",
-			widget = naughty.container.background,
+			layout = naughty.container.background,
 		},
 	})
 end)

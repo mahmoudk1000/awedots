@@ -7,8 +7,6 @@ local dpi = beautiful.xresources.apply_dpi
 
 local helpers = require("helpers")
 
-local mpd_stuff = require("signal.mpd")
-
 local album_cover = wibox.widget({
 	image = helpers:recolor("cover.png", beautiful.xcolor8),
 	valign = "center",

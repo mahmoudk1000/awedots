@@ -55,18 +55,21 @@ theme.border_focus = theme.bg_focus
 theme.border_normal = theme.xcolor0
 theme.border_marked = theme.bg_urgent
 
+-- Bar
+theme.bar_height = dpi(40)
+
 -- Taglist
-theme.taglist_font = theme.font_bold
-theme.taglist_fg_focus = theme.bg_normal
-theme.taglist_bg_focus = theme.xcolor4
-theme.taglist_fg_occupied = theme.background
-theme.taglist_bg_occupied = theme.xcolor8
-theme.taglist_fg_empty = theme.xbackground
-theme.taglist_bg_empty = theme.xcolor0
-theme.taglist_fg_urgent = theme.xbackground
-theme.taglist_bg_urgent = theme.xcolor1
-theme.taglist_fg_volatile = theme.xforeground
-theme.taglist_bg_volatile = theme.xcolor3
+theme.taglist_font = theme.vont .. "Aile Oblique Heavy 10"
+theme.taglist_fg_focus = theme.xcolor4
+theme.taglist_bg_focus = theme.xbackground
+theme.taglist_fg_occupied = theme.xcolor8
+theme.taglist_bg_occupied = theme.xbackground
+theme.taglist_fg_empty = theme.xcolor0
+theme.taglist_bg_empty = theme.xbackground
+theme.taglist_fg_urgent = theme.xcolor1
+theme.taglist_bg_urgent = theme.xbackground
+theme.taglist_fg_volatile = theme.xcolor2
+theme.taglist_bg_volatile = theme.xbackground
 
 theme.taglist_squares_sel = nil
 theme.taglist_squares_unsel = nil

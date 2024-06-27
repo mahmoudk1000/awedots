@@ -1,2 +1,3 @@
-require("ui.bar")
-require("ui.widget")
+require(... .. ".bar")
+require(... .. ".popup")
+require(... .. ".widget")

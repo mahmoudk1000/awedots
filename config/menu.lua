@@ -1,11 +1,11 @@
 local awful = require("awful")
 local wibox = require("wibox")
-local gears = require("gears")
 local beautiful = require("beautiful")
 
 local dpi = beautiful.xresources.apply_dpi
 
 local helpers = require("helpers")
+local apps = require("config.apps")
 
 local icon_terminal = helpers:recolor("terminal.png")
 local icon_browser = helpers:recolor("browser.png")
@@ -44,9 +44,9 @@ section.power = {
 
 menu.main = awful.menu({
 	items = {
-		{ "Terminal", terminal, icon_terminal },
-		{ "Browser", browser, icon_browser },
-		{ "Files", filemanager, icon_files },
+		{ "Terminal", apps.default.terminal, icon_terminal },
+		{ "Browser", apps.default.browser, icon_browser },
+		{ "Files", apps.default.filemanager, icon_files },
 		{ "Scrots", section.scrots, icon_scrots },
 		{ "Awesome", section.awesome },
 		{ "Power", section.power },

@@ -15,7 +15,21 @@ require("naughty").connect_signal("request::display_error", function(message, st
 end)
 -- }}}
 
--- Import Configuration
+collectgarbage("setpause", 110)
+collectgarbage("setstepmul", 1000)
+require("gears").timer({
+	timeout = 300,
+	autostart = true,
+	call_now = true,
+	callback = function()
+		collectgarbage("collect")
+	end,
+})
+
+-- Theme
 require("theme")
+
+-- Imports
 require("config")
+require("signal")
 require("ui")

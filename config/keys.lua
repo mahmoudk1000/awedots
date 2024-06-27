@@ -6,7 +6,68 @@ local backlight_stuff = require("signal.backlight")
 
 local apps = require("config.apps")
 
--- Mouse Bindings
+local mouse_keybinds = {}
+local client_keybinds = {}
+
+local function parseKey(keyStr, delimStr)
+	local delim = delimStr or "+"
+	local mods = {}
+	local keybind = ""
+	local MODS = {
+		["Super"] = "Mod4",
+		["Alt"] = "Mod1",
+		["Shift"] = "Shift",
+		["Ctrl"] = "Control",
+	}
+
+	for key in keyStr:gmatch("([^" .. delim .. "]+)") do
+		if MODS[key] then
+			table.insert(mods, MODS[key])
+		else
+			keybind = keybind .. key
+		end
+	end
+	return mods, keybind
+end
+
+local function bind(keys, func, desc, group)
+	local m, k = parseKey(keys)
+	local binding = {}
+
+	binding.modifiers = m
+	binding.description = desc or nil
+	binding.group = group or nil
+	binding.on_press = func
+
+	for _, kg in ipairs({ "numrow", "arrows", "fkeys", "numpad" }) do
+		if k == kg then
+			binding.keygroup = k
+			break
+		else
+			binding.key = k
+		end
+	end
+
+	return awful.key(binding)
+end
+
+local function gkbind(...)
+	awful.keyboard.append_global_keybindings({ bind(...) })
+end
+
+local function ckbind(...)
+	client_keybinds[#client_keybinds + 1] = bind(...)
+end
+
+local function gmbind(...)
+	awful.mouse.append_global_mousebindings({ bind(...) })
+end
+
+local function cmbind(...)
+	mouse_keybinds[#mouse_keybinds + 1] = bind(...)
+end
+
+-- Mouse
 awful.mouse.append_global_mousebindings({
 	awful.button({}, awful.button.names.LEFT, function()
 		menu.main:hide()
@@ -20,226 +81,209 @@ awful.mouse.append_global_mousebindings({
 })
 
 client.connect_signal("request::default_mousebindings", function()
+	awful.mouse.append_global_mousebindings(mouse_keybinds)
 	awful.mouse.append_client_mousebindings({
 		awful.button({}, awful.button.names.LEFT, function(c)
 			c:activate({ context = "mouse_click" })
 		end),
-		awful.button({ modkey }, awful.button.names.LEFT, function(c)
+		awful.button({ "Mod4" }, awful.button.names.LEFT, function(c)
 			c:activate({ context = "mouse_click", action = "mouse_move" })
 		end),
-		awful.button({ modkey }, awful.button.names.RIGHT, function(c)
+		awful.button({ "Mod4" }, awful.button.names.RIGHT, function(c)
 			c:activate({ context = "mouse_click", action = "mouse_resize" })
 		end),
 	})
 end)
 
-awful.keyboard.append_global_keybindings({
-	-- Awesome Bindings
-	awful.key({ modkey }, "F1", hotkeys_popup.show_help, { description = "Show Help", group = "Awesome" }),
-	awful.key({ modkey, alt }, "r", awesome.restart, { description = "Reload Awesome", group = "Awesome" }),
-	awful.key({ modkey, shift }, "q", awesome.quit, { description = "Quit Awesome", group = "Awesome" }),
-	awful.key({ modkey }, "z", function()
-		awful.spawn.with_shell("betterlockscreen -l")
-	end, { description = "Lock Screen", group = "Awesome" }),
-	awful.key({ modkey }, "p", function()
-		bye.visible = not bye.visible
-	end, { description = "Toggle Power Menu", group = "Awesome" }),
-	-- Tags Bindings
-	awful.key({ modkey }, "c", awful.tag.viewprev, { description = "Move Previous", group = "Tag" }),
-	awful.key({ modkey }, "v", awful.tag.viewnext, { description = "Move Next", group = "Tag" }),
-	awful.key({ modkey }, "Escape", awful.tag.history.restore, { description = "Go Back", group = "Tag" }),
-	awful.key({ modkey }, "space", function()
-		awful.layout.inc(1)
-	end, { description = "select next", group = "Layout" }),
-	awful.key({ modkey, shift }, "space", function()
-		awful.layout.inc(-1)
-	end, { description = "select previous", group = "Layout" }),
-	-- Applications Bindings
-	awful.key({ modkey }, "Return", function()
-		awful.spawn(apps.default.terminal)
-	end, { description = "Open Terminal", group = "Launcher" }),
-	awful.key({ modkey }, "d", function()
-		show_app_launcher()
-	end, { description = "Applications Launcher", group = "Launcher" }),
-	awful.key({ modkey }, "w", function()
-		awful.spawn(apps.default.browser)
-	end, { description = "Launch Browser", group = "Launcher" }),
-	awful.key({ modkey }, "f", function()
-		awful.spawn(apps.default.filemanager)
-	end, { description = "Launch Filemanager", group = "Launcher" }),
-	awful.key({ modkey }, "o", function()
-		awful.spawn(apps.default.obsidian)
-	end, { description = "Launch Obsidian", group = "Launcher" }),
-	awful.key({ modkey }, "b", function()
-		awful.spawn("blum")
-	end, { description = "Spawn Bluetooth Menu", group = "Launcher" }),
-	-- Volume
-	awful.key({}, "XF86AudioRaiseVolume", function()
-		awful.spawn.easy_async({ "pamixer", "-i", "5" }, function()
-			volume_stuff:emit_volume_state()
-		end)
-	end, { description = "Increase Volume", group = "System" }),
-	awful.key({ ctrl }, "XF86AudioRaiseVolume", function()
-		awful.spawn.easy_async({ "pamixer", "--allow-boost", "-i", "10" }, function()
-			volume_stuff:emit_volume_state()
-		end)
-	end, { description = "Boost Volume", group = "System" }),
-	awful.key({}, "XF86AudioLowerVolume", function()
-		awful.spawn.easy_async({ "pamixer", "-d", "5" }, function()
-			volume_stuff:emit_volume_state()
-		end)
-	end, { description = "Decrease Volume", group = "System" }),
-	awful.key({}, "XF86AudioMute", function()
-		awful.spawn.easy_async({ "pamixer", "--toggle-mute" }, function()
-			volume_stuff:emit_volume_state()
-		end)
-	end, { description = "Toggle Mute", group = "System" }),
-	-- Brightness
-	awful.key({}, "XF86MonBrightnessUp", function()
-		awful.spawn.easy_async({ "brightnessctl", "s", "+10%" }, function()
-			backlight_stuff:emit_backlight_info()
-		end)
-	end, { description = "Increase Brightness", group = "System" }),
-	awful.key({}, "XF86MonBrightnessDown", function()
-		awful.spawn.easy_async({ "brightnessctl", "s", "10%-" }, function()
-			backlight_stuff:emit_backlight_info()
-		end)
-	end, { description = "Decrease Brightness", group = "System" }),
-	-- Music
-	awful.key({}, "XF86AudioPlay", function()
-		awful.spawn({ "playerctl", "play-pause" })
-	end, { description = "Toggle Playerctl", group = "Music" }),
-	awful.key({}, "XF86AudioPrev", function()
-		awful.spawn({ "playerctl", "previous" })
-	end, { description = "Playerctl Previous", group = "Music" }),
-	awful.key({}, "XF86AudioNext", function()
-		awful.spawn({ "playerctl", "next" })
-	end, { description = "Playerctl Next", group = "Music" }),
-	awful.key({ ctrl }, "XF86AudioNext", function()
-		awful.spawn({ "mpc", "next" })
-	end, { description = "Playerctl Next", group = "Music" }),
-	awful.key({ ctrl }, "XF86AudioPrev", function()
-		awful.spawn({ "mpc", "prev" })
-	end, { description = "Playerctl Next", group = "Music" }),
-	awful.key({ ctrl }, "XF86AudioPlay", function()
-		awful.spawn({ "mpc", "toggle" })
-	end, { description = "Playerctl Next", group = "Music" }),
-	-- Scrots
-	awful.key({}, "Print", function()
-		awful.spawn({ "flameshot", "full" })
-	end, { description = "Take a Full Screenshot", group = "Scrots" }),
-	awful.key({ shift }, "Print", function()
-		awful.spawn({ "flameshot", "gui" })
-	end, { description = "Take a Partial Screenshot", group = "Scrots" }),
-	awful.key({ alt }, "Print", function()
-		awful.spawn({ "flameshot", "full", "-d 5000" })
-	end, { description = "Take a Delayed Screenshot", group = "Scrots" }),
-	-- Client Bindings
-	awful.key({ modkey }, "Down", function()
-		awful.client.focus.bydirection("down")
-	end, { description = "focus down", group = "client" }),
-	awful.key({ modkey }, "Up", function()
-		awful.client.focus.bydirection("up")
-	end, { description = "focus up", group = "client" }),
-	awful.key({ modkey }, "Left", function()
-		awful.client.focus.bydirection("left")
-	end, { description = "focus left", group = "client" }),
-	awful.key({ modkey }, "Right", function()
-		awful.client.focus.bydirection("right")
-	end, { description = "focus right", group = "client" }),
-	awful.key({ modkey }, "j", function()
-		awful.client.focus.byidx(1)
-	end, { description = "focus next by index", group = "client" }),
-	awful.key({ modkey }, "k", function()
-		awful.client.focus.byidx(-1)
-	end, { description = "focus previous by index", group = "client" }),
-	awful.key({ modkey, shift }, "j", function()
-		awful.client.swap.byidx(1)
-	end, { description = "swap with next client by index", group = "client" }),
-	awful.key({ modkey, shift }, "k", function()
-		awful.client.swap.byidx(-1)
-	end, { description = "swap with previous client by index", group = "client" }),
-	awful.key({ modkey, shift }, "l", function()
-		awful.tag.incmwfact(0.05)
-	end, { description = "Increase window factor of a client", group = "Layout" }),
-	awful.key({ modkey, shift }, "h", function()
-		awful.tag.incmwfact(-0.05)
-	end, { description = "Decrease window factor of a client", group = "Layout" }),
-	awful.key({ modkey }, "Tab", function()
-		awesome.emit_signal("bling::window_switcher::turn_on")
-	end, { description = "Spawn Client Switcher", group = "Client" }),
-	awful.key({
-		modifiers = { modkey },
-		keygroup = "numrow",
-		description = "Only View Tag",
-		group = "Tag",
-		on_press = function(index)
-			local screen = awful.screen.focused()
-			local tag = screen.tags[index]
-			if tag then
-				tag:view_only()
-			end
-		end,
-	}),
-	awful.key({
-		modifiers = { modkey, shift },
-		keygroup = "numrow",
-		description = "Move Focused Client to Tag",
-		group = "Tag",
-		on_press = function(index)
-			if client.focus then
-				local tag = client.focus.screen.tags[index]
-				if tag then
-					client.focus:move_to_tag(tag)
-					tag:view_only()
-				end
-			end
-		end,
-	}),
-})
+-- Awesome Bindings
+gkbind("Super+F1", hotkeys_popup.show_help, "Show Help", "Awesome")
+gkbind("Super+Alt+r", awesome.restart, "Reload Awesome", "Awesome")
+gkbind("Super+Shift+q", awesome.quit, "Quit Awesome", "Awesome")
+gkbind("Super+z", function()
+	awful.spawn.with_shell("betterlockscreen -l")
+end, "Lock Screen", "Awesome")
+gkbind("Super+p", function()
+	bye.visible = not bye.visible
+end, "Run Power Menu", "Awesome")
+gkbind("Super+c", function()
+	awesome.emit_signal("shion::toggle")
+end, "Toggle Control Center", "Awesome")
+gkbind("Super+Tab", function()
+	awesome.emit_signal("bling::window_switcher::turn_on")
+end, "Spawn Client Switcher", "Awesome")
+
+-- Layout Bindings
+gkbind("Super+space", function()
+	awful.layout.inc(1)
+end, "select next", "Layout")
+gkbind("Super+Shift", "space", function()
+	awful.layout.inc(-1)
+end, "select previous", "Layout")
+
+-- Applications Bindings
+gkbind("Super+Return", function()
+	awful.spawn(apps.default.terminal)
+end, "Open Terminal", "Launcher")
+gkbind("Super+d", function()
+	show_app_launcher()
+end, "Applications Launcher", "Launcher")
+gkbind("Super+w", function()
+	awful.spawn(apps.default.browser)
+end, "Launch Browser", "Launcher")
+gkbind("Super+f", function()
+	awful.spawn(apps.default.filemanager)
+end, "Launch Filemanager", "Launcher")
+gkbind("Super+o", function()
+	awful.spawn(apps.default.obsidian)
+end, "Launch Obsidian", "Launcher")
+gkbind("Super+b", function()
+	awful.spawn("blum")
+end, "Spawn Bluetooth Menu", "Launcher")
+
+-- Volume
+gkbind("XF86AudioRaiseVolume", function()
+	awful.spawn.easy_async({ "pamixer", "-i", "5" }, function()
+		volume_stuff:emit_volume_state()
+		awesome.emit_signal("volume::pop")
+	end)
+end, "Increase Volume", "System")
+gkbind("Ctrl+XF86AudioRaiseVolume", function()
+	awful.spawn.easy_async({ "pamixer", "--allow-boost", "-i", "10" }, function()
+		volume_stuff:emit_volume_state()
+	end)
+end, "Boost Volume", "System")
+gkbind("XF86AudioLowerVolume", function()
+	awful.spawn.easy_async({ "pamixer", "-d", "5" }, function()
+		volume_stuff:emit_volume_state()
+		awesome.emit_signal("volume::pop")
+	end)
+end, "Decrease Volume", "System")
+gkbind("XF86AudioMute", function()
+	awful.spawn.easy_async({ "pamixer", "--toggle-mute" }, function()
+		volume_stuff:emit_volume_state()
+		awesome.emit_signal("volume::pop")
+	end)
+end, "Toggle Mute", "System")
+
+-- Brightness
+gkbind("XF86MonBrightnessUp", function()
+	awful.spawn.easy_async({ "brightnessctl", "s", "+10%" }, function()
+		backlight_stuff:emit_backlight_info()
+		awesome.emit_signal("backlight::pop")
+	end)
+end, "Increase Brightness", "System")
+gkbind("XF86MonBrightnessDown", function()
+	awful.spawn.easy_async({ "brightnessctl", "s", "10%-" }, function()
+		backlight_stuff:emit_backlight_info()
+		awesome.emit_signal("backlight::pop")
+	end)
+end, "Decrease Brightness", "System")
+
+-- Music
+gkbind("XF86AudioPlay", function()
+	awful.spawn({ "playerctl", "play-pause" })
+end, "Toggle Playerctl", "Music")
+gkbind("XF86AudioPrev", function()
+	awful.spawn({ "playerctl", "previous" })
+end, "Playerctl Previous", "Music")
+gkbind("XF86AudioNext", function()
+	awful.spawn({ "playerctl", "next" })
+end, "Playerctl Next", "Music")
+
+gkbind("Ctrl+XF86AudioPlay", function()
+	awful.spawn({ "mpc", "toggle" })
+end, "Playerctl Next", "Music")
+gkbind("Ctrl+XF86AudioNext", function()
+	awful.spawn({ "mpc", "next" })
+end, "Playerctl Next", "Music")
+gkbind("Ctrl+XF86AudioPrev", function()
+	awful.spawn({ "mpc", "prev" })
+end, "Playerctl Next", "Music")
+
+-- Scrots
+gkbind("Print", function()
+	awful.spawn({ "flameshot", "full" })
+end, "Take a Full Screenshot", "Scrots")
+gkbind("Shift+Print", function()
+	awful.spawn({ "flameshot", "gui" })
+end, "Take a Partial Screenshot", "Scrots")
+gkbind("Alt+Print", function()
+	awful.spawn({ "flameshot", "full", "-d 5000" })
+end, "Take a Delayed Screenshot", "Scrots")
+
+-- Workspace Bindings
+gkbind("Super+a", function()
+	awful.tag.viewprev()
+end, "Move Previous Workspace", "Workspace")
+gkbind("Super+s", function()
+	awful.tag.viewnext()
+end, "Move Next Workspace", "Workspace")
+gkbind("Super+Escape", function()
+	awful.tag.history.restore()
+end, "Switch Last Focused Workspace", "Workspace")
+gkbind("Super+numrow", function(i)
+	local t = awful.screen.focused().tags[i]
+	if t then
+		t:view_only()
+	end
+end, "View nth Workspace", "Workspace")
+gkbind("Super+Shift+numrow", function(i)
+	if client.focus then
+		local t = client.focus.screen.tags[i]
+		if t then
+			client.focus:move_to_tag(t)
+		end
+	end
+end, "Move Client to Workspace", "Workspace")
+
+-- Client
+ckbind("Super+j", function()
+	awful.client.focus.byidx(1)
+end, "Focus Next", "Client")
+ckbind("Super+k", function()
+	awful.client.focus.byidx(-1)
+end, "Focus Previous", "Client")
+ckbind("Super+Shift+j", function()
+	awful.client.swap.byidx(1)
+end, "Swap with Next", "Client")
+ckbind("Super+Shift+k", function()
+	awful.client.swap.byidx(-1)
+end, "Swap with Previous", "Client")
+gkbind("Super+Tab", function()
+	awesome.emit_signal("bling::window_switcher::turn_on")
+end, "Spawn Client Switcher", "Client")
+ckbind("Super+Ctrl+l", function()
+	awful.tag.incmwfact(0.05)
+	awful.client.incwfact(0.05)
+end, "Increase Window Factor", "Client")
+ckbind("Super+Ctrl+h", function()
+	awful.tag.incmwfact(-0.05)
+	awful.client.incwfact(-0.05)
+end, "Decrease Window Factor", "Client")
+ckbind("Super+Shift+f", function(c)
+	c.fullscreen = not c.fullscreen
+	c:raise()
+end, "Toggle Fullscreen", "Client")
+ckbind("Super+q", function(c)
+	c:kill()
+end, "Close+Client")
+ckbind("Super+Shift+t", function(c)
+	c.floating = not c.floating
+	awful.titlebar.toggle(c)
+	c:raise()
+end, "Toggle Floating", "Client")
+ckbind("Super+t", function(c)
+	c.ontop = not c.ontop
+end, "Toggle Keep on Top", "Client")
+ckbind("Super+n", function(c)
+	c.minimized = true
+end, "Minimize", "Client")
+ckbind("Super+m", function(c)
+	c.maximized = not c.maximized
+	c:raise()
+end, "Maximize", "Client")
 
 -- Client Options Bindings
 client.connect_signal("request::default_keybindings", function()
-	awful.keyboard.append_client_keybindings({
-		awful.key({ modkey }, "g", function(c)
-			c.x = (c.screen.geometry.width - c.width) / 2
-			c.y = (c.screen.geometry.height - c.height) / 2
-		end, { description = "Center Client", group = "Client" }),
-		awful.key({ modkey, shift }, "f", function(c)
-			c.fullscreen = not c.fullscreen
-			c:raise()
-		end, { description = "Toggle Fullscreen", group = "Client" }),
-		awful.key({ modkey }, "q", function(c)
-			c:kill()
-		end, { description = "close", group = "Client" }),
-		awful.key({ modkey, shift }, "t", function(c)
-			c.floating = not c.floating
-			awful.titlebar.toggle(c)
-			c:raise()
-		end, { description = "Toggle Floating", group = "Client" }),
-		awful.key({ modkey, ctrl }, "Return", function(c)
-			c:swap(awful.client.getmaster())
-		end, { description = "Move to Master", group = "Client" }),
-		awful.key({ modkey }, "o", function(c)
-			c:move_to_screen()
-		end, { description = "Move to Screen", group = "Client" }),
-		awful.key({ modkey }, "t", function(c)
-			c.ontop = not c.ontop
-		end, { description = "Toggle Keep on Top", group = "Client" }),
-		awful.key({ modkey }, "n", function(c)
-			c.minimized = true
-		end, { description = "Minimize", group = "Client" }),
-		awful.key({ modkey }, "m", function(c)
-			c.maximized = not c.maximized
-			c:raise()
-		end, { description = "(Un)Maximize", group = "Client" }),
-		awful.key({ modkey, ctrl }, "m", function(c)
-			c.maximized_vertical = not c.maximized_vertical
-			c:raise()
-		end, { description = "(Un)Maximize Vertically", group = "Client" }),
-		awful.key({ modkey, shift }, "m", function(c)
-			c.maximized_horizontal = not c.maximized_horizontal
-			c:raise()
-		end, { description = "(Un)Maximize Horizontally", group = "Client" }),
-	})
+	awful.keyboard.append_client_keybindings(client_keybinds)
 end)

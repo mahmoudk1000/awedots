@@ -14,11 +14,11 @@ AppLauncher.__index = AppLauncher
 function AppLauncher:new()
 	local self = setmetatable({}, AppLauncher)
 
-	self.textbox = wibox.widget({
+	self.prompt = wibox.widget({
 		{
 			{
-				id = "prompt",
 				text = "Run: ",
+				font = beautiful.font_bold,
 				widget = wibox.widget.textbox,
 			},
 			{
@@ -26,32 +26,37 @@ function AppLauncher:new()
 				bg = beautiful.xcolor0,
 				widget = awful.widget.prompt(),
 			},
+			forced_height = dpi(30),
 			layout = wibox.layout.fixed.horizontal,
 		},
-		margins = { left = dpi(5) },
+		margins = { left = dpi(10) },
 		layout = wibox.container.margin,
 	})
 
 	self.app_list = wibox.widget({
 		spacing = dpi(2),
-		layout = wibox.layout.fixed.vertical,
+		horizontal_homogeneous = true,
+		horizontal_expand = true,
+		layout = wibox.layout.grid,
 	})
 
 	self.popup = awful.popup({
 		widget = {
 			{
-				self.textbox,
-				forced_height = dpi(30),
-				bg = beautiful.xcolor0,
-				layout = wibox.container.background,
-			},
-			{
+				{
+					self.prompt,
+					bg = beautiful.xcolor0,
+					shape = helpers:rrect(beautiful.border_radius / 2),
+					layout = wibox.container.background,
+				},
 				self.app_list,
-				margins = dpi(5),
-				widget = wibox.container.margin,
+				spacing = dpi(5),
+				forced_width = dpi(300),
+				layout = wibox.layout.fixed.vertical,
 			},
-			forced_width = dpi(300),
-			layout = wibox.layout.fixed.vertical,
+			color = beautiful.xbackground,
+			margins = dpi(10),
+			layout = wibox.container.margin,
 		},
 		ontop = true,
 		visible = false,
@@ -61,13 +66,11 @@ function AppLauncher:new()
 		placement = awful.placement.centered,
 	})
 
-	self.apps = {}
+	self.apps = Gio.AppInfo.get_all()
 	self.filtered_apps = {}
 	self.focus_index = 1
 	self.display_start = 1
 	self.display_count = 15
-
-	self:fetch_applications()
 
 	self.keygrabber = awful.keygrabber({
 		autostart = true,
@@ -93,9 +96,9 @@ function AppLauncher:new()
 	})
 
 	self.popup:connect_signal("button::press", function(_, _, _, button)
-		if button == 4 then
+		if button == awful.button.names.SCROLL_UP then
 			self:move_focus_up()
-		elseif button == 5 then
+		elseif button == awful.button.names.SCROLL_DOWN then
 			self:move_focus_down()
 		end
 	end)
@@ -103,25 +106,8 @@ function AppLauncher:new()
 	return self
 end
 
-function AppLauncher:fetch_applications()
-	local apps = Gio.AppInfo.get_all()
-	local seen_apps = {}
-	self.apps = {}
-
-	for _, app in ipairs(apps) do
-		local app_name = app:get_name()
-		if not seen_apps[app_name] then
-			table.insert(self.apps, app)
-			seen_apps[app_name] = true
-		end
-	end
-
-	self.filtered_apps = self.apps
-	collectgarbage("collect")
-end
-
 function AppLauncher:show()
-	self.textbox:get_children_by_id("input")[1].widget:set_text("")
+	self.prompt:get_children_by_id("input")[1].widget:set_text("")
 	self.focus_index = 1
 	self.display_start = 1
 	self:filter_apps("")
@@ -155,6 +141,7 @@ end
 
 function AppLauncher:update_widgets()
 	self.app_list:reset()
+
 	for i = self.display_start, math.min(self.display_start + self.display_count - 1, #self.filtered_apps) do
 		local app = self.filtered_apps[i]
 		local widget = wibox.widget({
@@ -164,21 +151,21 @@ function AppLauncher:update_widgets()
 				widget = wibox.widget.textbox,
 			},
 			bg = beautiful.xbackground,
+			shape = helpers:rrect(beautiful.border_radius / 2),
 			layout = wibox.container.background,
 		})
 		self.app_list:add(widget)
 	end
-	collectgarbage("collect")
 end
 
 function AppLauncher:add_char(char)
-	local prompt_widget = self.textbox:get_children_by_id("input")[1].widget
+	local prompt_widget = self.prompt:get_children_by_id("input")[1].widget
 	prompt_widget:set_text(prompt_widget.text .. char)
 	self:filter_apps(prompt_widget.text)
 end
 
 function AppLauncher:remove_last_char()
-	local prompt_widget = self.textbox:get_children_by_id("input")[1].widget
+	local prompt_widget = self.prompt:get_children_by_id("input")[1].widget
 	local text = prompt_widget.text
 	prompt_widget:set_text(text:sub(1, -2))
 	self:filter_apps(prompt_widget.text)
@@ -220,7 +207,6 @@ function AppLauncher:highlight_focused_entry()
 		if i == self.focus_index - self.display_start + 1 then
 			widget.fg = beautiful.xcolor4
 			widget.bg = beautiful.xcolor8
-			widget.shape = helpers:rrect(2)
 		else
 			widget.fg = beautiful.xforeground
 			widget.bg = beautiful.xbackground
@@ -234,7 +220,6 @@ function AppLauncher:run()
 		if app then
 			app:launch()
 			self:hide()
-			collectgarbage("collect")
 		end
 	end
 end

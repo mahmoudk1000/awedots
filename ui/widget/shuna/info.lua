@@ -5,11 +5,11 @@ local rubato = require("module.rubato")
 
 local dpi = beautiful.xresources.apply_dpi
 
-local helper = require("helpers")
+local helpers = require("helpers")
 
-local function widget_template(name, value, color)
+local function widget_template(symbol, color)
 	local pie = wibox.widget({
-		value = value,
+		value = 100,
 		height = dpi(120),
 		width = dpi(120),
 		background_color = beautiful.xcolor8,
@@ -19,49 +19,58 @@ local function widget_template(name, value, color)
 			gears.shape.arc(cr, w, h, dpi(20), 0, 2 * math.pi)
 		end,
 		bar_shape = function(cr, w, h)
-			gears.shape.arc(cr, w, h, dpi(20), 0, math.rad(value * 3.6))
+			gears.shape.arc(cr, w, h, dpi(20), 0, math.rad(100 * 3.6), true, true)
 		end,
 		widget = wibox.widget.progressbar,
 	})
 
 	local percent = wibox.widget({
-		markup = value .. "%",
-		font = beautiful.vont .. "Bold 10",
+		markup = "100%",
+		font = beautiful.vont .. "Bold 11",
 		halign = "center",
 		valign = "center",
 		widget = wibox.widget.textbox,
 	})
 
-	local label = wibox.widget({
-		markup = name,
-		font = beautiful.font,
-		halign = "center",
-		valign = "center",
-		widget = wibox.widget.textbox,
+	local icon = wibox.widget({
+		{
+			{
+				image = helpers:recolor(symbol, color),
+				resize = true,
+				valign = true,
+				halign = true,
+				widget = wibox.widget.imagebox,
+			},
+			margins = dpi(50),
+			layout = wibox.container.margin,
+		},
+		forced_height = dpi(120),
+		forced_width = dpi(120),
+		widget = wibox.container.constraint,
 	})
 
 	local widget = wibox.widget({
 		{
 			{
-				{
-					pie,
-					direction = "east",
-					layout = wibox.container.rotate,
-				},
-				percent,
-				layout = wibox.layout.stack,
+				pie,
+				direction = "east",
+				layout = wibox.container.rotate,
 			},
-			{
-				label,
-				margins = { bottom = dpi(5) },
-				layout = wibox.container.margin,
-			},
-			layout = wibox.layout.fixed.vertical,
+			icon,
+			layout = wibox.layout.stack,
 		},
 		bg = beautiful.xcolor0,
-		shape = helper:rrect(),
+		shape = helpers:rrect(),
 		layout = wibox.container.background,
 	})
+
+	widget:connect_signal("mouse::enter", function()
+		widget.children[1]:replace_widget(icon, percent)
+	end)
+
+	widget:connect_signal("mouse::leave", function()
+		widget.children[1]:replace_widget(percent, icon)
+	end)
 
 	return {
 		widget = widget,
@@ -71,7 +80,7 @@ local function widget_template(name, value, color)
 				pos = math.rad(pie.value * 3.6) / math.rad(new_value * 3.6),
 				subscribed = function(pos)
 					pie.bar_shape = function(cr, w, h)
-						gears.shape.arc(cr, w, h, dpi(20), 0, math.rad(new_value * 3.6 * pos))
+						gears.shape.arc(cr, w, h, dpi(20), 0, math.rad(new_value * 3.6 * pos), true, true)
 					end
 					percent.markup = math.floor(new_value * pos) .. "%"
 				end,
@@ -82,9 +91,9 @@ local function widget_template(name, value, color)
 	}
 end
 
-local cpu = widget_template("CPU", 1, beautiful.xcolor5)
-local ram = widget_template("RAM", 1, beautiful.xcolor3)
-local hme = widget_template("HOME", 1, beautiful.xcolor6)
+local cpu = widget_template("cpu.png", beautiful.xcolor5)
+local ram = widget_template("ram.png", beautiful.xcolor3)
+local hme = widget_template("hdd.png", beautiful.xcolor6)
 
 awesome.connect_signal("sys::info", function(vcpu, vram, vhme)
 	cpu.update_value(vcpu)
@@ -101,9 +110,9 @@ return wibox.widget({
 			layout = wibox.layout.ratio.horizontal,
 		},
 		bg = beautiful.xcolor0,
-		shape = helper:rrect(),
+		shape = helpers:rrect(),
 		layout = wibox.container.background,
 	},
-	margins = dpi(10),
+	margins = { left = dpi(10), right = dpi(10), top = dpi(5), bottom = dpi(10) },
 	layout = wibox.container.margin,
 })

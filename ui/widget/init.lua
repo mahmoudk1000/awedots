@@ -1,5 +1,4 @@
-require(... .. ".center")
-require(... .. ".slider")
+require(... .. ".shion")
+require(... .. ".shuna")
 require(... .. ".bye")
 require(... .. ".kairo")
-require(... .. ".launcher")

@@ -42,7 +42,7 @@ awesome.connect_signal("weather::info", function(temp, desc, country)
 	weather_land:set_markup(helpers:color_markup(country, beautiful.xforeground))
 end)
 
-local slider_popup
+local shuna
 
 local tiktak = gears.timer({
 	timeout = 3,
@@ -53,9 +53,10 @@ local tiktak = gears.timer({
 	end,
 })
 
-local function show_slider(s, x)
-	if (s.geometry.width - x) <= dpi(10) then
-		slider_popup = awful.popup({
+local function initShuna(s, x)
+	if (s.geometry.width - x) <= (beautiful.useless_gap * 2) then
+		awesome.emit_signal("shuna::show")
+		shuna = awful.popup({
 			widget = {
 				{
 					{
@@ -77,7 +78,7 @@ local function show_slider(s, x)
 						bg = beautiful.xcolor0,
 						layout = wibox.container.background,
 					},
-					margins = dpi(10),
+					margins = { left = dpi(10), right = dpi(10), top = dpi(10), bottom = dpi(5) },
 					layout = wibox.container.margin,
 				},
 				noti,
@@ -102,22 +103,25 @@ local function show_slider(s, x)
 			end,
 		})
 
-		slider_popup:connect_signal("mouse::leave", function()
-			slider_popup.visible = false
+		shuna:connect_signal("mouse::leave", function()
+			shuna.visible = false
 			tiktak:stop()
+			awesome.emit_signal("shuna::hide")
 		end)
 	end
 end
 
-root.buttons(gears.table.join(
-	root.buttons(),
-	awful.button({}, awful.button.names.LEFT, function()
-		if slider_popup and slider_popup.visible then
-			tiktak:stop()
-			slider_popup.visible = false
-		else
-			show_slider(awful.screen.focused(), mouse.coords().x)
-			tiktak:start()
-		end
-	end)
-))
+awesome.connect_signal("shuna::toggle", function(joker)
+	if shuna and shuna.visible then
+		tiktak:stop()
+		shuna.visible = false
+		awesome.emit_signal("shuna::hide")
+	else
+		initShuna(awful.screen.focused(), joker and awful.screen.focused().geometry.width or mouse.coords().x)
+		tiktak:start()
+	end
+end)
+
+root.buttons(gears.table.join(awful.button({}, awful.button.names.LEFT, function()
+	awesome.emit_signal("shuna::toggle")
+end)))

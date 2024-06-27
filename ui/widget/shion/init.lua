@@ -99,7 +99,7 @@ local uptime = wibox.widget({
 })
 
 local uptime_updater = gears.timer({
-	timeout = 30,
+	timeout = 60,
 	call_now = true,
 	callback = function()
 		sys_stuff:emit_uptime()
@@ -114,7 +114,7 @@ awesome.connect_signal("uptime::info", function(hours, minutes)
 	end
 end)
 
-local center_controls = wibox.widget({
+local controls = wibox.widget({
 	{
 		tinyboard.toggles,
 		{
@@ -130,10 +130,9 @@ local center_controls = wibox.widget({
 	layout = wibox.layout.ratio.horizontal,
 })
 
-center_controls:adjust_ratio(2, 2 / 3, 1 / 3, 0)
+controls:adjust_ratio(2, 2 / 3, 1 / 3, 0)
 
--- Create Center Widget
-local center_popup = awful.popup({
+local shion = awful.popup({
 	widget = {
 		{
 			{
@@ -166,7 +165,7 @@ local center_popup = awful.popup({
 					{
 						{
 							power_widget,
-							shape = helpers:rrect(),
+							shape = helpers:rrect(beautiful.border_radius / 2),
 							layout = wibox.container.background,
 						},
 						spacing = dpi(10),
@@ -177,7 +176,7 @@ local center_popup = awful.popup({
 				margins = dpi(5),
 				layout = wibox.container.margin,
 			},
-			center_controls,
+			controls,
 			layout = wibox.layout.align.vertical,
 		},
 		margins = dpi(10),
@@ -189,26 +188,25 @@ local center_popup = awful.popup({
 	border_width = beautiful.border_width,
 	shape = helpers:rrect(),
 	placement = function(c)
-		awful.placement.bottom(
-			c,
-			{ margins = { bottom = dpi(30) + (beautiful.useless_gap * 2) }, parent = awful.screen.focused() }
-		)
+		awful.placement.bottom(c, {
+			margins = { bottom = beautiful.bar_height + (beautiful.useless_gap * 2) },
+			parent = awful.screen.focused(),
+		})
 	end,
 })
 
-awesome.connect_signal("clock::clicked", function()
-	if center_popup.visible then
+awesome.connect_signal("shion::toggle", function()
+	if shion.visible then
+		shion.visible = false
 		uptime_updater:stop()
-		center_popup.visible = false
 	else
 		wifi_stuff:emit_wifi_info()
-		sys_stuff:emit_uptime()
-		center_popup.visible = true
 		uptime_updater:start()
+		shion.visible = true
 	end
 end)
 
-center_popup:connect_signal("mouse::leave", function()
+shion:connect_signal("mouse::leave", function()
 	uptime_updater:stop()
-	center_popup.visible = false
+	shion.visible = false
 end)

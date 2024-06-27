@@ -16,6 +16,10 @@ function M:uppercase_first_letter(text)
 	end)
 end
 
+function M:iconify(name)
+	return res_path .. tostring(name)
+end
+
 function M:rrect(radius)
 	local rec = radius or beautiful.border_radius
 	return function(cr, w, h)
@@ -25,7 +29,7 @@ end
 
 function M:recolor(icon, color)
 	local col = color or beautiful.xcolor4
-	return gears.color.recolor_image(res_path .. tostring(icon), col)
+	return gears.color.recolor_image(M:iconify(icon), col)
 end
 
 return M

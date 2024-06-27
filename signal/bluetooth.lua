@@ -1,4 +1,5 @@
 local awful = require("awful")
+local gears = require("gears")
 
 local M = {}
 
@@ -33,6 +34,13 @@ function M:emit_bluetooth_info()
 	)
 end
 
-M:emit_bluetooth_info()
+gears.timer({
+	timeout = 5,
+	autostart = true,
+	call_now = true,
+	callback = function()
+		M:emit_bluetooth_info()
+	end,
+})
 
 return M

@@ -1,1 +1,1 @@
-require(... .. ".totoro")
+require(... .. ".shido")

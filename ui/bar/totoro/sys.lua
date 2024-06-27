@@ -6,11 +6,6 @@ local beautiful = require("beautiful")
 local dpi = beautiful.xresources.apply_dpi
 local helpers = require("helpers")
 --
--- Signals
-local volume_stuff = require("signal.volume")
-local battery_stuff = require("signal.battery")
-local bluetooth_stuff = require("signal.bluetooth")
-
 -- Clock
 local clock = wibox.widget({
 	{
@@ -38,7 +33,7 @@ local clock = wibox.widget({
 		widget = wibox.widget.textclock,
 	},
 	buttons = gears.table.join(awful.button({}, awful.button.names.LEFT, nil, function()
-		awesome.emit_signal("clock::clicked")
+		center_toggle()
 	end)),
 	layout = wibox.layout.fixed.horizontal,
 })
@@ -91,32 +86,13 @@ awesome.connect_signal("bluetooth::status", function(is_powerd, _, icon)
 	bluetooth:get_children_by_id("text")[1]:set_text(is_powerd and "On" or "Off")
 end)
 
-gears.timer({
-	timeout = 5,
-	autostart = true,
-	call_now = true,
-	callback = function()
-		bluetooth_stuff:emit_bluetooth_info()
-		volume_stuff:emit_volume_state()
-	end,
-})
-
 -- Battery Widget
 local battery = sys_tray("bat-nor.png", beautiful.xcolor5)
 
-awesome.connect_signal("battery::info", function(value, icon)
+awesome.connect_signal("battery::info", function(capacity, _, icon)
 	battery:get_children_by_id("icon")[1]:set_image(icon)
-	battery:get_children_by_id("text")[1]:set_text(value .. "%")
+	battery:get_children_by_id("text")[1]:set_text(capacity .. "%")
 end)
-
-gears.timer({
-	timeout = 30,
-	autostart = true,
-	call_now = true,
-	callback = function()
-		battery_stuff:emit_battery_info()
-	end,
-})
 
 return {
 	clock = clock,

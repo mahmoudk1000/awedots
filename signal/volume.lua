@@ -1,32 +1,33 @@
 local awful = require("awful")
+local gears = require("gears")
 local beautiful = require("beautiful")
 
 local helpers = require("helpers")
 
 local M = {}
 
-local icon = {
+local icons = {
 	"volume.png",
 	"mute.png",
 }
 
 function M:emit_volume_state()
 	awful.spawn.easy_async_with_shell("pamixer --get-volume;pamixer --get-mute", function(stdout)
-		local volume_percent = tonumber(stdout:match("(.-)\n"))
+		local percent = tonumber(stdout:match("(.-)\n"))
 		local is_muted = stdout:match("\n(true)\n")
-		local volume_icon
+		local icon
 
-		if volume_percent == nil or volume_percent == "" then
-			volume_percent = tonumber(100)
+		if percent == nil or percent == "" then
+			percent = tonumber(100)
 		end
 
 		if is_muted then
-			volume_icon = helpers:recolor(icon[2], beautiful.xcolor3)
+			icon = helpers:recolor(icons[2], beautiful.xcolor3)
 		else
-			volume_icon = helpers:recolor(icon[1], beautiful.xcolor3)
+			icon = helpers:recolor(icons[1], beautiful.xcolor3)
 		end
 
-		awesome.emit_signal("volume::value", volume_percent, volume_icon)
+		awesome.emit_signal("volume::value", percent, icon, is_muted)
 	end)
 end
 
@@ -37,7 +38,14 @@ function M:emit_mic_state()
 	end)
 end
 
-M:emit_volume_state()
-M:emit_mic_state()
+gears.timer({
+	timeout = 5,
+	autostart = true,
+	call_now = true,
+	callback = function()
+		M:emit_volume_state()
+		M:emit_mic_state()
+	end,
+})
 
 return M

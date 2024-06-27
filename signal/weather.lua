@@ -21,7 +21,7 @@ function M:emit_weather_info()
 		awful.spawn.easy_async("cat " .. path, function(stdout)
 			local data = json.decode(stdout)
 			local temp = 69
-			local desc = "Hot"
+			local desc = "Hill Hot"
 			local country = "Reality, Sucks"
 
 			if data then
