@@ -89,7 +89,7 @@ local player = wibox.widget({
 		{
 			{
 				{
-					markup = helpers:color_markup("Now Playing", beautiful.xcolor0),
+					markup = helpers:color_markup("󰎇 Now Playing", beautiful.xcolor0),
 					font = beautiful.font,
 					align = "left",
 					widget = wibox.widget.textbox,

@@ -31,8 +31,8 @@ theme.xcolor15 = xrdb.color15
 
 -- Fonts
 theme.vont = "Iosevka "
-theme.font = "Iosevka 9"
-theme.font_bold = "Iosevka Bold 9"
+theme.font = theme.vont .. dpi(9)
+theme.font_bold = theme.vont .. "Bold " .. dpi(9)
 
 -- Gaps
 theme.useless_gap = dpi(5)

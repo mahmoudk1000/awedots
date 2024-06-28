@@ -1,4 +1,5 @@
 local awful = require("awful")
+local gears = require("gears")
 local wibox = require("wibox")
 local beautiful = require("beautiful")
 
@@ -53,6 +54,10 @@ local function init_bar(s)
 		margins = { left = dpi(10), right = dpi(10) },
 		layout = wibox.container.margin,
 	})
+
+	bar.buttons = gears.table.join(awful.button({}, awful.button.names.RIGHT, function()
+		awesome.emit_signal("shion::toggle")
+	end))
 
 	client.connect_signal("swapped", function(c)
 		if c.fullscreen or c.maximized then

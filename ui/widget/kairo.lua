@@ -61,7 +61,7 @@ awesome.connect_signal("mpd::info", function(song, artist, _)
 	song_artist:set_markup(artist)
 end)
 
-awesome.connect_signal("weather::info", function(temp, desc)
+awesome.connect_signal("weather::info", function(temp, _, desc)
 	weather_temp:set_markup(helpers:color_markup(temp .. "<span>&#176;</span>", beautiful.xcolor8))
 	weather_desc:set_markup(helpers:color_markup(desc, beautiful.xcolor8))
 end)

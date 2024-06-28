@@ -22,9 +22,6 @@ local clock = wibox.widget({
 		valign = "center",
 		widget = wibox.widget.textclock,
 	},
-	buttons = gears.table.join(awful.button({}, awful.button.names.LEFT, function()
-		awesome.emit_signal("shion::toggle")
-	end)),
 	layout = wibox.layout.fixed.horizontal,
 })
 
