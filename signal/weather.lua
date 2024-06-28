@@ -37,7 +37,7 @@ local iconMap = {
 		["10d"] = helpers:recolor("weather/rain_day.png", beautiful.xcolor8),
 		["11d"] = helpers:recolor("weather/thunderstorm_day.png", beautiful.xcolor11),
 		["13d"] = helpers:recolor("weather/snow_day.png", beautiful.xcolor15),
-		["50d"] = helpers:recolor("weather/fog_day.png", beautiful.xcolor7),
+		["50d"] = helpers:recolor("weather/mist_day.png", beautiful.xcolor7),
 		["01n"] = helpers:recolor("weather/clear-sky_night.png", beautiful.xcolor7),
 		["02n"] = helpers:recolor("weather/few-clouds_night.png", beautiful.xcolor15),
 		["03n"] = helpers:recolor("weather/scattered-clouds_night.png", beautiful.xforeground),
@@ -46,7 +46,7 @@ local iconMap = {
 		["10n"] = helpers:recolor("weather/rain_night.png", beautiful.xcolor8),
 		["11n"] = helpers:recolor("weather/thunderstorm_night.png", beautiful.xcolor11),
 		["13n"] = helpers:recolor("weather/snow_night.png", beautiful.xcolor15),
-		["50n"] = helpers:recolor("weather/fog_night.png", beautiful.xcolor7),
+		["50n"] = helpers:recolor("weather/mist_night.png", beautiful.xcolor7),
 	},
 }
 
@@ -65,15 +65,15 @@ function M:emit_weather_info()
 		if exitcode == 0 then
 			awful.spawn.easy_async("cat " .. path, function(stdout, _, _, exitcode)
 				if exitcode == 0 then
-					local weather = json.decode(stdout) or nil
+					local current = json.decode(stdout) or nil
 					local icon, temp, desc, country, humidity
 
-					if weather then
-						temp = math.ceil(weather.main.temp)
-						desc = helpers:uppercase_first_letter(weather.weather[1].description)
-						icon = iconMap.images[weather.weather[1].icon]
-						country = weather.name .. ", " .. weather.sys.country
-						humidity = weather.main.humidity .. "% Humidity"
+					if current then
+						temp = math.ceil(current.main.temp)
+						desc = helpers:uppercase_first_letter(current.weather[1].description)
+						icon = iconMap.images[current.weather[1].icon]
+						country = current.name .. ", " .. current.sys.country
+						humidity = current.main.humidity .. "% Humidity"
 					end
 
 					awesome.emit_signal("weather::info", temp, icon, desc, country, humidity)
