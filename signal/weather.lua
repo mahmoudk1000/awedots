@@ -64,17 +64,15 @@ function M:emit_weather_info()
 	awful.spawn.easy_async(command, function(_, _, _, exitcode)
 		if exitcode == 0 then
 			awful.spawn.easy_async("cat " .. path, function(stdout, _, _, exitcode)
-				if exitcode == 0 then
-					local current = json.decode(stdout) or nil
-					local icon, temp, desc, country, humidity
+				local current = (exitcode == 0) and json.decode(stdout) or nil
+				local icon, temp, desc, country, humidity
 
-					if current then
-						temp = math.ceil(current.main.temp)
-						desc = helpers:uppercase_first_letter(current.weather[1].description)
-						icon = iconMap.images[current.weather[1].icon]
-						country = current.name .. ", " .. current.sys.country
-						humidity = current.main.humidity .. "% Humidity"
-					end
+				if current then
+					temp = math.ceil(current.main.temp)
+					desc = helpers:uppercase_first_letter(current.weather[1].description)
+					icon = iconMap.images[current.weather[1].icon]
+					country = current.name .. ", " .. current.sys.country
+					humidity = current.main.humidity .. "% Humidity"
 
 					awesome.emit_signal("weather::info", temp, icon, desc, country, humidity)
 				end
@@ -84,7 +82,7 @@ function M:emit_weather_info()
 end
 
 gears.timer({
-	timeout = 1800,
+	timeout = 900,
 	call_now = true,
 	autostart = true,
 	callback = function()
