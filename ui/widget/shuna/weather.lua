@@ -6,7 +6,7 @@ local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 
 local temp = wibox.widget({
-	markup = helpers:color_markup("1" .. "<span>&#176;</span>", beautiful.xcolor7),
+	markup = helpers:color_markup("Int" .. "<span>&#176;</span>", beautiful.xcolor7),
 	font = beautiful.vont .. "Bold 20",
 	halign = "center",
 	valign = "center",
@@ -14,7 +14,7 @@ local temp = wibox.widget({
 })
 
 local icon = wibox.widget({
-	image = helpers:iconify("weather/weather-clear.svg"),
+	image = helpers:recolor("weather/clear-sky_day.png", beautiful.xcolor3),
 	halign = "center",
 	valign = "center",
 	forced_height = dpi(35),
@@ -23,7 +23,7 @@ local icon = wibox.widget({
 })
 
 local country = wibox.widget({
-	text = "Die Erde des Gottes",
+	text = "City, Country",
 	font = beautiful.vont .. "11",
 	align = "right",
 	valign = "center",
@@ -31,7 +31,7 @@ local country = wibox.widget({
 })
 
 local desc = wibox.widget({
-	markup = "Cold AF",
+	markup = "Desc",
 	font = beautiful.font,
 	align = "right",
 	valign = "center",
@@ -39,7 +39,7 @@ local desc = wibox.widget({
 })
 
 local humidity = wibox.widget({
-	text = "100% Humidity",
+	text = "Humidity",
 	font = beautiful.font,
 	valign = "center",
 	halign = "center",
