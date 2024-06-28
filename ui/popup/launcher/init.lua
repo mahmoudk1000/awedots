@@ -144,31 +144,34 @@ function AppLauncher:update_widgets()
 
 	for i = self.display_start, math.min(self.display_start + self.display_count - 1, #self.filtered_apps) do
 		local app = self.filtered_apps[i]
-		local widget = wibox.widget({
+		local entry = wibox.widget({
 			{
-				text = app:get_name(),
-				forced_height = dpi(20),
-				widget = wibox.widget.textbox,
+				{
+					text = app:get_name(),
+					widget = wibox.widget.textbox,
+				},
+				margins = { left = dpi(4), top = dpi(2), bottom = dpi(2) },
+				layout = wibox.container.margin,
 			},
 			bg = beautiful.xbackground,
 			shape = helpers:rrect(beautiful.border_radius / 2),
 			layout = wibox.container.background,
 		})
-		self.app_list:add(widget)
+		self.app_list:add(entry)
 	end
 end
 
 function AppLauncher:add_char(char)
-	local prompt_widget = self.prompt:get_children_by_id("input")[1].widget
-	prompt_widget:set_text(prompt_widget.text .. char)
-	self:filter_apps(prompt_widget.text)
+	local prompt = self.prompt:get_children_by_id("input")[1].widget
+	prompt:set_text(prompt.text .. char)
+	self:filter_apps(prompt.text)
 end
 
 function AppLauncher:remove_last_char()
-	local prompt_widget = self.prompt:get_children_by_id("input")[1].widget
-	local text = prompt_widget.text
-	prompt_widget:set_text(text:sub(1, -2))
-	self:filter_apps(prompt_widget.text)
+	local prompt = self.prompt:get_children_by_id("input")[1].widget
+	local text = prompt.text
+	prompt:set_text(text:sub(1, -2))
+	self:filter_apps(prompt.text)
 end
 
 function AppLauncher:move_focus_up()
