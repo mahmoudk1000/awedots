@@ -84,7 +84,6 @@ end))
 
 local avatar = wibox.widget({
 	image = gfs.get_configuration_dir() .. "theme/icons/me.png",
-	resize = true,
 	forced_height = dpi(25),
 	forced_width = dpi(25),
 	clip_shape = function(cr, w, h)
@@ -94,7 +93,7 @@ local avatar = wibox.widget({
 })
 
 local uptime = wibox.widget({
-	markup = "3H 12M",
+	markup = "HH MM",
 	widget = wibox.widget.textbox,
 })
 
@@ -165,7 +164,7 @@ local shion = awful.popup({
 					{
 						{
 							power_widget,
-							shape = helpers:rrect(beautiful.border_radius / 2),
+							shape = helpers:rrect(),
 							layout = wibox.container.background,
 						},
 						spacing = dpi(10),
