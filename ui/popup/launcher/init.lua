@@ -150,7 +150,7 @@ function AppLauncher:update_widgets()
 					text = app:get_name(),
 					widget = wibox.widget.textbox,
 				},
-				margins = { left = dpi(4), top = dpi(2), bottom = dpi(2) },
+				margins = { left = dpi(5), right = dpi(5), top = dpi(3), bottom = dpi(3) },
 				layout = wibox.container.margin,
 			},
 			bg = beautiful.xbackground,
