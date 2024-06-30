@@ -3,16 +3,15 @@ local wibox = require("wibox")
 local beautiful = require("beautiful")
 local naughty = require("naughty")
 
-local dpi = beautiful.xresources.apply_dpi
-
 local helpers = require("helpers")
+local dpi = beautiful.xresources.apply_dpi
 
 local notifications = {}
 
 local function notification_widget(n)
 	local n_title = wibox.widget({
 		markup = n.title,
-		font = beautiful.vont .. "Bold 10",
+		font = beautiful.font_bold,
 		align = "left",
 		valign = "center",
 		widget = wibox.widget.textbox,
@@ -20,6 +19,7 @@ local function notification_widget(n)
 
 	local n_text = wibox.widget({
 		markup = n.message,
+		font = beautiful.font,
 		align = "left",
 		valign = "center",
 		forced_height = dpi(15),
@@ -55,7 +55,20 @@ local function notification_widget(n)
 	})
 end
 
+local notification_layout = wibox.layout.fixed.vertical()
+
+local function update_notification_visibility(start_index)
+	notification_layout:reset()
+	local max_visible_notifications = 13
+
+	for i = start_index, math.min(start_index + max_visible_notifications - 1, #notifications) do
+		notification_layout:add(notifications[i])
+	end
+end
+
 local function create_notification_container(noties)
+	notification_layout:reset()
+
 	if #noties == 0 then
 		return wibox.widget({
 			{
@@ -69,18 +82,15 @@ local function create_notification_container(noties)
 			bg = beautiful.xcolor0,
 			layout = wibox.container.background,
 		})
-	end
-
-	local notification_layout = wibox.layout.fixed.vertical()
-
-	for i = #notifications, 1, -1 do
-		notification_layout:add(notifications[i])
+	else
+		update_notification_visibility(1)
 	end
 
 	return wibox.widget({
 		{
 			notification_layout,
-			layout = wibox.layout.align.vertical,
+			margins = { bottom = dpi(10) },
+			widget = wibox.container.margin,
 		},
 		shape = helpers:rrect(),
 		bg = beautiful.xcolor0,
@@ -92,11 +102,7 @@ local notification_container = create_notification_container(notifications)
 
 naughty.connect_signal("request::display", function(n)
 	table.insert(notifications, notification_widget(n))
-
-	if #notifications >= 13 then
-		table.remove(notifications, 1)
-	end
-
+	update_notification_visibility(1)
 	notification_container:set_widget(create_notification_container(notifications))
 end)
 
@@ -127,6 +133,32 @@ local clearAll = wibox.widget({
 	shape = helpers:rrect(beautiful.border_radius / 2),
 	layout = wibox.container.background,
 })
+
+local current_top_index = 1
+
+local function scroll_notification_container(direction)
+	local max_visible_notifications = 12
+
+	if direction == "up" then
+		if current_top_index > 1 then
+			current_top_index = current_top_index - 1
+		end
+	elseif direction == "down" then
+		if current_top_index + max_visible_notifications - 1 < #notifications then
+			current_top_index = current_top_index + 1
+		end
+	end
+
+	update_notification_visibility(current_top_index)
+end
+
+notification_container:connect_signal("button::press", function(_, _, _, button)
+	if button == awful.button.names.SCROLL_UP then
+		scroll_notification_container("up")
+	elseif button == awful.button.names.SCROLL_DOWN then
+		scroll_notification_container("down")
+	end
+end)
 
 return wibox.widget({
 	{
