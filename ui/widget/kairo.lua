@@ -1,11 +1,6 @@
 local awful = require("awful")
 local wibox = require("wibox")
-local gears = require("gears")
 local beautiful = require("beautiful")
-
-local dpi = beautiful.xresources.apply_dpi
-
-local helpers = require("helpers")
 
 local clock = wibox.widget({
 	format = "%H.%M",
@@ -40,90 +35,37 @@ local song_artist = wibox.widget({
 	widget = wibox.widget.textbox,
 })
 
-local weather_temp = wibox.widget({
-	markup = "1" .. "<span>&#176;</span>",
-	font = beautiful.font_bold,
-	align = "left",
-	valign = "center",
-	widget = wibox.widget.textbox,
-})
-
-local weather_desc = wibox.widget({
-	markup = "Cold",
-	font = beautiful.font_bold,
-	align = "left",
-	valign = "center",
-	widget = wibox.widget.textbox,
-})
-
 awesome.connect_signal("mpd::info", function(song, artist, _)
 	song_name:set_markup(song)
 	song_artist:set_markup(artist)
 end)
 
-awesome.connect_signal("weather::info", function(temp, _, desc)
-	weather_temp:set_markup(helpers:color_markup(temp .. "<span>&#176;</span>", beautiful.xcolor8))
-	weather_desc:set_markup(helpers:color_markup(desc, beautiful.xcolor8))
-end)
-
 return awful.popup({
 	widget = {
 		{
-			{
-				clock,
-				today,
-				layout = wibox.layout.stack,
-			},
-			{
-				{
-					markup = "|",
-					font = beautiful.vont .. "Heavy 36",
-					widget = wibox.widget.textbox,
-				},
-				margins = { left = dpi(5), right = dpi(5) },
-				layout = wibox.container.margin,
-			},
-			{
-				song_artist,
-				song_name,
-				layout = wibox.layout.flex.vertical,
-			},
-			layout = wibox.layout.align.horizontal,
+			clock,
+			today,
+			layout = wibox.layout.stack,
 		},
 		{
-			{
-				{
-					{
-						{
-							{
-								weather_temp,
-								margins = { right = dpi(10) },
-								layout = wibox.container.margin,
-							},
-							weather_desc,
-							layout = wibox.layout.align.horizontal,
-						},
-						margins = { left = dpi(5), right = dpi(5) },
-						layout = wibox.container.margin,
-					},
-					bg = beautiful.xforeground,
-					shape = helpers:rrect(3),
-					layout = wibox.container.background,
-				},
-				layout = wibox.layout.fixed.horizontal,
-			},
-			margins = { top = dpi(3) },
-			layout = wibox.container.margin,
+			markup = "|",
+			font = beautiful.vont .. "Heavy 36",
+			widget = wibox.widget.textbox,
 		},
-		layout = wibox.layout.fixed.vertical,
+		{
+			song_artist,
+			song_name,
+			layout = wibox.layout.flex.vertical,
+		},
+		layout = wibox.layout.fixed.horizontal,
 	},
+	visible = true,
+	ontop = false,
 	bg = "#00000000",
 	shape = nil,
 	type = "desktop",
-	ontop = false,
-	visible = true,
 	input_passthrough = true,
 	placement = function(c)
-		awful.placement.top_left(c, { margins = { left = dpi(10) } })
+		awful.placement.top_left(c, { margins = { left = (beautiful.useless_gap * 2) } })
 	end,
 })
