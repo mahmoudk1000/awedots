@@ -7,6 +7,8 @@ local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 
 local notifications = {}
+local max_visible_notifications = 13
+local current_top_index = 1
 
 local function notification_widget(n)
 	local n_title = wibox.widget({
@@ -59,7 +61,6 @@ local notification_layout = wibox.layout.fixed.vertical()
 
 local function update_notification_visibility(start_index)
 	notification_layout:reset()
-	local max_visible_notifications = 13
 
 	for i = start_index, math.min(start_index + max_visible_notifications - 1, #notifications) do
 		notification_layout:add(notifications[i])
@@ -134,17 +135,13 @@ local clearAll = wibox.widget({
 	layout = wibox.container.background,
 })
 
-local current_top_index = 1
-
 local function scroll_notification_container(direction)
-	local max_visible_notifications = 12
-
 	if direction == "up" then
 		if current_top_index > 1 then
 			current_top_index = current_top_index - 1
 		end
 	elseif direction == "down" then
-		if current_top_index + max_visible_notifications - 1 < #notifications then
+		if current_top_index + max_visible_notifications - 2 < #notifications then
 			current_top_index = current_top_index + 1
 		end
 	end
