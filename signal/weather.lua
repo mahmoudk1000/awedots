@@ -68,7 +68,7 @@ function M:emit_weather_info()
 				local icon, temp, desc, country, humidity
 
 				if current then
-					temp = math.ceil(current.main.temp)
+					temp = math.floor(current.main.temp)
 					desc = helpers:uppercase_first_letter(current.weather[1].description)
 					icon = iconMap.images[current.weather[1].icon]
 					country = current.name .. ", " .. current.sys.country

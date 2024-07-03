@@ -71,15 +71,12 @@ function awful.menu.new(...)
 	submenu.wibox.border_color = beautiful.menu_border_color
 	submenu.wibox:set_widget(wibox.widget({
 		{
-			{
-				submenu.wibox.widget,
-				layout = wibox.container.background,
-			},
-			margins = dpi(10),
-			layout = wibox.container.margin,
+			submenu.wibox.widget,
+			layout = wibox.container.background,
 		},
-		bg = beautiful.menu_bg_normal,
-		layout = wibox.container.background,
+		color = beautiful.menu_bg_normal,
+		margins = dpi(10),
+		layout = wibox.container.margin,
 	}))
 	return submenu
 end
