@@ -3,8 +3,6 @@ local wibox = require("wibox")
 local gears = require("gears")
 local beautiful = require("beautiful")
 
-local dpi = beautiful.xresources.apply_dpi
-
 local helpers = require("helpers")
 
 local sys_stuff = require("signal.sys")
@@ -35,6 +33,7 @@ local function initShuna(s, x)
 				layout = wibox.layout.align.vertical,
 			},
 			ontop = true,
+			minimum_width = (20 / 100) * s.geometry.width,
 			maximum_width = (20 / 100) * s.geometry.width,
 			minimum_height = s.tiling_area.height - (beautiful.useless_gap * 4.4 + beautiful.border_width),
 			maximum_height = s.tiling_area.height - (beautiful.useless_gap * 4.4 + beautiful.border_width),
