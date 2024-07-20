@@ -16,10 +16,17 @@ function M:emit_sys_info()
 end
 
 function M:emit_uptime()
-	awful.spawn.easy_async_with_shell("uptime | awk '{gsub(/,$/,\"\",$3); print $3}'", function(stdout)
-		local hours, minutes = stdout:match("(%d+):(%d+)")
+	awful.spawn.easy_async_with_shell("cat /proc/uptime", function(stdout)
+		local total_seconds = tonumber(stdout:match("^(%d+%.%d+)"))
 
-		awesome.emit_signal("uptime::info", tonumber(hours), tonumber(minutes))
+		local hours = tonumber(math.floor(total_seconds / 3600))
+		local minutes = tonumber(math.floor((total_seconds % 3600) / 60))
+
+		if hours < 1 then
+			hours = tonumber(0)
+		end
+
+		awesome.emit_signal("uptime::info", hours, minutes)
 	end)
 end
 
