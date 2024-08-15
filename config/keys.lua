@@ -108,9 +108,6 @@ end, "Run Power Menu", "AwesomeWM")
 gkbind("Super+c", function()
 	awesome.emit_signal("shion::toggle")
 end, "Toggle Control Center", "AwesomeWM")
-gkbind("Super+Tab", function()
-	awesome.emit_signal("bling::window_switcher::turn_on")
-end, "Spawn Client Switcher", "AwesomeWM")
 
 -- Layout Bindings
 gkbind("Super+space", function()
@@ -253,7 +250,10 @@ ckbind("Super+Shift+k", function()
 	awful.client.swap.byidx(-1)
 end, "Swap with Previous", "Client")
 gkbind("Super+Tab", function()
-	awesome.emit_signal("bling::window_switcher::turn_on")
+	awful.client.focus.history.previous()
+	if client.focus then
+		client.focus:raise()
+	end
 end, "Spawn Client Switcher", "Client")
 ckbind("Super+Ctrl+l", function()
 	awful.tag.incmwfact(0.05)
