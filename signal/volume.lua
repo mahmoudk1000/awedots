@@ -32,8 +32,8 @@ function M:emit_volume_state()
 end
 
 function M:emit_mic_state()
-	awful.spawn.easy_async("amixer sget Capture", function(stdout)
-		local is_muted = stdout:match("%[off%]") and true or false
+	awful.spawn.easy_async("pamixer --default-source --get-mute", function(stdout)
+		local is_muted = stdout:match("true") and true or false
 		awesome.emit_signal("mic::status", is_muted)
 	end)
 end
