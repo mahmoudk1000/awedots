@@ -70,16 +70,14 @@ end
 -- Wifi Button
 local wifi_button = make_button("Wifi", "wifi.png")
 
-wifi_button.buttons = {
-	awful.button({}, awful.button.names.LEFT, function()
-		awful.spawn.easy_async_with_shell("iwctl device list | awk '/on/{print $4}'", function(stdout)
-			local toggle_command = (stdout:match("on")) and "rfkill block wlan" or "rfkill unblock wlan"
-			awful.spawn.easy_async(toggle_command, function()
-				wifi_stuff:emit_wifi_info()
-			end)
+wifi_button:buttons(gears.table.join(awful.button({}, awful.button.names.LEFT, function()
+	awful.spawn.easy_async_with_shell("iwctl device list | awk '/on/{print $4}'", function(stdout)
+		local toggle_command = stdout:match("on") and "rfkill block wlan" or "rfkill unblock wlan"
+		awful.spawn.easy_async(toggle_command, function()
+			wifi_stuff:emit_wifi_info()
 		end)
-	end),
-}
+	end)
+end)))
 
 awesome.connect_signal("wifi::info", function(is_powerd, is_connected, wifi_name)
 	if is_powerd or (is_powerd and is_connected) then
@@ -98,16 +96,14 @@ end)
 -- Bluetooth Button
 local bluetooth_button = make_button("Bluetooth", "blue-off.png")
 
-bluetooth_button.buttons = {
-	awful.button({}, awful.button.names.LEFT, function()
-		awful.spawn.easy_async_with_shell("bluetoothctl show | grep -q 'Powered: yes'", function(_, _, _, exitcode)
-			local toggle_command = (exitcode == 0) and "bluetoothctl power off" or "bluetoothctl power on"
-			awful.spawn.easy_async(toggle_command, function()
-				bluetooth_stuff:emit_bluetooth_info()
-			end)
+bluetooth_button:buttons(gears.table.join(awful.button({}, awful.button.names.LEFT, function()
+	awful.spawn.easy_async_with_shell("bluetoothctl show | grep -q 'Powered: yes'", function(_, _, _, exitcode)
+		local toggle_command = (exitcode == 0) and "bluetoothctl power off" or "bluetoothctl power on"
+		awful.spawn.easy_async(toggle_command, function()
+			bluetooth_stuff:emit_bluetooth_info()
 		end)
-	end),
-}
+	end)
+end)))
 
 awesome.connect_signal("bluetooth::status", function(is_powerd, _, icon)
 	if is_powerd then
@@ -124,17 +120,15 @@ end)
 -- Redshift Button
 local redshift_button = make_button("Redshift", "redshift.png")
 
-redshift_button.buttons = {
-	awful.button({}, awful.button.names.LEFT, function()
-		awful.spawn.easy_async("systemctl --user is-active --quiet redshift.service", function(_, _, _, exitcode)
-			local toggle_command = (exitcode == 0) and "systemctl --user stop redshift.service"
-				or "systemctl --user start redshift.service"
-			awful.spawn.easy_async(toggle_command, function()
-				redshift_stuff:emit_redshift_info()
-			end)
+redshift_button:buttons(gears.table.join(awful.button({}, awful.button.names.LEFT, function()
+	awful.spawn.easy_async("systemctl --user is-active --quiet redshift.service", function(_, _, _, exitcode)
+		local toggle_command = (exitcode == 0) and "systemctl --user stop redshift.service"
+			or "systemctl --user start redshift.service"
+		awful.spawn.easy_async(toggle_command, function()
+			redshift_stuff:emit_redshift_info()
 		end)
-	end),
-}
+	end)
+end)))
 
 awesome.connect_signal("redshift::state", function(state)
 	if state == "On" then
@@ -151,19 +145,16 @@ end)
 -- Mic Button
 local mic_button = make_button("Mic", "mic.png")
 
-mic_button.buttons = {
-	awful.button({}, awful.button.names.LEFT, function()
-		awful.spawn.easy_async("amixer sget Capture", function(stdout)
-			local muted = stdout:match("%[off%]")
-			if muted then
-				awful.spawn({ "amixer", "set", "Capture", "cap" })
-			else
-				awful.spawn({ "amixer", "set", "Capture", "nocap" })
-			end
-			volume_stuff:emit_mic_state()
-		end)
-	end),
-}
+mic_button:buttons(gears.table.join(awful.button({}, awful.button.names.LEFT, function()
+	awful.spawn.easy_async("pamixer --default-source --get-mute", function(stdout)
+		if stdout:match("true") then
+			awful.spawn.easy_async("pamixer --default-source -u")
+		else
+			awful.spawn.easy_async("pamixer --default-source -m")
+		end
+		volume_stuff:emit_mic_state()
+	end)
+end)))
 
 awesome.connect_signal("mic::status", function(is_muted)
 	if is_muted then
