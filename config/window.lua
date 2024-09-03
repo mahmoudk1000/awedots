@@ -7,12 +7,21 @@ local beautiful = require("beautiful")
 -- Wallpaper
 awful.screen.connect_for_each_screen(function(s)
 	if gfs.file_readable(beautiful.wallpaper) then
-		local wallpaper = beautiful.wallpaper
-
-		if type(beautiful.wallpaper) == "function" then
-			wallpaper = wallpaper(s)
-		end
-		gears.wallpaper.maximized(wallpaper, s, false, nil)
+		awful.wallpaper({
+			screen = s,
+			widget = wibox.widget({
+				halign = "center",
+				valign = "center",
+				scaling_quality = "fast",
+				horizontal_fit_policy = "fit",
+				vertical_fit_policy = "center",
+				image = gears.surface.crop_surface({
+					ratio = s.geometry.width / s.geometry.height,
+					surface = gears.surface.load(beautiful.wallpaper),
+				}),
+				widget = wibox.widget.imagebox,
+			}),
+		})
 	else
 		awful.wallpaper({
 			screen = s,
