@@ -1,3 +1,6 @@
 require(... .. ".backlight")
 require(... .. ".launcher")
+-- require(... .. ".lock")
+require(... .. ".power")
+-- require(... .. ".switcher")
 require(... .. ".volume")
