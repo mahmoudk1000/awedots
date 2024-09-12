@@ -16,7 +16,7 @@ local function createElements()
 		action = action or ""
 		elements:reset()
 
-		local clients = client.get()
+		local clients = awful.screen.focused().selected_tag:clients() or client.get()
 		local sortedClients = {}
 
 		if client.focus then
@@ -35,15 +35,19 @@ local function createElements()
 					{
 						nil,
 						{
-							image = c.icon,
+							image = c.icon or helpers:recolor("no-icon.png"),
 							halign = "center",
 							widget = wibox.widget.imagebox,
 						},
 						{
-							text = c.name or "Unnamed",
-							halign = "center",
-							forced_height = dpi(10),
-							widget = wibox.widget.textbox,
+							{
+								text = c.name or "Unnamed",
+								halign = "center",
+								forced_height = dpi(10),
+								widget = wibox.widget.textbox,
+							},
+							margins = { top = dpi(5) },
+							layout = wibox.container.margin,
 						},
 						layout = wibox.layout.align.vertical,
 					},
@@ -79,6 +83,7 @@ local function createElements()
 			current = 0
 		end
 
+		collectgarbage("collect")
 		return elements
 	end
 
@@ -118,6 +123,7 @@ awful.screen.connect_for_each_screen(function(s)
 	local function hideSwitcher()
 		updateElements("raise")
 		container.visible = false
+		collectgarbage("collect")
 	end
 
 	local keygrabber = awful.keygrabber({
