@@ -249,12 +249,6 @@ end, "Swap with Next", "Client")
 ckbind("Super+Shift+k", function()
 	awful.client.swap.byidx(-1)
 end, "Swap with Previous", "Client")
-gkbind("Super+Tab", function()
-	awful.client.focus.history.previous()
-	if client.focus then
-		client.focus:raise()
-	end
-end, "Spawn Client Switcher", "Client")
 ckbind("Super+Ctrl+l", function()
 	awful.tag.incmwfact(0.05)
 	awful.client.incwfact(0.05)
