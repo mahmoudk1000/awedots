@@ -13,18 +13,14 @@ function M:emit_bluetooth_info()
 	awful.spawn.easy_async_with_shell(
 		"bluetoothctl show | awk '/Powered: yes/{print \"powerd\"}';bluetoothctl info | awk '/Connected: yes/{print \"connected\"}'",
 		function(stdout)
-			local status = stdout:match("powerd")
-			local is_connected = stdout:match("connected")
-			local is_powerd = false
+			local is_powerd = stdout:match("powerd") and true or false
+			local is_connected = stdout:match("connected") and true or false
 			local icon
 
-			if status then
-				is_powerd = true
-				if is_connected then
-					icon = icons[1]
-				else
-					icon = icons[2]
-				end
+			if is_powerd and is_connected then
+				icon = icons[1]
+			elseif is_powerd and not is_connected then
+				icon = icons[2]
 			else
 				icon = icons[3]
 			end
