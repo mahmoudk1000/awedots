@@ -1,7 +1,7 @@
 local theme_assets = require("beautiful.theme_assets")
 local xresources = require("beautiful.xresources")
-local gears = require("gears")
 local gfs = require("gears.filesystem")
+local helpers = require("helpers")
 
 local dpi = xresources.apply_dpi
 local xrdb = xresources.get_current_theme()
@@ -88,8 +88,7 @@ theme.notification_border_color = theme.xcolor0
 
 -- Menu
 theme.menu_font = theme.font
-theme.menu_submenu_icon =
-	gears.color.recolor_image(gfs.get_configuration_dir() .. "/theme/icons/submenu.png", theme.xcolor8)
+theme.menu_submenu_icon = helpers:recolor("submenu.png", theme.xcolor4)
 theme.menu_bg_focus = theme.xcolor4
 theme.menu_fg_focus = theme.xbackground
 theme.menu_bg_normal = theme.xbackground

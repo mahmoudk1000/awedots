@@ -64,7 +64,7 @@ local function sys_tray(icon, color)
 end
 
 -- Volume Widget
-local volume = sys_tray("volume.png", beautiful.xcolor3)
+local volume = sys_tray("volume_00.png", beautiful.xcolor3)
 
 awesome.connect_signal("volume::value", function(value, icon)
 	volume:get_children_by_id("icon")[1]:set_image(icon)
