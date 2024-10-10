@@ -79,17 +79,17 @@ wifi_button:buttons(gears.table.join(awful.button({}, awful.button.names.LEFT, f
 	end)
 end)))
 
-awesome.connect_signal("wifi::status", function(is_powerd, is_connected, _, ssid)
+awesome.connect_signal("wifi::status", function(is_powerd, is_connected, icon, ssid)
 	if is_powerd or (is_powerd and is_connected) then
 		wifi_button.bg = beautiful.xcolor8
 		wifi_button:get_children_by_id("circle")[1].bg = beautiful.xcolor4
 		wifi_button:get_children_by_id("text")[1]:set_text(ssid)
-		wifi_button:get_children_by_id("icon")[1]:set_image(helpers:recolor("wifi.png", beautiful.xcolor0))
+		wifi_button:get_children_by_id("icon")[1]:set_image(helpers:recolor(icon, beautiful.xcolor0))
 	else
 		wifi_button.bg = beautiful.xcolor0
 		wifi_button:get_children_by_id("circle")[1].bg = beautiful.xcolor8
 		wifi_button:get_children_by_id("text")[1]:set_text(ssid)
-		wifi_button:get_children_by_id("icon")[1]:set_image(helpers:recolor("wifi.png"))
+		wifi_button:get_children_by_id("icon")[1]:set_image(helpers:recolor(icon))
 	end
 end)
 
