@@ -60,13 +60,13 @@ local timer = gears.timer({
 	end,
 })
 
-awesome.connect_signal("volume::value", function(value, _, is_muted)
+awesome.connect_signal("volume::value", function(value, state_icon, is_muted)
 	slider:set_value(value)
 
 	if is_muted then
-		icon.image = helpers:recolor("mute.png", beautiful.xcolor1)
+		icon.image = helpers:recolor(state_icon, beautiful.xcolor1)
 	else
-		icon.image = helpers:recolor("volume.png")
+		icon.image = helpers:recolor(state_icon)
 	end
 end)
 

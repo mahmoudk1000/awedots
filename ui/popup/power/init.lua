@@ -1,20 +1,16 @@
 local awful = require("awful")
 local wibox = require("wibox")
-local gears = require("gears")
 local beautiful = require("beautiful")
 
-local dpi = beautiful.xresources.apply_dpi
-local recolor = gears.color.recolor_image
-local res_path = gears.filesystem.get_configuration_dir() .. "theme/icons/"
-
 local helpers = require("helpers")
+local dpi = beautiful.xresources.apply_dpi
 
 local function create_option(index, icon, command)
 	return wibox.widget({
 		{
 			{
 				id = index,
-				image = recolor(icon, beautiful.xcolor4),
+				image = helpers:recolor(icon, beautiful.xcolor4),
 				resize = true,
 				valign = "center",
 				halign = "center",
@@ -34,11 +30,11 @@ local function create_option(index, icon, command)
 	})
 end
 
-local lock = create_option(1, res_path .. "lock.png", "betterlockscreen -l")
-local reboot = create_option(2, res_path .. "reboot.png", "reboot")
-local shutdown = create_option(3, res_path .. "shutdown.png", "shutdown now")
-local logout = create_option(4, res_path .. "logout.png", "pkill -KILL -u $USER")
-local suspend = create_option(5, res_path .. "suspend.png", "systemctl suspend")
+local lock = create_option(1, "lock.png", "betterlockscreen -l")
+local reboot = create_option(2, "reboot.png", "reboot")
+local shutdown = create_option(3, "shutdown.png", "shutdown now")
+local logout = create_option(4, "logout.png", "pkill -KILL -u $USER")
+local suspend = create_option(5, "suspend.png", "systemctl suspend")
 
 local power_menu = wibox.widget({
 	lock,
