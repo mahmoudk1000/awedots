@@ -182,16 +182,16 @@ local bat = function(value, icon)
 		layout = wibox.container.radialprogressbar,
 	})
 
-	local opacity_animation = rubato.timed {
+	local opacity_animation = rubato.timed({
 		duration = 1.0,
 		intro = 0.5,
 		easing = rubato.easing.quadratic,
 		subscribed = function(pos)
 			indicator.children[1].opacity = pos
 		end,
-	}
+	})
 
-	local opacity_timer = gears.timer {
+	local opacity_timer = gears.timer({
 		timeout = 2.0,
 		autostart = false,
 		call_now = false,
@@ -202,7 +202,7 @@ local bat = function(value, icon)
 				opacity_animation.target = 1
 			end
 		end,
-	}
+	})
 
 	return {
 		widget = widget,
@@ -218,6 +218,7 @@ local bat = function(value, icon)
 					widget.color = beautiful.xcolor2
 					indicator.children[1]:set_image(helpers:recolor("indicator.png", beautiful.xcolor2))
 					opacity_timer:stop()
+					opacity_animation.target = 1
 				end
 				overlay:replace_widget(percent, indicator)
 			else
