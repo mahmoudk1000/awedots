@@ -1,1 +1,3 @@
-require(... .. ".osha")
+-- require(... .. ".osha")
+-- require(... .. ".totoro")
+require(... .. ".yuuko")
