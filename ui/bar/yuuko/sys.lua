@@ -162,7 +162,7 @@ local bat = function(value, icon)
 			halign = "center",
 			widget = wibox.widget.imagebox,
 		},
-		margins = dpi(3),
+		margins = dpi(5),
 		layout = wibox.container.margin,
 	})
 
@@ -182,6 +182,28 @@ local bat = function(value, icon)
 		layout = wibox.container.radialprogressbar,
 	})
 
+	local opacity_animation = rubato.timed {
+		duration = 1.0,
+		intro = 0.5,
+		easing = rubato.easing.quadratic,
+		subscribed = function(pos)
+			indicator.children[1].opacity = pos
+		end,
+	}
+
+	local opacity_timer = gears.timer {
+		timeout = 2.0,
+		autostart = false,
+		call_now = false,
+		callback = function()
+			if indicator.children[1].opacity == 1 then
+				opacity_animation.target = 0
+			else
+				opacity_animation.target = 1
+			end
+		end,
+	}
+
 	return {
 		widget = widget,
 		update = function(capacity, status, _)
@@ -191,9 +213,11 @@ local bat = function(value, icon)
 				if status == "Charging" then
 					widget.color = beautiful.xcolor3
 					indicator.children[1]:set_image(helpers:recolor("indicator.png", beautiful.xcolor3))
+					opacity_timer:start()
 				else
 					widget.color = beautiful.xcolor2
 					indicator.children[1]:set_image(helpers:recolor("indicator.png", beautiful.xcolor2))
+					opacity_timer:stop()
 				end
 				overlay:replace_widget(percent, indicator)
 			else
@@ -203,6 +227,7 @@ local bat = function(value, icon)
 				else
 					widget.color = beautiful.xcolor4
 				end
+				opacity_timer:stop()
 				overlay:replace_widget(indicator, percent)
 			end
 		end,
