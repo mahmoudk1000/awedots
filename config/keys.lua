@@ -250,12 +250,18 @@ ckbind("Super+Shift+k", function()
 	awful.client.swap.byidx(-1)
 end, "Swap with Previous", "Client")
 ckbind("Super+Ctrl+l", function()
-	awful.tag.incmwfact(0.05)
-	awful.client.incwfact(0.05)
+	if awful.layout.get(client.focus.screen) == awful.layout.suit.spiral.dwindle then
+		awful.client.incwfact(0.05)
+	else
+		awful.tag.incmwfact(0.05)
+	end
 end, "Increase Window Factor", "Client")
 ckbind("Super+Ctrl+h", function()
-	awful.tag.incmwfact(-0.05)
+	if awful.layout.get(client.focus.screen) == awful.layout.suit.spiral.dwindle then
 	awful.client.incwfact(-0.05)
+	else
+		awful.tag.incmwfact(-0.05)
+	end
 end, "Decrease Window Factor", "Client")
 ckbind("Super+Shift+f", function(c)
 	c.fullscreen = not c.fullscreen
