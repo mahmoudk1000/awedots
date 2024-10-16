@@ -162,13 +162,9 @@ local shion = awful.popup({
 					},
 					nil,
 					{
-						{
-							power_widget,
-							shape = helpers:rrect(),
-							layout = wibox.container.background,
-						},
-						spacing = dpi(10),
-						layout = wibox.layout.fixed.horizontal,
+						power_widget,
+						shape = helpers:rrect(),
+						layout = wibox.container.background,
 					},
 					layout = wibox.layout.align.horizontal,
 				},

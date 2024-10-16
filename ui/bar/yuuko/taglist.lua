@@ -50,11 +50,11 @@ local taglist = function(s)
 		},
 		[5] = {
 			icon = helpers:iconify("tag_05.png"),
-			color_selected = beautiful.xcolor6,
+			color_selected = beautiful.xcolor1,
 		},
 		[6] = {
 			icon = helpers:iconify("tag_06.png"),
-			color_selected = beautiful.xcolor7,
+			color_selected = beautiful.xcolor6,
 		},
 	}
 
