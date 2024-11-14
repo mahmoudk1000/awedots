@@ -1,33 +1,27 @@
 local awful = require("awful")
 local gears = require("gears")
+local icons = require("icons")
 
 local M = {}
-
-local icons = {
-	"volume_03.png",
-	"volume_02.png",
-	"volume_01.png",
-	"volume_00.png",
-}
 
 function M:emit_volume_state()
 	awful.spawn.easy_async_with_shell("pamixer --get-volume;pamixer --get-mute", function(stdout)
 		local percent = tonumber(stdout:match("(.-)\n"))
 		local is_muted = stdout:match("\n(true)\n") ~= nil
-		local icon
+		local icon = nil
 
 		if percent == nil or percent == "" then
-			percent = tonumber(100)
+			percent = tonumber(0)
 		end
 
 		if is_muted then
-			icon = icons[4]
+			icon = icons.volume.mute
 		elseif percent >= 70 then
-			icon = icons[1]
+			icon = icons.volume.high
 		elseif percent >= 35 then
-			icon = icons[2]
+			icon = icons.volume.medium
 		else
-			icon = icons[3]
+			icon = icons.volume.low
 		end
 
 		awesome.emit_signal("volume::value", percent, icon, is_muted)

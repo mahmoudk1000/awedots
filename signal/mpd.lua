@@ -1,7 +1,7 @@
 local awful = require("awful")
 local gfs = require("gears.filesystem")
 
-local res_path = gfs.get_configuration_dir() .. "theme/icons/"
+local res_path = gfs.get_configuration_dir() .. "icons/default/"
 
 local M = {}
 

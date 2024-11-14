@@ -1,13 +1,8 @@
 local awful = require("awful")
 local gears = require("gears")
+local icons = require("icons")
 
 local M = {}
-
-local icons = {
-	"blue-con.png",
-	"blue-on.png",
-	"blue-off.png",
-}
 
 function M:emit_bluetooth_info()
 	awful.spawn.easy_async_with_shell(
@@ -18,11 +13,11 @@ function M:emit_bluetooth_info()
 			local icon
 
 			if is_powerd and is_connected then
-				icon = icons[1]
+				icon = icons.bluetooth.pair
 			elseif is_powerd and not is_connected then
-				icon = icons[2]
+				icon = icons.bluetooth.on
 			else
-				icon = icons[3]
+				icon = icons.bluetooth.off
 			end
 
 			awesome.emit_signal("bluetooth::status", is_powerd, is_connected, icon)

@@ -1,8 +1,6 @@
 local beautiful = require("beautiful")
 local gears = require("gears")
-
 local dpi = beautiful.xresources.apply_dpi
-local res_path = gears.filesystem.get_configuration_dir() .. "theme/icons/plumpy/"
 
 local M = {}
 
@@ -16,10 +14,6 @@ function M:uppercase_first_letter(text)
 	end)
 end
 
-function M:iconify(name)
-	return res_path .. tostring(name)
-end
-
 function M:rrect(radius)
 	local rec = radius or beautiful.border_radius
 	return function(cr, w, h)
@@ -28,11 +22,6 @@ function M:rrect(radius)
 end
 
 function M:recolor(icon, color)
-	local col = color or beautiful.xcolor4
-	return gears.color.recolor_image(M:iconify(icon), col)
-end
-
-function M:color(icon, color)
 	local col = color or beautiful.xcolor4
 	return gears.color.recolor_image(icon, col)
 end

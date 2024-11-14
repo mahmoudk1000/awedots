@@ -4,13 +4,14 @@ local wibox = require("wibox")
 local beautiful = require("beautiful")
 
 local dpi = beautiful.xresources.apply_dpi
+local icons = require("icons")
 local helpers = require("helpers")
 --
 -- Clock
 local clock = wibox.widget({
 	{
 		{
-			image = helpers:recolor("clock.png", beautiful.xcolor2),
+			image = helpers:recolor(icons.clock, beautiful.xcolor2),
 			valign = "center",
 			align = "center",
 			widget = wibox.widget.imagebox,
@@ -64,7 +65,7 @@ local function sys_tray(icon, color)
 end
 
 -- Volume Widget
-local volume = sys_tray("volume_00.png", beautiful.xcolor3)
+local volume = sys_tray(icons.volume.mute, beautiful.xcolor3)
 
 awesome.connect_signal("volume::value", function(value, icon)
 	volume:get_children_by_id("icon")[1]:set_image(icon)

@@ -4,7 +4,7 @@ local gears = require("gears")
 local beautiful = require("beautiful")
 
 local dpi = beautiful.xresources.apply_dpi
-
+local icons = require("icons")
 local helpers = require("helpers")
 
 local backlight_stuff = require("signal.backlight")
@@ -68,7 +68,7 @@ local make_button = function(text, icon)
 end
 
 -- Wifi Button
-local wifi_button = make_button("Wifi", "wifi.png")
+local wifi_button = make_button("Wifi", icons.wifi.on)
 
 wifi_button:buttons(gears.table.join(awful.button({}, awful.button.names.LEFT, function()
 	awful.spawn.easy_async_with_shell("iwctl device list | awk '/on/{print $4}'", function(stdout)
@@ -118,7 +118,7 @@ awesome.connect_signal("bluetooth::status", function(is_powerd, _, icon)
 end)
 
 -- Redshift Button
-local redshift_button = make_button("Redshift", "redshift.png")
+local redshift_button = make_button("Redshift", icons.redshift)
 
 redshift_button:buttons(gears.table.join(awful.button({}, awful.button.names.LEFT, function()
 	awful.spawn.easy_async("systemctl --user is-active --quiet redshift.service", function(_, _, _, exitcode)
@@ -134,16 +134,16 @@ awesome.connect_signal("redshift::state", function(state)
 	if state == "On" then
 		redshift_button.bg = beautiful.xcolor8
 		redshift_button:get_children_by_id("circle")[1].bg = beautiful.xcolor4
-		redshift_button:get_children_by_id("icon")[1]:set_image(helpers:recolor("redshift.png", beautiful.xcolor0))
+		redshift_button:get_children_by_id("icon")[1]:set_image(helpers:recolor(icons.redshift, beautiful.xcolor0))
 	else
 		redshift_button.bg = beautiful.xcolor0
 		redshift_button:get_children_by_id("circle")[1].bg = beautiful.xcolor8
-		redshift_button:get_children_by_id("icon")[1]:set_image(helpers:recolor("redshift.png"))
+		redshift_button:get_children_by_id("icon")[1]:set_image(helpers:recolor(icons.redshift))
 	end
 end)
 
 -- Mic Button
-local mic_button = make_button("Mic", "mic.png")
+local mic_button = make_button("Mic", icons.mic)
 
 mic_button:buttons(gears.table.join(awful.button({}, awful.button.names.LEFT, function()
 	awful.spawn.easy_async("pamixer --default-source --get-mute", function(stdout)
@@ -160,11 +160,11 @@ awesome.connect_signal("mic::status", function(is_muted)
 	if is_muted then
 		mic_button.bg = beautiful.xcolor0
 		mic_button:get_children_by_id("circle")[1].bg = beautiful.xcolor8
-		mic_button:get_children_by_id("icon")[1]:set_image(helpers:recolor("mic.png"))
+		mic_button:get_children_by_id("icon")[1]:set_image(helpers:recolor(icons.mic))
 	else
 		mic_button.bg = beautiful.xcolor8
 		mic_button:get_children_by_id("circle")[1].bg = beautiful.xcolor4
-		mic_button:get_children_by_id("icon")[1]:set_image(helpers:recolor("mic.png", beautiful.xcolor0))
+		mic_button:get_children_by_id("icon")[1]:set_image(helpers:recolor(icons.mic, beautiful.xcolor0))
 	end
 end)
 
@@ -209,7 +209,7 @@ local make_slider = function(text, icon)
 end
 
 -- Backlight Progress
-local backlight_progress = make_slider("Brightness", "lamp.png")
+local backlight_progress = make_slider("Brightness", icons.brightness)
 
 backlight_progress:get_children_by_id("slider")[1]:connect_signal("property::value", function(_, new_value)
 	awful.spawn.easy_async("brightnessctl set " .. new_value .. "%", function()
@@ -222,7 +222,7 @@ awesome.connect_signal("brightness::value", function(value)
 end)
 
 -- Volume Progress
-local volume_progress = make_slider("Volume", "sound.png")
+local volume_progress = make_slider("Volume", icons.tone)
 
 volume_progress:get_children_by_id("slider")[1]:connect_signal("property::value", function(_, new_value)
 	awful.spawn.easy_async("pamixer --set-volume " .. new_value, function()

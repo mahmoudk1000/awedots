@@ -2,6 +2,7 @@ local awful = require("awful")
 local gears = require("gears")
 local beautiful = require("beautiful")
 local json = require("dkjson")
+local icons = require("icons")
 
 local helpers = require("helpers")
 
@@ -29,24 +30,24 @@ local iconMap = {
 		["50n"] = "󰖑",
 	},
 	images = {
-		["01d"] = helpers:recolor("weather/clear-sky_day.png", beautiful.xcolor3),
-		["02d"] = helpers:recolor("weather/few-clouds_day.png", beautiful.xcolor15),
-		["03d"] = helpers:recolor("weather/scattered-clouds_day.png", beautiful.xforeground),
-		["04d"] = helpers:recolor("weather/broken-clouds_day.png", beautiful.xcolor7),
-		["09d"] = helpers:recolor("weather/shower-rain_day.png", beautiful.xcolor12),
-		["10d"] = helpers:recolor("weather/rain_day.png", beautiful.xcolor8),
-		["11d"] = helpers:recolor("weather/thunderstorm_day.png", beautiful.xcolor11),
-		["13d"] = helpers:recolor("weather/snow_day.png", beautiful.xcolor15),
-		["50d"] = helpers:recolor("weather/mist_day.png", beautiful.xcolor7),
-		["01n"] = helpers:recolor("weather/clear-sky_night.png", beautiful.xcolor7),
-		["02n"] = helpers:recolor("weather/few-clouds_night.png", beautiful.xcolor15),
-		["03n"] = helpers:recolor("weather/scattered-clouds_night.png", beautiful.xforeground),
-		["04n"] = helpers:recolor("weather/broken-clouds_night.png", beautiful.xcolor7),
-		["09n"] = helpers:recolor("weather/shower-rain_night.png", beautiful.xcolor12),
-		["10n"] = helpers:recolor("weather/rain_night.png", beautiful.xcolor8),
-		["11n"] = helpers:recolor("weather/thunderstorm_night.png", beautiful.xcolor11),
-		["13n"] = helpers:recolor("weather/snow_night.png", beautiful.xcolor15),
-		["50n"] = helpers:recolor("weather/mist_night.png", beautiful.xcolor7),
+		["01d"] = helpers:recolor(icons.weather.day.clear, beautiful.xcolor3),
+		["02d"] = helpers:recolor(icons.weather.day.few_clouds, beautiful.xcolor15),
+		["03d"] = helpers:recolor(icons.weather.day.scattered_clouds, beautiful.xforeground),
+		["04d"] = helpers:recolor(icons.weather.day.broken_clouds, beautiful.xcolor7),
+		["09d"] = helpers:recolor(icons.weather.day.shower_rain, beautiful.xcolor12),
+		["10d"] = helpers:recolor(icons.weather.day.rain, beautiful.xcolor8),
+		["11d"] = helpers:recolor(icons.weather.day.thunderstorm, beautiful.xcolor11),
+		["13d"] = helpers:recolor(icons.weather.day.snow, beautiful.xcolor15),
+		["50d"] = helpers:recolor(icons.weather.day.mist, beautiful.xcolor7),
+		["01n"] = helpers:recolor(icons.weather.night.clear, beautiful.xcolor7),
+		["02n"] = helpers:recolor(icons.weather.night.few_clouds, beautiful.xcolor15),
+		["03n"] = helpers:recolor(icons.weather.night.scattered_clouds, beautiful.xforeground),
+		["04n"] = helpers:recolor(icons.weather.night.broken_clouds, beautiful.xcolor7),
+		["09n"] = helpers:recolor(icons.weather.night.shower_rain, beautiful.xcolor12),
+		["10n"] = helpers:recolor(icons.weather.night.rain, beautiful.xcolor8),
+		["11n"] = helpers:recolor(icons.weather.night.thunderstorm, beautiful.xcolor11),
+		["13n"] = helpers:recolor(icons.weather.night.snow, beautiful.xcolor15),
+		["50n"] = helpers:recolor(icons.weather.night.mist, beautiful.xcolor7),
 	},
 }
 

@@ -4,7 +4,7 @@ local beautiful = require("beautiful")
 local rubato = require("module.rubato")
 
 local dpi = beautiful.xresources.apply_dpi
-
+local icons = require("icons")
 local helpers = require("helpers")
 
 local function widget_template(symbol, color)
@@ -91,9 +91,9 @@ local function widget_template(symbol, color)
 	}
 end
 
-local cpu = widget_template("cpu.png", beautiful.xcolor5)
-local ram = widget_template("ram.png", beautiful.xcolor3)
-local hme = widget_template("hdd.png", beautiful.xcolor6)
+local cpu = widget_template(icons.tray.cpu, beautiful.xcolor5)
+local ram = widget_template(icons.tray.ram, beautiful.xcolor3)
+local hme = widget_template(icons.tray.hdd, beautiful.xcolor6)
 
 awesome.connect_signal("sys::info", function(vcpu, vram, vhme)
 	cpu.update_value(vcpu)

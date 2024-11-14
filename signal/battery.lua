@@ -1,17 +1,10 @@
 local awful = require("awful")
 local gears = require("gears")
 local beautiful = require("beautiful")
-
+local icons = require("icons")
 local helpers = require("helpers")
 
 local M = {}
-
-local icons = {
-	"bat-char.png",
-	"bat-full.png",
-	"bat-nor.png",
-	"lighting.png",
-}
 
 function M:emit_battery_info()
 	awful.spawn.easy_async_with_shell(
@@ -19,14 +12,14 @@ function M:emit_battery_info()
 		function(stdout)
 			local capacity = tonumber(stdout:match("(%d+)\n"))
 			local status = stdout:match("\n(.-)\n?$")
-			local icon
+			local icon = nil
 
 			if status == "Charging" then
-				icon = helpers:recolor(icons[1], beautiful.xcolor1)
+				icon = helpers:recolor(icons.battery.char, beautiful.xcolor1)
 			elseif status == "Full" then
-				icon = helpers:recolor(icons[2], beautiful.xcolor2)
+				icon = helpers:recolor(icons.battery.full, beautiful.xcolor2)
 			else
-				icon = helpers:recolor(icons[3], beautiful.xcolor5)
+				icon = helpers:recolor(icons.battery.nor, beautiful.xcolor5)
 			end
 
 			awesome.emit_signal("battery::info", capacity, status, icon)

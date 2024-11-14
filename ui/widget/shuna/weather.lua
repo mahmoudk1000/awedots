@@ -2,6 +2,7 @@ local wibox = require("wibox")
 local gears = require("gears")
 local beautiful = require("beautiful")
 
+local icons = require("icons")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 
@@ -14,7 +15,7 @@ local temp = wibox.widget({
 })
 
 local icon = wibox.widget({
-	image = helpers:recolor("weather/clear-sky_day.png", beautiful.xcolor3),
+	image = helpers:recolor(icons.weather.day.clear, beautiful.xcolor3),
 	halign = "center",
 	valign = "center",
 	forced_height = dpi(35),

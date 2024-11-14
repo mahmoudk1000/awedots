@@ -4,6 +4,7 @@ local wibox = require("wibox")
 local beautiful = require("beautiful")
 
 local dpi = beautiful.xresources.apply_dpi
+local icons = require("icons")
 local helpers = require("helpers")
 --
 -- Clock
@@ -63,7 +64,7 @@ end)
 local battery = tray("BAT:")
 
 local indicator = wibox.widget({
-	image = helpers:recolor("lighting.png"),
+	image = helpers:recolor(icons.battery.lighting_small,),
 	valign = "center",
 	halign = "center",
 	forced_width = dpi(10),
@@ -74,18 +75,18 @@ local indicator = wibox.widget({
 awesome.connect_signal("battery::info", function(capacity, status)
 	battery:get_children_by_id("value")[1]:set_markup(capacity)
 	if status == "Charging" then
-		indicator:set_image(helpers:recolor("lighting.png"))
+		indicator:set_image(helpers:recolor(icons.battery.lighting_small))
 	elseif status == "Full" then
-		indicator:set_image(helpers:recolor("lighting.png", beautiful.xcolor4))
+		indicator:set_image(helpers:recolor(icons.battery.lighting_small, beautiful.xcolor4))
 	elseif status == "Discharging" and capacity <= 20 then
-		indicator:set_image(helpers:recolor("lighting.png", beautiful.xcolor1))
+		indicator:set_image(helpers:recolor(icons.battery.lighting_small, beautiful.xcolor1))
 	else
-		indicator:set_image(helpers:recolor("lighting.png", beautiful.xcolor0))
+		indicator:set_image(helpers:recolor(icons.battery.lighting_small, beautiful.xcolor0))
 	end
 end)
 
 local menu = wibox.widget({
-	image = helpers:recolor("burger.png", beautiful.xcolor8),
+	image = helpers:recolor(icons.menu.burger, beautiful.xcolor8),
 	valign = "center",
 	halign = "center",
 	forced_width = dpi(15),
@@ -97,11 +98,11 @@ local menu = wibox.widget({
 })
 
 awesome.connect_signal("shuna::show", function()
-	menu:set_image(helpers:recolor("burger.png", beautiful.xcolor4))
+	menu:set_image(helpers:recolor(icons.menu.burger, beautiful.xcolor4))
 end)
 
 awesome.connect_signal("shuna::hide", function()
-	menu:set_image(helpers:recolor("burger.png", beautiful.xcolor8))
+	menu:set_image(helpers:recolor(icons.menu.burger, beautiful.xcolor8))
 end)
 
 return {

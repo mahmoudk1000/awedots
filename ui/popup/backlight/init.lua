@@ -3,6 +3,7 @@ local gears = require("gears")
 local wibox = require("wibox")
 local beautiful = require("beautiful")
 
+local icons = require("icons")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 
@@ -14,7 +15,7 @@ local backlight = wibox({
 })
 
 local icon = wibox.widget({
-	image = helpers:recolor("lamp.png"),
+	image = helpers:recolor(icons.brightness),
 	valign = "center",
 	halign = "center",
 	forced_width = dpi(20),

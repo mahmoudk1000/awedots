@@ -4,29 +4,21 @@ local beautiful = require("beautiful")
 
 local dpi = beautiful.xresources.apply_dpi
 
+local icons = require("icons")
 local helpers = require("helpers")
 local apps = require("config.apps")
-
-local icon_terminal = helpers:recolor("terminal.png")
-local icon_browser = helpers:recolor("browser.png")
-local icon_files = helpers:recolor("files.png")
-local icon_scrots = helpers:recolor("scrots.png")
-local icon_power = helpers:recolor("shutdown.png", beautiful.xcolor1)
-local icon_reboot = helpers:recolor("reboot.png", beautiful.xcolor3)
-local icon_suspend = helpers:recolor("suspend.png", beautiful.xcolor2)
-local icon_logout = helpers:recolor("logout.png", beautiful.xcolor1)
 
 _G.menu = {}
 local section = {}
 
 section.awesome = {
-	{ "Restart", awesome.restart, icon_reboot },
+	{ "Restart", awesome.restart, helpers:recolor(icons.power.reboot) },
 	{
 		"Quit",
 		function()
 			awesome.quit()
 		end,
-		icon_logout,
+		helpers:recolor(icons.power.shutdown),
 	},
 }
 
@@ -37,17 +29,17 @@ section.scrots = {
 }
 
 section.power = {
-	{ "Suspend", "systemctl suspend", icon_suspend },
-	{ "Reboot", "systemctl reboot", icon_reboot },
-	{ "Shutdown", "systemctl poweroff", icon_power },
+	{ "Suspend", "systemctl suspend", helpers:recolor(icons.power.suspend, beautiful.xcolor2) },
+	{ "Reboot", "systemctl reboot", helpers:recolor(icons.power.reboot, beautiful.xcolor3) },
+	{ "Shutdown", "systemctl poweroff", helpers:recolor(icons.power.shutdown, beautiful.xcolor1) },
 }
 
 menu.main = awful.menu({
 	items = {
-		{ "Terminal", apps.default.terminal, icon_terminal },
-		{ "Browser", apps.default.browser, icon_browser },
-		{ "Files", apps.default.filemanager, icon_files },
-		{ "Scrots", section.scrots, icon_scrots },
+		{ "Terminal", apps.default.terminal, helpers:recolor(icons.apps.terminal) },
+		{ "Browser", apps.default.browser, helpers:recolor(icons.apps.browser) },
+		{ "Files", apps.default.filemanager, helpers:recolor(icons.apps.files) },
+		{ "Scrots", section.scrots, helpers:recolor(icons.screenshot) },
 		{ "Awesome", section.awesome },
 		{ "Power", section.power },
 	},

@@ -1,7 +1,7 @@
 local awful = require("awful")
 local wibox = require("wibox")
 local beautiful = require("beautiful")
-
+local icons = require("icons")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 
@@ -30,11 +30,11 @@ local function create_option(index, icon, command)
 	})
 end
 
-local lock = create_option(1, "lock.png", "betterlockscreen -l")
-local reboot = create_option(2, "reboot.png", "reboot")
-local shutdown = create_option(3, "shutdown.png", "shutdown now")
-local logout = create_option(4, "logout.png", "pkill -KILL -u $USER")
-local suspend = create_option(5, "suspend.png", "systemctl suspend")
+local lock = create_option(1, icons.power.lock, "betterlockscreen -l")
+local reboot = create_option(2, icons.power.reboot, "reboot")
+local shutdown = create_option(3, icons.power.shutdown, "shutdown now")
+local logout = create_option(4, icons.power.logout, "pkill -KILL -u $USER")
+local suspend = create_option(5, icons.power.suspend, "systemctl suspend")
 
 local power_menu = wibox.widget({
 	lock,

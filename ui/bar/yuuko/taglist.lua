@@ -2,6 +2,7 @@ local awful = require("awful")
 local gears = require("gears")
 local wibox = require("wibox")
 local beautiful = require("beautiful")
+local icons = require("icons")
 
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
@@ -33,27 +34,27 @@ local taglist = function(s)
 
 	local tag_properties = {
 		[1] = {
-			icon = helpers:iconify("tag_01.png"),
+			icon = icons.tags["01"],
 			color_selected = beautiful.xcolor2,
 		},
 		[2] = {
-			icon = helpers:iconify("tag_02.png"),
+			icon = icons.tags["02"],
 			color_selected = beautiful.xcolor3,
 		},
 		[3] = {
-			icon = helpers:iconify("tag_03.png"),
+			icon = icons.tags["03"],
 			color_selected = beautiful.xcolor4,
 		},
 		[4] = {
-			icon = helpers:iconify("tag_04.png"),
+			icon = icons.tags["04"],
 			color_selected = beautiful.xcolor5,
 		},
 		[5] = {
-			icon = helpers:iconify("tag_05.png"),
+			icon = icons.tags["05"],
 			color_selected = beautiful.xcolor1,
 		},
 		[6] = {
-			icon = helpers:iconify("tag_06.png"),
+			icon = icons.tags["06"],
 			color_selected = beautiful.xcolor6,
 		},
 	}
@@ -82,13 +83,13 @@ local taglist = function(s)
 				self.update = function()
 					if t.selected then
 						self:get_children_by_id("tag_icon")[1].image =
-							gears.surface.load_uncached(helpers:color(props.icon, props.color_selected))
+							gears.surface.load_uncached(helpers:recolor(props.icon, props.color_selected))
 					elseif #t:clients() > 0 then
 						self:get_children_by_id("tag_icon")[1].image =
-							gears.surface.load_uncached(helpers:color(props.icon, beautiful.xcolor8))
+							gears.surface.load_uncached(helpers:recolor(props.icon, beautiful.xcolor8))
 					else
 						self:get_children_by_id("tag_icon")[1].image =
-							gears.surface.load_uncached(helpers:recolor("tag_00.png", beautiful.xcolor0))
+							gears.surface.load_uncached(helpers:recolor(icons.tags["00"], beautiful.xcolor0))
 					end
 				end
 

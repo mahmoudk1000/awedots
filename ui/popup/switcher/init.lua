@@ -3,6 +3,7 @@ local beautiful = require("beautiful")
 local helpers = require("helpers")
 local wibox = require("wibox")
 local dpi = beautiful.xresources.apply_dpi
+local icons = require("icons")
 
 local function createElements()
 	local elements = wibox.widget({
@@ -35,7 +36,7 @@ local function createElements()
 					{
 						nil,
 						{
-							image = c.icon or helpers:recolor("no-icon.png"),
+							image = c.icon or helpers:recolor(icons.unknown),
 							halign = "center",
 							widget = wibox.widget.imagebox,
 						},

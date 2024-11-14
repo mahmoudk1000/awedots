@@ -1,12 +1,12 @@
 local awful = require("awful")
 local wibox = require("wibox")
 local gears = require("gears")
-local gfs = gears.filesystem
 local beautiful = require("beautiful")
 
 local dpi = beautiful.xresources.apply_dpi
 local s = awful.screen.focused().geometry
 
+local icons = require("icons")
 local helpers = require("helpers")
 local sys_stuff = require("signal.sys")
 
@@ -14,7 +14,6 @@ local calendar = require(... .. ".calendar")
 local tinyboard = require(... .. ".tinyboard")
 local player = require(... .. ".player")
 
-local weather_stuff = require("signal.weather")
 local wifi_stuff = require("signal.wifi")
 
 local function makePowerOption(icon, color, command)
@@ -40,10 +39,10 @@ local function makePowerOption(icon, color, command)
 end
 
 local powerOptions = {
-	makePowerOption("shutdown.png", beautiful.xcolor1, "poweroff now"),
-	makePowerOption("reboot.png", beautiful.xcolor2, "reboot"),
-	makePowerOption("suspend.png", beautiful.xcolor5, "systemctl suspend"),
-	makePowerOption("logout.png", beautiful.xcolor6, "pkill -KILL -u $USER"),
+	makePowerOption(icons.power.shutdown, beautiful.xcolor1, "poweroff now"),
+	makePowerOption(icons.power.reboot, beautiful.xcolor2, "reboot"),
+	makePowerOption(icons.power.suspend, beautiful.xcolor5, "systemctl suspend"),
+	makePowerOption(icons.power.logout, beautiful.xcolor6, "pkill -KILL -u $USER"),
 }
 local expanded = false
 
@@ -83,7 +82,7 @@ power_widget.children[1].buttons = gears.table.join(awful.button({}, awful.butto
 end))
 
 local avatar = wibox.widget({
-	image = gfs.get_configuration_dir() .. "theme/icons/me.png",
+	image = icons.avatar,
 	forced_height = dpi(25),
 	forced_width = dpi(25),
 	clip_shape = function(cr, w, h)

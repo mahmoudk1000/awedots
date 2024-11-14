@@ -3,6 +3,7 @@ local wibox = require("wibox")
 local beautiful = require("beautiful")
 
 local rubato = require("module.rubato")
+local icons = require("icons")
 local helpers = require("helpers")
 local dpi = beautiful.xresources.apply_dpi
 --
@@ -68,10 +69,10 @@ end
 
 local clock = create_time_widget()
 
-local function iconTray(icon, color)
+local function iconTray(icon)
 	local icon_widget = wibox.widget({
 		id = "icon",
-		image = helpers:recolor(icon, color),
+		image = helpers:recolor(icon),
 		halign = "center",
 		valign = "center",
 		forced_height = dpi(20),
@@ -119,7 +120,7 @@ local function iconTray(icon, color)
 end
 
 -- Bluetooth Tray
-local bluetooth = iconTray("blue-on.png", beautiful.xcolor4)
+local bluetooth = iconTray(icons.bluetooth.off)
 
 awesome.connect_signal("bluetooth::status", function(is_powered, is_connected, icon)
 	bluetooth.children[1]:set_image(helpers:recolor(icon))
@@ -128,7 +129,7 @@ awesome.connect_signal("bluetooth::status", function(is_powered, is_connected, i
 end)
 
 -- Wifi Tray
-local wifi = iconTray("wifi.png", beautiful.xcolor4)
+local wifi = iconTray(icons.wifi.off)
 
 awesome.connect_signal("wifi::status", function(_, _, icon, ssid)
 	wifi.children[1]:set_image(helpers:recolor(icon))
@@ -136,7 +137,7 @@ awesome.connect_signal("wifi::status", function(_, _, icon, ssid)
 	bluetooth:emit_signal("widget::layout_changed")
 end)
 
-local volume = iconTray("volume_01.png", beautiful.xcolor4)
+local volume = iconTray(icons.volume.mute)
 
 awesome.connect_signal("volume::value", function(percent, icon, is_muted)
 	volume.children[1]:set_image(helpers:recolor(icon))
@@ -145,7 +146,7 @@ awesome.connect_signal("volume::value", function(percent, icon, is_muted)
 end)
 
 -- Battery Widget
-local bat = function(value, icon)
+local bat = function(value)
 	local percent = wibox.widget({
 		text = value .. "%",
 		font = beautiful.font,
@@ -157,7 +158,7 @@ local bat = function(value, icon)
 
 	local indicator = wibox.widget({
 		{
-			image = helpers:recolor(icon),
+			image = helpers:recolor(icons.battery.nor),
 			valign = "center",
 			halign = "center",
 			widget = wibox.widget.imagebox,
@@ -212,11 +213,11 @@ local bat = function(value, icon)
 			if status == "Charging" or status == "Full" then
 				if status == "Charging" then
 					widget.color = beautiful.xcolor3
-					indicator.children[1]:set_image(helpers:recolor("indicator.png", beautiful.xcolor3))
+					indicator.children[1]:set_image(helpers:recolor(icons.battery.lighting_big, beautiful.xcolor3))
 					opacity_timer:start()
 				else
 					widget.color = beautiful.xcolor2
-					indicator.children[1]:set_image(helpers:recolor("indicator.png", beautiful.xcolor2))
+					indicator.children[1]:set_image(helpers:recolor(icons.battery.lighting_big, beautiful.xcolor2))
 					opacity_timer:stop()
 					opacity_animation.target = 1
 				end
@@ -235,7 +236,7 @@ local bat = function(value, icon)
 	}
 end
 
-local battery = bat(100, "indicator.png")
+local battery = bat(100)
 
 awesome.connect_signal("battery::info", function(value, status, icon)
 	battery.update(value, status, icon)
