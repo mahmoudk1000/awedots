@@ -27,33 +27,18 @@ local function create_time_widget()
 		layout = wibox.layout.fixed.horizontal,
 	})
 
-	local seconds_text = os.date("%S")
 	local seconds = wibox.widget({
-		markup = helpers:color_markup(":" .. os.date("%S"), beautiful.xcolor4),
 		font = beautiful.font .. "Aile Oblique Heavy 10",
 		halign = "center",
 		valign = "center",
 		visible = false,
-		widget = wibox.widget.textbox,
+		widget = wibox.widget.textclock(helpers:color_markup(":%S", beautiful.xcolor4), 1),
 	})
 
 	local widget = wibox.widget({
 		time,
 		seconds,
 		layout = wibox.layout.fixed.horizontal,
-	})
-
-	gears.timer({
-		timeout = 1,
-		call_now = true,
-		autostart = true,
-		callback = function()
-			seconds_text = tonumber(seconds_text) + 1
-			if seconds_text >= 60 then
-				seconds_text = 0
-			end
-			seconds.markup = helpers:color_markup(":" .. string.format("%02d", seconds_text), beautiful.xcolor4)
-		end,
 	})
 
 	widget:connect_signal("mouse::enter", function()
