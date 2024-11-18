@@ -4,6 +4,7 @@ local wibox = require("wibox")
 local beautiful = require("beautiful")
 
 local dpi = beautiful.xresources.apply_dpi
+local icons = require("icons")
 local helpers = require("helpers")
 
 local makeButton = function(icon, color, action)
@@ -38,21 +39,21 @@ client.connect_signal("request::titlebars", function(c)
 		end),
 	}
 
-	local close = makeButton("close.png", beautiful.xcolor1, function()
+	local close = makeButton(icons.client.close, beautiful.xcolor1, function()
 		c:kill()
 	end)
 
-	local maximize = makeButton("max.png", beautiful.xcolor2, function()
+	local maximize = makeButton(icons.client.max, beautiful.xcolor2, function()
 		c.maximized = not c.maximized
 		c:raise()
 	end)
 
 	c:connect_signal("property::maximized", function()
-		local icon = c.maximized and "unmax.png" or "max.png"
+		local icon = c.maximized and icons.client.unmax or icons.client.max
 		maximize:get_children_by_id("icon")[1].image = helpers:recolor(icon, beautiful.xcolor2)
 	end)
 
-	local minimize = makeButton("min.png", beautiful.xcolor3, function()
+	local minimize = makeButton(icons.client.min, beautiful.xcolor3, function()
 		c.minimized = true
 	end)
 

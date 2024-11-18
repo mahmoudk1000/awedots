@@ -110,7 +110,6 @@ local bluetooth = iconTray(icons.bluetooth.off)
 awesome.connect_signal("bluetooth::status", function(is_powered, is_connected, icon)
 	bluetooth.children[1]:set_image(helpers:recolor(icon))
 	bluetooth.children[2]:set_text(is_powered and (is_connected and "Connected" or "On") or "Off")
-	bluetooth:emit_signal("widget::layout_changed")
 end)
 
 -- Wifi Tray
@@ -119,7 +118,6 @@ local wifi = iconTray(icons.wifi.off)
 awesome.connect_signal("wifi::status", function(_, _, icon, ssid)
 	wifi.children[1]:set_image(helpers:recolor(icon))
 	wifi.children[2]:set_text(ssid)
-	bluetooth:emit_signal("widget::layout_changed")
 end)
 
 local volume = iconTray(icons.volume.mute)
@@ -127,7 +125,6 @@ local volume = iconTray(icons.volume.mute)
 awesome.connect_signal("volume::value", function(percent, icon, is_muted)
 	volume.children[1]:set_image(helpers:recolor(icon))
 	volume.children[2]:set_text(is_muted and "Muted" or percent .. "%")
-	volume:emit_signal("widget::layout_changed")
 end)
 
 -- Battery Widget

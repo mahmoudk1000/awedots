@@ -94,7 +94,7 @@ awesome.connect_signal("wifi::status", function(is_powerd, is_connected, icon, s
 end)
 
 -- Bluetooth Button
-local bluetooth_button = make_button("Bluetooth", "blue-off.png")
+local bluetooth_button = make_button("Bluetooth", icons.bluetooth.off)
 
 bluetooth_button:buttons(gears.table.join(awful.button({}, awful.button.names.LEFT, function()
 	awful.spawn.easy_async_with_shell("bluetoothctl show | grep -q 'Powered: yes'", function(_, _, _, exitcode)

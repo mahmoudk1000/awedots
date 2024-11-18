@@ -73,14 +73,14 @@ awesome.connect_signal("volume::value", function(value, icon)
 end)
 
 -- Backlight Widget
-local backlight = sys_tray("lamp.png", beautiful.xcolor2)
+local backlight = sys_tray(icons.brightness, beautiful.xcolor2)
 
 awesome.connect_signal("brightness::value", function(value)
 	backlight:get_children_by_id("text")[1]:set_text(value .. "%")
 end)
 
 -- Bluetooth Widget
-local bluetooth = sys_tray("blue-on.png", beautiful.xcolor4)
+local bluetooth = sys_tray(icons.bluetooth.off, beautiful.xcolor4)
 
 awesome.connect_signal("bluetooth::status", function(is_powerd, _, icon)
 	bluetooth:get_children_by_id("icon")[1]:set_image(helpers:recolor(icon))
@@ -88,7 +88,7 @@ awesome.connect_signal("bluetooth::status", function(is_powerd, _, icon)
 end)
 
 -- Battery Widget
-local battery = sys_tray("bat-nor.png", beautiful.xcolor5)
+local battery = sys_tray(icons.battery.nor, beautiful.xcolor5)
 
 awesome.connect_signal("battery::info", function(capacity, _, icon)
 	battery:get_children_by_id("icon")[1]:set_image(icon)
