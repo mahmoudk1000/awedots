@@ -77,7 +77,7 @@ icons.themes = {
 			mute = "theme/plumpy/volume_00.png",
 			low = "theme/plumpy/volume_01.png",
 			medium = "theme/plumpy/volume_02.png",
-			hight = "theme/plumpy/volume_03.png",
+			high = "theme/plumpy/volume_03.png",
 		},
 		power = {
 			reboot = "theme/plumpy/reboot.png",

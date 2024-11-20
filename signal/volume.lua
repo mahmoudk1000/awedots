@@ -6,13 +6,9 @@ local M = {}
 
 function M:emit_volume_state()
 	awful.spawn.easy_async_with_shell("pamixer --get-volume;pamixer --get-mute", function(stdout)
-		local percent = tonumber(stdout:match("(.-)\n"))
+		local percent = tonumber(stdout:match("(.-)\n")) or 0
 		local is_muted = stdout:match("\n(true)") or false
 		local icon
-
-		if percent == nil or percent == "" then
-			percent = tonumber(0)
-		end
 
 		if is_muted then
 			icon = icons.volume.mute
