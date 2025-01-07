@@ -39,7 +39,7 @@ icons.themes = {
 			char = "theme/plumpy/bat-char.png",
 			full = "theme/plumpy/bat-full.png",
 			nor = "theme/plumpy/bat-nor.png",
-			lighting_small = "theme/plumpy/indicator.png",
+			lighting = "theme/plumpy/lighting.png",
 			lighting_big = "theme/plumpy/indicator.png",
 		},
 		bluetooth = {
