@@ -1,3 +1,4 @@
+local awful = require("awful")
 local gears = require("gears")
 local wibox = require("wibox")
 local beautiful = require("beautiful")
@@ -51,7 +52,7 @@ local clock = (function()
 	return widget
 end)()
 
-local pieTray = function(symbol, color)
+local pieTray = function(text, symbol, color)
 	local pie = wibox.widget({
 		value = 100,
 		height = dpi(20),
@@ -87,6 +88,20 @@ local pieTray = function(symbol, color)
 		},
 		layout = wibox.layout.stack,
 	})
+
+	local tooltip = awful.tooltip({
+		objects = { widget },
+		mode = "outside",
+	})
+
+	widget:connect_signal("mouse::enter", function()
+		tooltip.markup = "<b>" .. text .. ": </b>" .. pie.value .. "%"
+		tooltip:show()
+	end)
+
+	widget:connect_signal("mouse::leave", function()
+		tooltip:hide()
+	end)
 
 	local opacity_animation = rubato.timed({
 		duration = 1.0,
@@ -149,6 +164,7 @@ local pieTray = function(symbol, color)
 			})
 			timed.target = 1
 			pie.value = new_value
+			tooltip.markup = "<b>" .. text .. ": </b>" .. new_value .. "%"
 		end,
 	}
 end
@@ -163,14 +179,14 @@ local function sysTray(icon, color)
 end
 
 -- Volume Widget
-local volume = pieTray(icons.tone, beautiful.xcolor3)
+local volume = pieTray("Vol", icons.tone, beautiful.xcolor3)
 
 awesome.connect_signal("volume::value", function(value, _, _)
 	volume.update_value(value, false)
 end)
 
 -- Backlight Widget
-local backlight = pieTray(icons.brightness, beautiful.xcolor6)
+local backlight = pieTray("Brt", icons.brightness, beautiful.xcolor6)
 
 awesome.connect_signal("brightness::value", function(value)
 	backlight.update_value(value, false)
@@ -184,7 +200,7 @@ awesome.connect_signal("bluetooth::status", function(_, _, icon)
 end)
 
 -- Battery Widget
-local battery = pieTray(icons.battery.lighting, beautiful.xcolor4)
+local battery = pieTray("Bat", icons.battery.lighting, beautiful.xcolor4)
 
 awesome.connect_signal("battery::info", function(value, status, _)
 	battery.update_value(value, true, status)

@@ -87,6 +87,11 @@ theme.notification_spacing = dpi(theme.useless_gap * 2.2)
 theme.notification_border_width = dpi(0)
 theme.notification_border_color = theme.xcolor0
 
+-- Tooltip
+theme.tooltip_font = theme.font
+theme.tooltip_bg = theme.xcolor0
+theme.tooltip_fg = theme.xforeground
+
 -- Menu
 theme.menu_font = theme.font
 theme.menu_submenu_icon = helpers:recolor(icons.menu.submenu, theme.xcolor4)
