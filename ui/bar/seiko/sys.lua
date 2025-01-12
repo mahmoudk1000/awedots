@@ -62,7 +62,7 @@ local pieTray = function(text, symbol, color)
 			gears.shape.arc(cr, w, h, dpi(3), 0, 2 * math.pi)
 		end,
 		bar_shape = function(cr, w, h)
-			gears.shape.arc(cr, w, h, dpi(3), 0, math.rad(100 * 3.6), true, true)
+			gears.shape.arc(cr, w, h, dpi(3), 0, math.rad(100 * 3.6))
 		end,
 		widget = wibox.widget.progressbar,
 	})
@@ -158,7 +158,7 @@ local pieTray = function(text, symbol, color)
 				pos = math.rad(pie.value * 3.6) / math.rad(new_value * 3.6),
 				subscribed = function(pos)
 					pie.bar_shape = function(cr, w, h)
-						gears.shape.arc(cr, w, h, dpi(3), 0, math.rad(new_value * 3.6 * pos), true, true)
+						gears.shape.arc(cr, w, h, dpi(3), 0, math.rad(new_value * 3.6 * pos))
 					end
 				end,
 			})
